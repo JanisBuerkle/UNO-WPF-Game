@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="UNO_Spielprojekt.Winner.WinnerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" Name="Control">
+    <Grid DataContext="{Binding ElementName=Control, Path=ViewModel}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Überschrift -->
+        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   Foreground="White" FontSize="80" FontWeight="Bold" Text="Winner" />
+
+        <!-- Text und Spielername -->
+        <TextBlock Grid.Row="1" Grid.Column="1" FontSize="25">
+            <Run Text="Der Gewinner ist: " Foreground="Gray"></Run>
+            <Run Text="{Binding WinnerName}" Foreground="White"></Run>
+        </TextBlock>
+
+        <!-- Text mit Rundenanzahl -->
+        <TextBlock Grid.Row="2" Grid.Column="1" FontSize="25">
+            <Run Text="Ihr habt " Foreground="Gray"></Run>
+            <Run Text="{Binding RoundCounter}" Foreground="White"></Run>
+            <Run Text=" Runden gespielt." Foreground="Gray"></Run>
+        </TextBlock>
+
+        <!-- Home Button -->
+        <Button Grid.Row="0" Grid.Column="0" Command="{Binding GoToMainMenuCommand}"
+                Style="{StaticResource HomeButtonStyle}" />
+        
+    </Grid>
+</UserControl>
