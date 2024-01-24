@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using UNO_Spielprojekt.AddPlayer;
+﻿using UNO_Spielprojekt.AddPlayer;
 using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Logging;
 using UNO_Spielprojekt.MainMenu;
@@ -7,9 +6,7 @@ using UNO_Spielprojekt.Scoreboard;
 using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Winner;
 
-
 namespace UNO_Spielprojekt.Window;
-
 public class MainViewModel : ViewModelBase
 {
     private bool _mainMenuVisible;
@@ -28,6 +25,7 @@ public class MainViewModel : ViewModelBase
     private GameLogic GameLogic { get; set; }
     private PlayViewModel PlayViewModel { get; set; }
     public SettingsViewModel SettingsViewModel { get; }
+    private ThemeModes ThemeModes { get; }
     public ScoreboardViewModel ScoreboardViewModel { get; }
     public WinnerViewModel WinnerViewModel { get; }
 
@@ -37,6 +35,8 @@ public class MainViewModel : ViewModelBase
         var loggerFactory = new SerilogLoggerFactory();
         var logger = loggerFactory.CreateLogger("Uno-Spielprojekt");
         
+        ThemeModes = new ThemeModes();
+        SettingsViewModel = new SettingsViewModel(this, logger, ThemeModes);
         PlayViewModel = new PlayViewModel();
         WinnerViewModel = new WinnerViewModel(this);
         GameLogic = new GameLogic(PlayViewModel, logger);
@@ -44,7 +44,6 @@ public class MainViewModel : ViewModelBase
         GameViewModel = new GameViewModel(this, PlayViewModel, GameLogic, logger, WinnerViewModel, ScoreboardViewModel);
         RulesViewModel = new RulesViewModel(this, logger);
         GameData = new GameData(ScoreboardViewModel, GameViewModel);
-        SettingsViewModel = new SettingsViewModel(this, logger);
         MainMenuViewModel = new MainMenuViewModel(this, logger, GameData);
         AddPlayerViewModel = new AddPlayerViewModel(this, GameLogic, logger);
         MainMenuVisible = true;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
 using UNO_Spielprojekt.Window;
@@ -13,8 +14,11 @@ public class SettingsViewModel : ViewModelBase
     public List<ThemeMode> MyThemeModes { get; }
     public RelayCommand GoToMainMenuCommand { get; }
 
-    public SettingsViewModel(MainViewModel mainViewModel, ILogger logger)
+    public ThemeModes ThemeModes { get; set; }
+
+    public SettingsViewModel(MainViewModel mainViewModel, ILogger logger, ThemeModes themeModes)
     {
+        ThemeModes = themeModes;
         this._logger = logger;
         GoToMainMenuCommand = new RelayCommand(mainViewModel.GoToMainMenu);
         MyLangs = new List<Language>
@@ -47,11 +51,11 @@ public class SettingsViewModel : ViewModelBase
 
     public void ThemeModeDark()
     {
-
+        ThemeModes.Background = Brushes.Black;
     }
     
     public void ThemeModeBright()
     {
-
+        ThemeModes.Background = Brushes.WhiteSmoke;
     }
 }

@@ -1,4 +1,6 @@
-﻿using UNO_Spielprojekt.GamePage;
+﻿using System.IO;
+using System.Net;
+using UNO_Spielprojekt.GamePage;
 
 namespace UNO_Spielprojekt.Scoreboard;
 public class GameData : ViewModelBase
@@ -14,7 +16,10 @@ public class GameData : ViewModelBase
 
     public void Load()
     {
-        _scoreboardViewModel.ScoreboardPlayers = _gameViewModel.LoadPlayersFromXml("GameData.xml");
-        _scoreboardViewModel.LoadGameData();
+        if (File.Exists("GameData.xml"))
+        {
+            _scoreboardViewModel.ScoreboardPlayers = _gameViewModel.LoadPlayersFromXml("GameData.xml");
+            _scoreboardViewModel.LoadGameData();
+        }
     }
 }

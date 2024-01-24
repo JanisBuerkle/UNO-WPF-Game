@@ -19,7 +19,6 @@ public class GameViewModel : ViewModelBase
     private readonly Random _random = new();
 
     private Brush _theBackground;
-
     public Brush TheBackground
     {
         get => _theBackground;

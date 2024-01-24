@@ -2,7 +2,7 @@
 
 namespace UNO_Spielprojekt.Setting;
 
-public class WindowModes
+public class WindowModes : ViewModelBase
 {
     public List<WindowMode> MyModes { get; }
 
