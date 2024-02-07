@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using UNO_Spielprojekt.GamePage;
+using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.Winner;
@@ -39,7 +40,7 @@ public class WinnerViewModel : ViewModelBase
         }
     }
 
-    public WinnerViewModel(MainViewModel mainViewModel)
+    public WinnerViewModel(MainViewModel mainViewModel, ThemeModes themeModes)
     {
         _mainViewModel = mainViewModel;
         GoToMainMenuCommand = new RelayCommand(mainViewModel.GoToMainMenu);

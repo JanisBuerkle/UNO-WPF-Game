@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using UNO_Spielprojekt.Window;
 using tt.Tools.Logging;
 using UNO_Spielprojekt.Scoreboard;
+using UNO_Spielprojekt.Setting;
 
 namespace UNO_Spielprojekt.MainMenu;
 
@@ -16,7 +17,7 @@ public class MainMenuViewModel : ViewModelBase
     public RelayCommand GoToSettings { get; }
     public RelayCommand ExitApplicationCommand { get; }
 
-    public MainMenuViewModel(MainViewModel mainViewModel, ILogger logger, GameData gameData)
+    public MainMenuViewModel(MainViewModel mainViewModel, ILogger logger, GameData gameData, ThemeModes themeModes)
     {
         _gameData = gameData;
         _mainViewModel = mainViewModel;

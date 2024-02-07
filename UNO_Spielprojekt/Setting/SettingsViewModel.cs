@@ -51,11 +51,13 @@ public class SettingsViewModel : ViewModelBase
 
     public void ThemeModeDark()
     {
-        ThemeModes.Background = Brushes.Black;
+        ThemeModes.Background = "#1f1f1f"; 
+        ThemeModes.Foreground = "#bb4213";
     }
     
     public void ThemeModeBright()
     {
-        ThemeModes.Background = Brushes.WhiteSmoke;
+        ThemeModes.Background = "#ffffff";
+        ThemeModes.Foreground = "#49b6d3";
     }
 }

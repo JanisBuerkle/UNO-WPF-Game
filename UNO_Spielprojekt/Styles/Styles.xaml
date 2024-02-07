@@ -4,7 +4,6 @@
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Margin" Value="5" />
         <Setter Property="Template">
-
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Name="border"
@@ -24,6 +23,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
 
     <Style x:Key="CardStyle" TargetType="Button">
         <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -51,13 +51,13 @@
 
     <Style x:Key="MainMenuButtonStyle" TargetType="Button">
         <Setter Property="OverridesDefaultStyle" Value="True" />
+
         <Setter Property="Height" Value="100" />
         <Setter Property="Width" Value="500" />
         <Setter Property="Margin" Value="0,0,0,10" />
         <Setter Property="FontSize" Value="70" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Template">
-
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Name="border"
@@ -78,6 +78,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
     <Style x:Key="SettingsButtonStyle" TargetType="Button">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Height" Value="80" />
@@ -138,8 +139,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
+    
     <Style x:Key="HomeButtonStyle" TargetType="Button">
         <Setter Property="Width" Value="80" />
         <Setter Property="Height" Value="80" />

@@ -1,4 +1,4 @@
-namespace UNO_Server;
+namespace test;
 
 public class WeatherForecast
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
+using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.Scoreboard;
@@ -31,7 +32,7 @@ public class ScoreboardViewModel : ViewModelBase
     private ScoreboardViewModel _scoreboardViewModel;
     private readonly ILogger _logger;
     public bool Start { get; set; }
-    public ScoreboardViewModel(MainViewModel mainViewModel, ILogger logger)
+    public ScoreboardViewModel(MainViewModel mainViewModel, ILogger logger, ThemeModes themeModes)
     {
         _logger = logger;
         _scoreboardViewModel = this;

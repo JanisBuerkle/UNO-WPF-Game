@@ -1,18 +1,28 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Media;
 
 namespace UNO_Spielprojekt.Setting;
 
 public class ThemeModes : ViewModelBase
 {
-    private Brush _background;
-    public Brush Background
+    private string _background;
+    public string Background
     {
         get => _background;
         set
         {
             _background = value;
-            OnPropertyChanged(nameof(Background));
+            OnPropertyChanged();
+        }
+    }
+    
+    private string _foreground;
+    public string Foreground
+    {
+        get => _foreground;
+        set
+        {
+            _foreground = value;
+            OnPropertyChanged();
         }
     }
     
@@ -20,7 +30,8 @@ public class ThemeModes : ViewModelBase
 
     public ThemeModes()
     {
-        Background = Brushes.Black;
+        Background = "#1f1f1f";
+        Foreground = "#6c25be";
         MyThemeModes = new List<ThemeMode>
         {
             ThemeMode.Dark,

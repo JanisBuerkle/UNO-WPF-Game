@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using tt.Tools.Logging;
+using UNO_Spielprojekt.AddPlayer;
+using UNO_Spielprojekt.Service;
 
 namespace UNO_Spielprojekt.GamePage;
 
@@ -12,12 +14,14 @@ public class GameLogic
     private PlayViewModel PlayViewModel { get; set; }
     public int CountOfPlayers { get; set; }
     private readonly ILogger _logger;
+    private readonly ApiService _apiService;
 
     public readonly ObservableCollection<CardViewModel> Center = new();
     private readonly Random _random = new();
 
-    public GameLogic(PlayViewModel playViewModel, ILogger logger)
+    public GameLogic(PlayViewModel playViewModel, ILogger logger, ApiService apiService)
     {
+        _apiService = apiService;
         this._logger = logger;
         PlayViewModel = playViewModel;
     }
@@ -297,9 +301,22 @@ public class GameLogic
                 PlayViewModel.Cards.RemoveAt(0);
                 Players[player].Hand.Add(card);
             }
+            PostPlayers(Players[player].PlayerName, player);
         }
     }
 
+    private async void PostPlayers(string name, int numb)
+    {
+        var player = new Player
+        {
+            Id = 0,
+            PlayerName = name,
+            Hand = Players[numb].Hand,
+            Uno = false
+        };
+        await _apiService.PostPlayerAsync(player);
+    }
+    
     public void PlaceFirstCardInCenter()
     {
         _logger.Info("Die Center Karte wurde ermittelt und gelegt.");

@@ -13,19 +13,17 @@
         xmlns:unoSpielprojekt="clr-namespace:UNO_Spielprojekt"
         mc:Ignorable="d"
         Title="UNO-Game"
-         WindowStartupLocation="CenterScreen" Icon="../Assets/Logos/logo.png"
+        WindowStartupLocation="CenterScreen" Icon="../Assets/Logos/logo.png"
         AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         WindowStyle="None"
-        Name="Control" >
+        Name="Control">
     <Window.Resources>
         <window:MainViewModel x:Key="MainViewModel" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
-    
-    <Border DataContext="{Binding ElementName=Control, Path=ThemeModes}" Background="{Binding Background}" BorderThickness="0" CornerRadius="20">
-        
-        <Grid DataContext="{StaticResource MainViewModel}">
+    <Border DataContext="{StaticResource MainViewModel}" Background="{Binding ThemeModes.Background}" BorderThickness="0" CornerRadius="20">
+        <Grid>
             <mainMenu:MainMenuView
                 Visibility="{Binding MainMenuVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ViewModel="{Binding MainMenuViewModel}" />

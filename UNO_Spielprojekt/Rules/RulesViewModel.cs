@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
 using UNO_Spielprojekt.GamePage;
+using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt;
@@ -11,7 +12,7 @@ public class RulesViewModel
     private GameViewModel GameViewModel;
     private readonly ILogger _logger;
 
-    public RulesViewModel(MainViewModel mainViewModel, ILogger logger)
+    public RulesViewModel(MainViewModel mainViewModel, ILogger logger, ThemeModes themeModes)
     {
         _logger = logger;
         GameViewModel = mainViewModel.GameViewModel;

@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
 using UNO_Spielprojekt.Scoreboard;
+using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Window;
 using UNO_Spielprojekt.Winner;
 
@@ -115,7 +116,7 @@ public class GameViewModel : ViewModelBase
 
 
     public GameViewModel(MainViewModel mainViewModel, PlayViewModel playViewModel, GameLogic gameLogic, ILogger logger,
-        WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel)
+        WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel, ThemeModes themeModes)
     {
         _scoreboardViewModel = scoreboardViewModel;
         TheBackground = Brushes.Transparent;
