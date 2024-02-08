@@ -21,8 +21,8 @@
     <data name="Header" xml:space="preserve">
         <value>Settings</value>
     </data>
-    <data name="Play" xml:space="preserve">
-        <value>Play</value>
+    <data name="PlayLocal" xml:space="preserve">
+        <value>Local</value>
     </data>
     <data name="Exit" xml:space="preserve">
         <value>Exit</value>
@@ -38,5 +38,8 @@
     </data>
     <data name="Scoreboard" xml:space="preserve">
         <value>Scoreboard</value>
+    </data>
+    <data name="Multiplayer" xml:space="preserve">
+        <value>Multiplayer</value>
     </data>
 </root>

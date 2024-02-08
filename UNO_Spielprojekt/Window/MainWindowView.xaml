@@ -9,6 +9,7 @@
         xmlns:gamePage="clr-namespace:UNO_Spielprojekt.GamePage"
         xmlns:addPlayer="clr-namespace:UNO_Spielprojekt.AddPlayer"
         xmlns:scoreboard="clr-namespace:UNO_Spielprojekt.Scoreboard"
+        xmlns:multiplayerromms="clr-namespace:UNO_Spielprojekt.MultiplayerRooms"
         xmlns:winner="clr-namespace:UNO_Spielprojekt.Winner"
         xmlns:unoSpielprojekt="clr-namespace:UNO_Spielprojekt"
         mc:Ignorable="d"
@@ -27,6 +28,9 @@
             <mainMenu:MainMenuView
                 Visibility="{Binding MainMenuVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ViewModel="{Binding MainMenuViewModel}" />
+            <multiplayerromms:MultiplayerRoomsView
+                Visibility="{Binding MultiplayerRoomsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                ViewModel="{Binding MultiplayerRoomsViewModel}" />
             <setting:SettingsView
                 Visibility="{Binding SettingsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ViewModel="{Binding SettingsViewModel}" />

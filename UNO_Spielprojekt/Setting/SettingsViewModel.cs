@@ -52,12 +52,12 @@ public class SettingsViewModel : ViewModelBase
     public void ThemeModeDark()
     {
         ThemeModes.Background = "#1f1f1f"; 
-        ThemeModes.Foreground = "#bb4213";
+        ThemeModes.Foreground = "#ffffff";
     }
     
     public void ThemeModeBright()
     {
         ThemeModes.Background = "#ffffff";
-        ThemeModes.Foreground = "#49b6d3";
+        ThemeModes.Foreground = "#1f1f1f";
     }
 }

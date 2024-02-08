@@ -22,7 +22,10 @@
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}"  Command="{Binding GoToAddPlayerCommand}"
                     Style="{StaticResource MainMenuButtonStyle}"
-                    Content="{x:Static resources:Resource.Play}"  />
+                    Content="{x:Static resources:Resource.PlayLocal}"  />
+            <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}"  Command="{Binding GoToMultiplayerRoomsCommand}"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    Content="{x:Static resources:Resource.Multiplayer}"  />
             <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}" Command="{Binding GoToScoreboardCommand}"
                     Style="{StaticResource MainMenuButtonStyle}"
                     Content="{x:Static resources:Resource.Scoreboard}" />

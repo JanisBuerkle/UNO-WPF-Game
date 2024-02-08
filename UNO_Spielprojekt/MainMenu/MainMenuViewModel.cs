@@ -13,6 +13,7 @@ public class MainMenuViewModel : ViewModelBase
     private readonly GameData _gameData;
     private readonly ILogger logger;
     public RelayCommand GoToAddPlayerCommand { get; }
+    public RelayCommand GoToMultiplayerRoomsCommand { get; }
     public RelayCommand GoToScoreboardCommand { get; }
     public RelayCommand GoToSettings { get; }
     public RelayCommand ExitApplicationCommand { get; }
@@ -23,6 +24,7 @@ public class MainMenuViewModel : ViewModelBase
         _mainViewModel = mainViewModel;
         this.logger = logger;
         GoToAddPlayerCommand = new RelayCommand(GoToAddPlayerCommandMethod);
+        GoToMultiplayerRoomsCommand = new RelayCommand(GoToMultiplayerRoomsCommandMethod);
         GoToScoreboardCommand = new RelayCommand(GoToScoreboardCommandMethod);
         GoToSettings = new RelayCommand(GoToSettingsCommandMethod);
         ExitApplicationCommand = new RelayCommand(ExitApplication);
@@ -34,9 +36,15 @@ public class MainMenuViewModel : ViewModelBase
         _mainViewModel.GoToAddPlayer();
     }
 
+    private void GoToMultiplayerRoomsCommandMethod()
+    {
+        logger.Info("MultiplayerRooms Seite wurde geöffnet.");
+        _mainViewModel.GoToMultiplayerRooms();
+    }
+
     private void GoToScoreboardCommandMethod()
     {
-        logger.Info("Scoreboard Seite wurde geöffnet."); 
+        logger.Info("Scoreboard Seite wurde geöffnet.");
         _gameData.Load();
         _mainViewModel.GoToScoreboard();
     }

@@ -31,7 +31,7 @@ public class ThemeModes : ViewModelBase
     public ThemeModes()
     {
         Background = "#1f1f1f";
-        Foreground = "#6c25be";
+        Foreground = "#ffffff";
         MyThemeModes = new List<ThemeMode>
         {
             ThemeMode.Dark,

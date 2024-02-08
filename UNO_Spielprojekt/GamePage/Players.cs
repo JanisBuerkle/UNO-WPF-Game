@@ -6,7 +6,7 @@ namespace UNO_Spielprojekt.GamePage;
 public class Players
 {
     public string PlayerName { get; set; }
-    public ObservableCollection<CardViewModel> Hand = new();
+    public List<CardViewModel> Hand = new();
     public bool Uno { get; set; }
 
     // public int Player { get; set; }

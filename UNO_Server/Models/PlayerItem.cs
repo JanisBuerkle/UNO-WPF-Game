@@ -7,6 +7,6 @@ public class PlayerItem
 {
     public long Id { get; set; }
     public string? PlayerName { get; set; }
-    public ObservableCollection<CardViewModel> Hand { get; set; } = new();
+    public List<CardViewModel> Hand { get; set; } = new List<CardViewModel>();
     public bool Uno { get; set; }
 }

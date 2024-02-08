@@ -181,6 +181,12 @@
       <Resource Include="Assets\cards\Blue 7.png" />
       <None Remove="Assets\cards\card_back.png" />
       <Resource Include="Assets\cards\card_back.png" />
+      <None Remove="Assets\Symbols\schloss.png" />
+      <Resource Include="Assets\Symbols\schloss.png" />
+      <None Remove="Assets\Symbols\defaultuser.png" />
+      <Resource Include="Assets\Symbols\defaultuser.png" />
+      <None Remove="Assets\Symbols\schloss_offen.png" />
+      <Resource Include="Assets\Symbols\schloss_offen.png" />
     </ItemGroup>
 
     <ItemGroup>

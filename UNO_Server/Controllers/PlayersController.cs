@@ -28,7 +28,7 @@ namespace UNO_Server.Controllers
           {
               return NotFound();
           }
-          return await _context.TodoItems.ToListAsync();
+          return await _context.TodoItems.Include(item => item.Hand).ToListAsync();
         }
 
         // GET: api/API/5

@@ -98,9 +98,18 @@ namespace UNO_Spielprojekt.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Play.
         /// </summary>
-        public static string Play {
+        public static string PlayLocal {
             get {
-                return ResourceManager.GetString("Play", resourceCulture);
+                return ResourceManager.GetString("PlayLocal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play.
+        /// </summary>
+        public static string Multiplayer {
+            get {
+                return ResourceManager.GetString("Multiplayer", resourceCulture);
             }
         }
         

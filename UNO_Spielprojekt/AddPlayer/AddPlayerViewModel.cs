@@ -7,10 +7,6 @@ using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Window;
 using tt.Tools.Logging;
 using UNO_Spielprojekt.Setting;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-using UNO_Spielprojekt.AddPlayer;
 using UNO_Spielprojekt.Service;
 
 namespace UNO_Spielprojekt.AddPlayer;
@@ -18,7 +14,6 @@ namespace UNO_Spielprojekt.AddPlayer;
 public class AddPlayerViewModel : INotifyPropertyChanged
 {
     private readonly MainViewModel _mainViewModel;
-    private readonly ApiService _apiService;
     public RelayCommand GoToMainMenuCommand { get; }
     private GameLogic GameLogic { get; set; }
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -30,7 +25,6 @@ public class AddPlayerViewModel : INotifyPropertyChanged
         ApiService apiService)
     {
         this._logger = logger;
-        _apiService = apiService;
         _mainViewModel = mainViewModel;
         GameLogic = gameLogic;
         PlayerNames = new ObservableCollection<NewPlayerViewModel>();
@@ -57,17 +51,6 @@ public class AddPlayerViewModel : INotifyPropertyChanged
 
         _logger.Info("Rules Seite wurde geöffnet.");
         _mainViewModel.GoToRules();
-    }
-
-    private async void PostPlayers(string name)
-    {
-        var player = new Player
-        {
-            Id = 0,
-            PlayerName = name,
-            Uno = false
-        };
-        await _apiService.PostPlayerAsync(player);
     }
 
     public ObservableCollection<NewPlayerViewModel> PlayerNames { get; }

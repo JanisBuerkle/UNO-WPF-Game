@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using tt.Tools.Logging;
 using UNO_Spielprojekt.AddPlayer;
 using UNO_Spielprojekt.Service;
@@ -303,6 +304,8 @@ public class GameLogic
             }
             PostPlayers(Players[player].PlayerName, player);
         }
+
+        GetPlayersAsync();
     }
 
     private async void PostPlayers(string name, int numb)
@@ -316,6 +319,34 @@ public class GameLogic
         };
         await _apiService.PostPlayerAsync(player);
     }
+    
+    static async Task GetPlayersAsync()
+    {
+        ApiService apiService = new ApiService();
+
+        // Rufe die GetPlayersAsync-Methode auf
+        List<Player> players = await apiService.GetPlayersAsync();
+
+        // Überprüfe, ob die Spielerliste erfolgreich abgerufen wurde
+        if (players != null)
+        {
+            Console.WriteLine("Spielerliste erhalten:");
+            foreach (var player in players)
+            {
+                Console.WriteLine($"ID: {player.Id}, Name: {player.PlayerName}");
+                // Füge hier weitere Verarbeitung hinzu, falls benötigt
+            }
+        }
+        else
+        {
+            Console.WriteLine("Fehler beim Abrufen der Spielerliste.");
+        }
+
+        // Wichtig: Ressourcen freigeben, indem Dispose aufgerufen wird
+        apiService.Dispose();
+    }
+
+    
     
     public void PlaceFirstCardInCenter()
     {

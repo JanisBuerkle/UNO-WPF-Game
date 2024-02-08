@@ -23,12 +23,6 @@ public partial class AddPlayerView
         InitializeComponent();
     }
 
-
-    private void HomeButtonClicked(object sender, RoutedEventArgs e)
-    {
-    }
-
-
     private void PlayerNameChanged(object sender, TextChangedEventArgs e)
     {
         UpdateWeiterButtonVisibility();
