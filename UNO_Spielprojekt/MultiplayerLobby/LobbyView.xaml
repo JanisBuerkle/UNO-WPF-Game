@@ -4,8 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:UNO_Spielprojekt.MultiplayerLobby"
-             mc:Ignorable="d">
-    <Grid>
-
+             mc:Ignorable="d" Name="Lobby">
+    <Grid Height="1080" Width="1920" DataContext="{Binding ElementName=Lobby, Path=ViewModel}">
+        <ListView DataContext="{Binding ElementName=Lobby, Path=ViewModel.MultiplayerRoomsViewModel}"
+                  ItemsSource="{Binding SelectedRoom}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Height="200" Width="600"  Text="{Binding PlayerNames }" VerticalAlignment="Center" FontSize="20" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </UserControl>

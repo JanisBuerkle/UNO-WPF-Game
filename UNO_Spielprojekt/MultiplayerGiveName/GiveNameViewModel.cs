@@ -9,6 +9,7 @@ public class GiveNameViewModel : ViewModelBase
     private readonly ILogger _logger;
     private MainViewModel MainViewModel { get; set; }
     public RelayCommand CloseGiveNameCommand { get; }
+    public RelayCommand GoToLobbyCommand { get; }
     
     private bool _isEnabled;
     public bool IsEnabled
@@ -29,11 +30,17 @@ public class GiveNameViewModel : ViewModelBase
         _logger = logger;
         MainViewModel = mainViewModel;
         CloseGiveNameCommand = new RelayCommand(CloseGiveNameCommandMethod);
+        GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);
     }
     
     private void CloseGiveNameCommandMethod()
     {
         MainViewModel.GiveNameVisible = false;
         MainViewModel.MultiplayerRoomsViewModel.DisableAll = true;
+    }
+
+    private void GoToLobbyCommandMethod()
+    {
+        MainViewModel.GoToLobby();
     }
 }

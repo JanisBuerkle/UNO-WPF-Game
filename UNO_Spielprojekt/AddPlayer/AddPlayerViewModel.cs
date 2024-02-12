@@ -21,8 +21,7 @@ public class AddPlayerViewModel : INotifyPropertyChanged
 
     private readonly ILogger _logger;
 
-    public AddPlayerViewModel(MainViewModel mainViewModel, GameLogic gameLogic, ILogger logger, ThemeModes themeModes,
-        ApiService apiService)
+    public AddPlayerViewModel(MainViewModel mainViewModel, ILogger logger, GameLogic gameLogic, ThemeModes themeModes, ApiService apiService)
     {
         this._logger = logger;
         _mainViewModel = mainViewModel;

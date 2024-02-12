@@ -115,8 +115,7 @@ public class GameViewModel : ViewModelBase
     public RelayCommand ExitConfirmCommand { get; }
 
 
-    public GameViewModel(MainViewModel mainViewModel, PlayViewModel playViewModel, GameLogic gameLogic, ILogger logger,
-        WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel, ThemeModes themeModes)
+    public GameViewModel(MainViewModel mainViewModel, ILogger logger, PlayViewModel playViewModel, GameLogic gameLogic, WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel, ThemeModes themeModes)
     {
         _scoreboardViewModel = scoreboardViewModel;
         TheBackground = Brushes.Transparent;
@@ -124,7 +123,7 @@ public class GameViewModel : ViewModelBase
         WinnerViewModel = winnerViewModel;
         PlayViewModel = playViewModel;
         _mainViewModel = mainViewModel;
-        this._logger = logger;
+        _logger = logger;
 
         ZiehenCommand = new RelayCommand(ZiehenCommandMethod);
         LegenCommand = new RelayCommand(LegenCommandMethod);

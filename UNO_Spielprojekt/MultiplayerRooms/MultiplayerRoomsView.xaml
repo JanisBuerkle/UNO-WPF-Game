@@ -63,7 +63,7 @@
                             </Border>
                         </StackPanel>
                         
-                        <Button Grid.Column="3" Width="90" Height="40" Background="DarkGreen" Foreground="White" FontSize="20" FontWeight="Bold" Content="Join"/>
+                        <Button Grid.Column="3" Width="90" Height="40" Background="DarkGreen" Foreground="White" FontSize="20" FontWeight="Bold" Content="Join" DataContext="{Binding ElementName=MultiplayerRooms, Path=ViewModel}" Command="{Binding CreateRoomCommand }"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -71,13 +71,13 @@
         
         
         <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000" 
-              Visibility="{Binding _mainViewModel.CreateRoomVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
-            <multiplayerCreateRoom:CreateRoomView ViewModel="{Binding _mainViewModel.CreateRoomViewModel}" />
+              Visibility="{Binding MainViewModel.CreateRoomVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
+            <multiplayerCreateRoom:CreateRoomView ViewModel="{Binding MainViewModel.CreateRoomViewModel}" />
         </Grid>
         
         <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000" 
-              Visibility="{Binding _mainViewModel.GiveNameVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
-            <multiplayerGiveName:GiveNameView ViewModel="{Binding _mainViewModel.GiveNameViewModel}" />
+              Visibility="{Binding MainViewModel.GiveNameVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
+            <multiplayerGiveName:GiveNameView ViewModel="{Binding MainViewModel.GiveNameViewModel}" />
         </Grid>
         
     </Grid>

@@ -37,7 +37,7 @@
 
 
             <Button Grid.Row="2" Grid.Column="2" IsEnabled="{Binding IsEnabled}" Margin="0,20,0,0"
-                    VerticalAlignment="Top" HorizontalAlignment="Center" Content="Join room" />
+                    VerticalAlignment="Top" HorizontalAlignment="Center" Content="Join room" Command="{Binding GoToLobbyCommand}"/>
         </Grid>
     </Border>
 </UserControl>

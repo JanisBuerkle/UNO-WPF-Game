@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
@@ -9,11 +10,12 @@ namespace UNO_Spielprojekt.MultiplayerRooms;
 
 public class MultiplayerRoomsViewModel : ViewModelBase
 {
-    public MainViewModel _mainViewModel { get; set; }
+    private readonly ILogger _logger;
+    public MainViewModel MainViewModel { get; set; }
     public ObservableCollection<Rooms> Liste { get; set; } = new ObservableCollection<Rooms>();
     public RelayCommand GoToMainMenuCommand { get; }
     public RelayCommand CreateRoomCommand { get; }
-    private readonly ILogger _logger;
+
 
     private bool _disableAll;
 
@@ -48,12 +50,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger logger)
     {
-        Liste.Add(new Rooms() { RoomName = "Room1000000000", MaximalUsers = 5, PasswordSecured = false });
-        Liste.Add(new Rooms() { RoomName = "Room2", MaximalUsers = 2, PasswordSecured = false });
+        Liste.Add(new Rooms() { RoomName = "Room1000000000", MaximalUsers = 5, PasswordSecured = false});
+        Liste.Add(new Rooms() { RoomName = "Room2", MaximalUsers = 2, PasswordSecured = false});
         Liste.Add(new Rooms() { RoomName = "Room3", MaximalUsers = 3, PasswordSecured = true, Password = "123" });
         _logger = logger;
-        _mainViewModel = mainViewModel;
-
+        MainViewModel = mainViewModel;
+        
         GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
         CreateRoomCommand = new RelayCommand(CreateRoomCommandMethod);
     }
@@ -61,12 +63,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     private void GoToMainMenuCommandMethod()
     {
         _logger.Info("MainMenu wurde geöffnet.");
-        _mainViewModel.GoToMainMenu();
+        MainViewModel.GoToMainMenu();
     }
 
     private void CreateRoomCommandMethod()
     {
-        _mainViewModel.CreateRoomVisible = true;
+        MainViewModel.CreateRoomVisible = true;
         DisableAll = false;
     }
 }

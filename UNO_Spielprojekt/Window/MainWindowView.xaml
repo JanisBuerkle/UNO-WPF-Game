@@ -12,6 +12,7 @@
         xmlns:multiplayerromms="clr-namespace:UNO_Spielprojekt.MultiplayerRooms"
         xmlns:winner="clr-namespace:UNO_Spielprojekt.Winner"
         xmlns:unoSpielprojekt="clr-namespace:UNO_Spielprojekt"
+        xmlns:multiplayerLobby="clr-namespace:UNO_Spielprojekt.MultiplayerLobby"
         mc:Ignorable="d"
         Title="UNO-Game"
         WindowStartupLocation="CenterScreen" Icon="../Assets/Logos/logo.png"
@@ -31,6 +32,9 @@
             <multiplayerromms:MultiplayerRoomsView
                 Visibility="{Binding MultiplayerRoomsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ViewModel="{Binding MultiplayerRoomsViewModel}" />
+            <multiplayerLobby:LobbyView
+                Visibility="{Binding LobbyVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                ViewModel="{Binding LobbyViewModel}" />
             <setting:SettingsView
                 Visibility="{Binding SettingsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ViewModel="{Binding SettingsViewModel}" />
