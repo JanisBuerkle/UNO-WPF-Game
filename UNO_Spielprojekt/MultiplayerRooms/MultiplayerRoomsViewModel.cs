@@ -15,6 +15,22 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     public RelayCommand CreateRoomCommand { get; }
     private readonly ILogger _logger;
 
+    private bool _disableAll;
+
+    public bool DisableAll
+    {
+        get => _disableAll;
+        set
+        {
+            if (_disableAll != value)
+            {
+                _disableAll = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+    
+    
     private Rooms _selectedRoom;
 
     public Rooms SelectedRoom
@@ -39,7 +55,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         _mainViewModel = mainViewModel;
 
         GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
-        CreateRoomCommand = new RelayCommand(ExitConfirmCommandMethod);
+        CreateRoomCommand = new RelayCommand(CreateRoomCommandMethod);
     }
 
     private void GoToMainMenuCommandMethod()
@@ -48,9 +64,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         _mainViewModel.GoToMainMenu();
     }
 
-    private void ExitConfirmCommandMethod()
+    private void CreateRoomCommandMethod()
     {
-        _mainViewModel.CreateRoomViewModel = new CreateRoomViewModel();
         _mainViewModel.CreateRoomVisible = true;
+        DisableAll = false;
     }
 }

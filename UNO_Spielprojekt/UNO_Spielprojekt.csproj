@@ -210,4 +210,10 @@
       </Page>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="MultiplayerCreateRoom\CreateRoomView.xaml.cs">
+        <DependentUpon>GiveNameView.xaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

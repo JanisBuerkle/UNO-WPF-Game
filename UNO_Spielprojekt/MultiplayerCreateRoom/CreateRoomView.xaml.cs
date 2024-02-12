@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace UNO_Spielprojekt.MultiplayerCreateRoom;
 
@@ -14,14 +15,53 @@ public partial class CreateRoomView
         set => SetValue(ViewModelProperty, value);
     }
 
-
     public CreateRoomView()
     {
         InitializeComponent();
     }
 
-    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    private void TextChanged(object sender, TextChangedEventArgs e)
     {
-        throw new System.NotImplementedException();
+        if (TextBox.Text == "" || TextBox.Text == " ")
+        {
+            ViewModel.IsEnabled = false;
+        }
+        else
+        {
+            ViewModel.IsEnabled = true;
+        }
+
+        if (ViewModel.IsChecked && PasswortBox.Text.Contains(" ") || ViewModel.IsChecked && PasswortBox.Text == "")
+        {
+            ViewModel.IsEnabled = false;
+        }
+        else
+        {
+            ViewModel.IsEnabled = true;
+        }
+    }
+
+    private void CheckBoxClicked(object sender, RoutedEventArgs e)
+    {
+        if (ViewModel.IsChecked && PasswortBox.Text.Contains(" ") || ViewModel.IsChecked && PasswortBox.Text == "")
+        {
+            ViewModel.IsEnabled = false;
+        }
+        else
+        {
+            ViewModel.IsEnabled = true;
+        }
+    }
+
+    private void PasswortBoxChanged(object sender, TextChangedEventArgs e)
+    {
+        if (ViewModel.IsChecked && PasswortBox.Text.Contains(" ") || ViewModel.IsChecked && PasswortBox.Text == "")
+        {
+            ViewModel.IsEnabled = false;
+        }
+        else
+        {
+            ViewModel.IsEnabled = true;
+        }
     }
 }

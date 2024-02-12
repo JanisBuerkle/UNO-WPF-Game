@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:UNO_Spielprojekt.MultiplayerRooms"
              xmlns:multiplayerCreateRoom="clr-namespace:UNO_Spielprojekt.MultiplayerCreateRoom"
+             xmlns:multiplayerGiveName="clr-namespace:UNO_Spielprojekt.MultiplayerGiveName"
              mc:Ignorable="d" Name="MultiplayerRooms">
     
     <UserControl.Resources>
@@ -33,19 +34,9 @@
         <!-- Home Button -->
         <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0" Style="{StaticResource HomeButtonStyle}" />
         
-        <Button Grid.Column="3" Grid.Row="2" Command="{Binding CreateRoomCommand}"/>
+        <Button Grid.Column="2" Grid.Row="2" Content="Create Room" HorizontalAlignment="Center" Command="{Binding CreateRoomCommand}" Margin="0,0,0,20"/>
         
-        <ListView Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Liste}" SelectedItem="{Binding SelectedRoom}" VerticalAlignment="Top">
-            <!-- <ListView.Resources> -->
-            <!--     <Style TargetType="ListViewItem"> -->
-            <!--         <Style.Triggers> -->
-            <!--             <Trigger Property="IsMouseOver" Value="True"> -->
-            <!--                 <Setter Property="OverridesDefaultStyle" Value="False" /> -->
-            <!--                 <Setter Property="IsSelected" Value="True"></Setter>  -->
-            <!--             </Trigger> -->
-            <!--         </Style.Triggers> -->
-            <!--     </Style> -->
-            <!-- </ListView.Resources> -->
+        <ListView IsEnabled="{Binding DisableAll}" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Liste}" SelectedItem="{Binding SelectedRoom}" VerticalAlignment="Top">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -71,19 +62,9 @@
                                 <Image Source="pack://application:,,,/Assets/Symbols/defaultuser.png"></Image>
                             </Border>
                         </StackPanel>
-
                         
                         <Button Grid.Column="3" Width="90" Height="40" Background="DarkGreen" Foreground="White" FontSize="20" FontWeight="Bold" Content="Join"/>
                     </Grid>
-                    <!-- <StackPanel Orientation="Horizontal"> -->
-                    <!--     <Border Margin="1 1 10 0" Padding="5" BorderThickness="1" BorderBrush="#404040" Background="#404040" CornerRadius="10"> -->
-                    <!--         <TextBlock Height="40" Background="#404040" Margin="8,4" Text="{Binding RoomName}"> -->
-                    <!--             <Button Width="100" Height="100" Content="{Binding MaximalUsers}"></Button> -->
-                    <!--         </TextBlock> -->
-                    <!--     </Border> -->
-                    <!-- </StackPanel> -->
-                    
-
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -92,6 +73,11 @@
         <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000" 
               Visibility="{Binding _mainViewModel.CreateRoomVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
             <multiplayerCreateRoom:CreateRoomView ViewModel="{Binding _mainViewModel.CreateRoomViewModel}" />
+        </Grid>
+        
+        <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000" 
+              Visibility="{Binding _mainViewModel.GiveNameVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
+            <multiplayerGiveName:GiveNameView ViewModel="{Binding _mainViewModel.GiveNameViewModel}" />
         </Grid>
         
     </Grid>
