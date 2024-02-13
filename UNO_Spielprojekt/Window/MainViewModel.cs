@@ -50,9 +50,9 @@ public class MainViewModel : ViewModelBase
         AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic, ThemeModes, ApiService);
 
         MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger);
-        CreateRoomViewModel = new CreateRoomViewModel(this, logger);
-        GiveNameViewModel = new GiveNameViewModel(this, logger);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
+        GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
+        CreateRoomViewModel = new CreateRoomViewModel(this, logger);
 
         MainMenuVisible = true;
     }

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using UNO_Spielprojekt.MultiplayerRooms;
 
 namespace UNO_Spielprojekt.MultiplayerGiveName;
 
@@ -30,5 +31,10 @@ public partial class GiveNameView
         {
             ViewModel.IsEnabled = true;
         }
+    }
+
+    private void SaveName(object sender, RoutedEventArgs e)
+    {
+        ViewModel.MultiplayerRoomsViewModel.SelectedRoom2.PlayerNames.Add(new MultiplayerPlayer(){Names = TextBox.Text});
     }
 }

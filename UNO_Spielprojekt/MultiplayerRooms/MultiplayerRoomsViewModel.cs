@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
+using UNO_Spielprojekt.AddPlayer;
 using UNO_Spielprojekt.MultiplayerCreateRoom;
 using UNO_Spielprojekt.Window;
 
@@ -14,7 +18,8 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     public MainViewModel MainViewModel { get; set; }
     public ObservableCollection<Rooms> Liste { get; set; } = new ObservableCollection<Rooms>();
     public RelayCommand GoToMainMenuCommand { get; }
-    public RelayCommand CreateRoomCommand { get; }
+    public RelayCommand GoToLobbyCommand { get; }
+    public RelayCommand Testtt { get; }
 
 
     private bool _disableAll;
@@ -31,10 +36,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
             }
         }
     }
-    
-    
-    private Rooms _selectedRoom;
 
+
+    private Rooms _selectedRoom;
     public Rooms SelectedRoom
     {
         get => _selectedRoom;
@@ -47,18 +51,54 @@ public class MultiplayerRoomsViewModel : ViewModelBase
             }
         }
     }
+    
+    private Rooms _selectedRoom2;
+    public Rooms SelectedRoom2
+    {
+        get => _selectedRoom2;
+        set
+        {
+            if (_selectedRoom2 != value)
+            {
+                _selectedRoom2 = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public List<Player> Test { get; set; } = new List<Player>();
 
     public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger logger)
     {
-        Liste.Add(new Rooms() { RoomName = "Room1000000000", MaximalUsers = 5, PasswordSecured = false});
+        Liste.Add(new Rooms() { RoomName = "Room1", MaximalUsers = 5, PasswordSecured = false});
         Liste.Add(new Rooms() { RoomName = "Room2", MaximalUsers = 2, PasswordSecured = false});
-        Liste.Add(new Rooms() { RoomName = "Room3", MaximalUsers = 3, PasswordSecured = true, Password = "123" });
+        Liste.Add(new Rooms() { RoomName = "Room3", MaximalUsers = 3, PasswordSecured = true, Password = "123"});
+        
         _logger = logger;
         MainViewModel = mainViewModel;
-        
+
         GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
-        CreateRoomCommand = new RelayCommand(CreateRoomCommandMethod);
+        GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);
+        Testtt = new RelayCommand(TestttCommandMethod);
     }
+
+    public void TestttCommandMethod()
+    {
+        while (true)
+        {
+            if (SelectedRoom == null)
+            {
+                Console.WriteLine("null");
+            }
+            else
+            {
+                Console.WriteLine(SelectedRoom.RoomName);
+            }
+
+            Thread.Sleep(100);
+        }
+    }
+
 
     private void GoToMainMenuCommandMethod()
     {
@@ -66,9 +106,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         MainViewModel.GoToMainMenu();
     }
 
-    private void CreateRoomCommandMethod()
+    private void GoToLobbyCommandMethod()
     {
-        MainViewModel.CreateRoomVisible = true;
-        DisableAll = false;
+        SelectedRoom2 = SelectedRoom;
+        MainViewModel.GiveNameVisible = true;
     }
 }

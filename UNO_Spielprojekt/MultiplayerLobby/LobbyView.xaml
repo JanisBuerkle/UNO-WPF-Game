@@ -5,14 +5,45 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:UNO_Spielprojekt.MultiplayerLobby"
              mc:Ignorable="d" Name="Lobby">
-    <Grid Height="1080" Width="1920" DataContext="{Binding ElementName=Lobby, Path=ViewModel}">
-        <ListView DataContext="{Binding ElementName=Lobby, Path=ViewModel.MultiplayerRoomsViewModel}"
-                  ItemsSource="{Binding SelectedRoom}">
-            <ListView.ItemTemplate>
+    
+    <Grid DataContext="{Binding ElementName=Lobby, Path=ViewModel.MultiplayerRoomsViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <!-- Home Button -->
+        <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0"
+                Style="{StaticResource HomeButtonStyle}" />
+        
+        <Label Grid.Row="0" Grid.Column="1" FontSize="35" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Content="{Binding SelectedRoom2.RoomName}" Margin="0,50,0,0"/>
+        
+        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="0,0,30,0" >
+            <TextBlock Foreground="White" FontWeight="Bold" FontSize="20" VerticalAlignment="Center" Margin="0,5,5,0" >
+                <Run>1</Run>
+                <Run>/</Run>
+                <Run Text="{Binding SelectedRoom2.MaximalUsers}"/>
+            </TextBlock>
+            <Border MaxWidth="40">
+                <Image Source="pack://application:,,,/Assets/Symbols/defaultuser.png"></Image>
+            </Border>
+        </StackPanel>
+        
+        
+        <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SelectedRoom2.PlayerNames}">
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Height="200" Width="600"  Text="{Binding PlayerNames }" VerticalAlignment="Center" FontSize="20" />
+                    <Border Margin="5" Padding="5" BorderThickness="2" Background="#2e2e2e" BorderBrush="#2e2e2e" CornerRadius="10">
+                        <TextBlock Background="#2e2e2e" TextAlignment="Center" Foreground="White" Text="{Binding Names }" FontSize="25" />
+                    </Border>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>

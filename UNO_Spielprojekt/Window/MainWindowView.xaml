@@ -20,11 +20,14 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         WindowStyle="None"
         Name="Control">
+
     <Window.Resources>
         <window:MainViewModel x:Key="MainViewModel" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        
     </Window.Resources>
-    <Border DataContext="{StaticResource MainViewModel}" Background="{Binding ThemeModes.Background}" BorderThickness="0" CornerRadius="20">
+    <Border DataContext="{StaticResource MainViewModel}" Background="{Binding ThemeModes.Background}"
+            BorderThickness="0" CornerRadius="20">
         <Grid>
             <mainMenu:MainMenuView
                 Visibility="{Binding MainMenuVisible, Converter={StaticResource BooleanToVisibilityConverter}}"

@@ -7,7 +7,6 @@
              xmlns:multiplayerCreateRoom="clr-namespace:UNO_Spielprojekt.MultiplayerCreateRoom"
              xmlns:multiplayerGiveName="clr-namespace:UNO_Spielprojekt.MultiplayerGiveName"
              mc:Ignorable="d" Name="MultiplayerRooms">
-    
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -18,7 +17,7 @@
     </UserControl.Resources>
     
     <Grid DataContext="{Binding ElementName=MultiplayerRooms, Path=ViewModel}">
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -30,13 +29,27 @@
             <ColumnDefinition Width="9*" />
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        
+
         <!-- Home Button -->
-        <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0" Style="{StaticResource HomeButtonStyle}" />
-        
-        <Button Grid.Column="2" Grid.Row="2" Content="Create Room" HorizontalAlignment="Center" Command="{Binding CreateRoomCommand}" Margin="0,0,0,20"/>
-        
-        <ListView IsEnabled="{Binding DisableAll}" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Liste}" SelectedItem="{Binding SelectedRoom}" VerticalAlignment="Top">
+        <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0"
+                Style="{StaticResource HomeButtonStyle}" />
+
+        <Button Grid.Column="2" Grid.Row="2" Content="Create Room" HorizontalAlignment="Center"
+                Command="{Binding GoToLobbyCommand}" Margin="0,0,0,20" />
+
+        <ListView IsEnabled="{Binding DisableAll}" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Liste}"
+                  SelectedItem="{Binding SelectedRoom}" VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch">
+            <ListView.Resources>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="IsSelected" Value="True"/> 
+                            
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Resources>
+
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -46,39 +59,44 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        
-                        <Border Grid.Column="0" MaxWidth="40" Visibility="{Binding PasswordSecured, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                        <Border Grid.Column="0" HorizontalAlignment="Left" MaxWidth="40"
+                                Visibility="{Binding PasswordSecured, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Image Source="pack://application:,,,/Assets/Symbols/schloss.png"></Image>
                         </Border>
-                        
-                        <TextBlock Grid.Column="1" Text="{Binding RoomName}" VerticalAlignment="Center" FontSize="20"/>
+
+                        <TextBlock Grid.Column="1" Text="{Binding RoomName}" VerticalAlignment="Center" FontSize="20" />
                         <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,30,0">
-                            <TextBlock Foreground="White" FontWeight="Bold" FontSize="20" VerticalAlignment="Center" Margin="0,5,5,0" >
+                            <TextBlock Foreground="White" FontWeight="Bold" FontSize="20" HorizontalAlignment="Right"
+                                       VerticalAlignment="Center" Margin="0,5,5,0">
                                 <Run>1</Run>
                                 <Run>/</Run>
-                                <Run Text="{Binding MaximalUsers}"/>
+                                <Run Text="{Binding MaximalUsers}" />
                             </TextBlock>
                             <Border MaxWidth="40">
                                 <Image Source="pack://application:,,,/Assets/Symbols/defaultuser.png"></Image>
                             </Border>
                         </StackPanel>
-                        
-                        <Button Grid.Column="3" Width="90" Height="40" Background="DarkGreen" Foreground="White" FontSize="20" FontWeight="Bold" Content="Join" DataContext="{Binding ElementName=MultiplayerRooms, Path=ViewModel}" Command="{Binding CreateRoomCommand }"/>
+
+                        <Button Grid.Column="3" Width="90" Height="40" HorizontalAlignment="Right"
+                                Background="DarkGreen" Foreground="White" FontSize="20" FontWeight="Bold"
+                                Content="Join" DataContext="{Binding ElementName=MultiplayerRooms, Path=ViewModel}"
+                                Command="{Binding GoToLobbyCommand }" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        
-        
-        <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000" 
+
+
+        <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000"
               Visibility="{Binding MainViewModel.CreateRoomVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
             <multiplayerCreateRoom:CreateRoomView ViewModel="{Binding MainViewModel.CreateRoomViewModel}" />
         </Grid>
-        
-        <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000" 
+
+        <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000"
               Visibility="{Binding MainViewModel.GiveNameVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
             <multiplayerGiveName:GiveNameView ViewModel="{Binding MainViewModel.GiveNameViewModel}" />
         </Grid>
-        
+
     </Grid>
 </UserControl>

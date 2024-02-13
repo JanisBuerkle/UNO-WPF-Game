@@ -10,5 +10,5 @@ public class Rooms
     public int MaximalUsers { get; set;}
     public bool PasswordSecured { get; set;}
     public string Password { get; set;}
-    public List<Player> PlayerNames { get; set; } = new List<Player>();
+    public List<MultiplayerPlayer> PlayerNames { get; set; } = new List<MultiplayerPlayer>();
 }
