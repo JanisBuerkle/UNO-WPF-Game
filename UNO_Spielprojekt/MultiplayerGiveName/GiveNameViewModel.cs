@@ -14,7 +14,7 @@ public class GiveNameViewModel : ViewModelBase
     public RelayCommand CloseGiveNameCommand { get; }
     public RelayCommand GoToLobbyCommand { get; }
 
-    public string PlayerName { get; set; }
+
     
     private bool _isEnabled;
     public bool IsEnabled
@@ -42,11 +42,12 @@ public class GiveNameViewModel : ViewModelBase
     private void CloseGiveNameCommandMethod()
     {
         MainViewModel.GiveNameVisible = false;
-        MainViewModel.MultiplayerRoomsViewModel.DisableAll = true;
+        MultiplayerRoomsViewModel.DisableAll = true;
     }
 
     private void GoToLobbyCommandMethod()
     {
         MainViewModel.GoToLobby();
+        MultiplayerRoomsViewModel.SelectedRoom2.OnlineUsers += 1;
     }
 }

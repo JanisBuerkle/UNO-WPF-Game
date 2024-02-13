@@ -35,6 +35,7 @@ public partial class GiveNameView
 
     private void SaveName(object sender, RoutedEventArgs e)
     {
+        ViewModel.MultiplayerRoomsViewModel.PlayerName = TextBox.Text;
         ViewModel.MultiplayerRoomsViewModel.SelectedRoom2.PlayerNames.Add(new MultiplayerPlayer(){Names = TextBox.Text});
     }
 }

@@ -26,7 +26,7 @@
         
         <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="0,0,30,0" >
             <TextBlock Foreground="White" FontWeight="Bold" FontSize="20" VerticalAlignment="Center" Margin="0,5,5,0" >
-                <Run>1</Run>
+                <Run Text="{Binding SelectedRoom2.OnlineUsers}"/>
                 <Run>/</Run>
                 <Run Text="{Binding SelectedRoom2.MaximalUsers}"/>
             </TextBlock>

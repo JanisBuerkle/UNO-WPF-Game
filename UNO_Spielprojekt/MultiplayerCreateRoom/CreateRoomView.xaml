@@ -32,18 +32,18 @@
             <Button Command="{Binding CloseCreateRoomCommand}" Grid.Row="0" Grid.Column="5" VerticalAlignment="Top" BorderBrush="Transparent" Background="Transparent" Foreground="Red">x</Button>
 
             <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="4">
-                <ui:TextBox Name="TextBox" PlaceholderText="Raumname eingeben..." TextChanged="TextChanged" MaxLength="16"/>
+                <ui:TextBox Name="Raumname" PlaceholderText="Raumname eingeben..." TextChanged="TextChanged" MaxLength="16"/>
 
                 <TextBlock HorizontalAlignment="Center" Foreground="White"
                            FontSize="8" FontWeight="Bold" Text="maximal 16 Zeichen" />
                 
-                <CheckBox Click="CheckBoxClicked" IsChecked="{Binding IsChecked}"
+                <CheckBox x:Name="CheckBox" Click="CheckBoxClicked" IsChecked="{Binding IsChecked}"
                           Content="Passwort geschützter Raum" />
 
-                <ui:TextBox Name="PasswortBox" TextChanged="PasswortBoxChanged" IsEnabled="{Binding IsChecked}"
+                <ui:TextBox x:Name="PasswortBox" TextChanged="PasswortBoxChanged" IsEnabled="{Binding IsChecked}"
                             PlaceholderText="Raumpasswort eingeben..."/>
                 <Button HorizontalAlignment="Center" Content="Weiter" Margin="0,20,0,0"
-                        Command="{Binding GiveNameCommand}" IsEnabled="{Binding IsEnabled}"/>
+                        Command="{Binding GoToGiveNameCommand}" Click="CreateRoom" IsEnabled="{Binding IsEnabled}"/>
             </StackPanel>
         </Grid>
     </Border>

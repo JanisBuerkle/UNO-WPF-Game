@@ -5,6 +5,7 @@ using UNO_Spielprojekt.MainMenu;
 using UNO_Spielprojekt.MultiplayerCreateRoom;
 using UNO_Spielprojekt.MultiplayerGiveName;
 using UNO_Spielprojekt.MultiplayerLobby;
+using UNO_Spielprojekt.MultiplayerPassword;
 using UNO_Spielprojekt.MultiplayerRooms;
 using UNO_Spielprojekt.Rules;
 using UNO_Spielprojekt.Scoreboard;
@@ -18,6 +19,7 @@ public class MainViewModel : ViewModelBase
 {
     public ThemeModes ThemeModes { get; }
     public CreateRoomViewModel CreateRoomViewModel { get; set; }
+    public PasswordViewModel PasswordViewModel { get; set; }
     public GiveNameViewModel GiveNameViewModel { get; set; }
     public GameData GameData { get; set; }
     private ApiService ApiService { get; set; }
@@ -43,7 +45,8 @@ public class MainViewModel : ViewModelBase
         WinnerViewModel = new WinnerViewModel(this, ThemeModes);
         GameLogic = new GameLogic(PlayViewModel, logger, ApiService);
         ScoreboardViewModel = new ScoreboardViewModel(this, logger, ThemeModes);
-        GameViewModel = new GameViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel, ThemeModes);
+        GameViewModel = new GameViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel,
+            ThemeModes);
         RulesViewModel = new RulesViewModel(this, logger, ThemeModes);
         GameData = new GameData(ScoreboardViewModel, GameViewModel);
         MainMenuViewModel = new MainMenuViewModel(this, logger, GameData, ThemeModes);
@@ -52,7 +55,8 @@ public class MainViewModel : ViewModelBase
         MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
-        CreateRoomViewModel = new CreateRoomViewModel(this, logger);
+        CreateRoomViewModel = new CreateRoomViewModel(this, logger, MultiplayerRoomsViewModel);
+        PasswordViewModel = new PasswordViewModel(this, logger, MultiplayerRoomsViewModel);
 
         MainMenuVisible = true;
     }
@@ -64,9 +68,10 @@ public class MainViewModel : ViewModelBase
     private bool _mainMenuVisible;
     private bool _addPlayerVisible;
     private bool _scoreboardVisible;
-    
+
     private bool _multiplayerRoomsVisible;
     private bool _createRoomVisible;
+    private bool _passwordVisible;
     private bool _giveNameVisible;
     private bool _lobbyVisible;
     private readonly GameLogic GameLogic;
@@ -172,6 +177,17 @@ public class MainViewModel : ViewModelBase
         }
     }
 
+    public bool PasswordVisible
+    {
+        get => _passwordVisible;
+        set
+        {
+            if (value == _passwordVisible) return;
+            _passwordVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
     public bool GiveNameVisible
     {
         get => _giveNameVisible;
@@ -182,7 +198,7 @@ public class MainViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
-    
+
     public bool LobbyVisible
     {
         get => _lobbyVisible;
@@ -202,6 +218,7 @@ public class MainViewModel : ViewModelBase
         LobbyVisible = false;
         WinnerVisible = false;
         SettingsVisible = false;
+        PasswordVisible = false;
         GiveNameVisible = false;
         AddPlayerVisible = false;
         ScoreboardVisible = false;
@@ -218,6 +235,7 @@ public class MainViewModel : ViewModelBase
         WinnerVisible = false;
         MainMenuVisible = false;
         SettingsVisible = false;
+        PasswordVisible = false;
         GiveNameVisible = false;
         ScoreboardVisible = false;
         CreateRoomVisible = false;
@@ -232,6 +250,7 @@ public class MainViewModel : ViewModelBase
         LobbyVisible = false;
         WinnerVisible = false;
         MainMenuVisible = false;
+        PasswordVisible = false;
         GiveNameVisible = false;
         AddPlayerVisible = false;
         ScoreboardVisible = false;
@@ -247,6 +266,7 @@ public class MainViewModel : ViewModelBase
         WinnerVisible = false;
         MainMenuVisible = false;
         SettingsVisible = false;
+        PasswordVisible = false;
         GiveNameVisible = false;
         AddPlayerVisible = false;
         ScoreboardVisible = false;
@@ -264,6 +284,7 @@ public class MainViewModel : ViewModelBase
         MainMenuVisible = false;
         GiveNameVisible = false;
         SettingsVisible = false;
+        PasswordVisible = false;
         AddPlayerVisible = false;
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
@@ -278,6 +299,7 @@ public class MainViewModel : ViewModelBase
         WinnerVisible = false;
         MainMenuVisible = false;
         SettingsVisible = false;
+        PasswordVisible = false;
         GiveNameVisible = false;
         AddPlayerVisible = false;
         ScoreboardVisible = false;
@@ -292,6 +314,7 @@ public class MainViewModel : ViewModelBase
         RulesVisible = false;
         LobbyVisible = false;
         SettingsVisible = false;
+        PasswordVisible = false;
         MainMenuVisible = false;
         GiveNameVisible = false;
         AddPlayerVisible = false;
@@ -308,6 +331,7 @@ public class MainViewModel : ViewModelBase
         LobbyVisible = false;
         WinnerVisible = false;
         SettingsVisible = false;
+        PasswordVisible = false;
         MainMenuVisible = false;
         GiveNameVisible = false;
         AddPlayerVisible = false;
@@ -315,7 +339,7 @@ public class MainViewModel : ViewModelBase
         CreateRoomVisible = false;
         MultiplayerRoomsViewModel.DisableAll = true;
     }
-    
+
     public void GoToLobby()
     {
         LobbyVisible = true;
@@ -323,6 +347,7 @@ public class MainViewModel : ViewModelBase
         RulesVisible = false;
         WinnerVisible = false;
         SettingsVisible = false;
+        PasswordVisible = false;
         MainMenuVisible = false;
         GiveNameVisible = false;
         AddPlayerVisible = false;

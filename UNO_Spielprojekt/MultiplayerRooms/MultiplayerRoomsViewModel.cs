@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
@@ -16,9 +17,10 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 {
     private readonly ILogger _logger;
     public MainViewModel MainViewModel { get; set; }
-    public ObservableCollection<Rooms> Liste { get; set; } = new ObservableCollection<Rooms>();
+    public ObservableCollection<Rooms> RoomList { get; set; } = new ObservableCollection<Rooms>();
     public RelayCommand GoToMainMenuCommand { get; }
     public RelayCommand GoToLobbyCommand { get; }
+    public RelayCommand CreateRoomCommand { get; }
     public RelayCommand Testtt { get; }
 
 
@@ -37,8 +39,10 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
     }
 
+    public string PlayerName { get; set; }
 
     private Rooms _selectedRoom;
+
     public Rooms SelectedRoom
     {
         get => _selectedRoom;
@@ -51,8 +55,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
             }
         }
     }
-    
+
     private Rooms _selectedRoom2;
+
     public Rooms SelectedRoom2
     {
         get => _selectedRoom2;
@@ -70,15 +75,14 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger logger)
     {
-        Liste.Add(new Rooms() { RoomName = "Room1", MaximalUsers = 5, PasswordSecured = false});
-        Liste.Add(new Rooms() { RoomName = "Room2", MaximalUsers = 2, PasswordSecured = false});
-        Liste.Add(new Rooms() { RoomName = "Room3", MaximalUsers = 3, PasswordSecured = true, Password = "123"});
-        
+        RoomList.Add(new Rooms() { RoomName = "Room1", MaximalUsers = 5, PasswordSecured = true, OnlineUsers = 0, Password = "123"});
+
         _logger = logger;
         MainViewModel = mainViewModel;
 
         GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
         GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);
+        CreateRoomCommand = new RelayCommand(CreateRoomCommandMethod);
         Testtt = new RelayCommand(TestttCommandMethod);
     }
 
@@ -102,13 +106,44 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     private void GoToMainMenuCommandMethod()
     {
+        int index = 0;
+        bool removeornot = false;
+        foreach (var player in SelectedRoom2.PlayerNames)
+        {
+            if (player.Names == PlayerName)
+            {
+                index = SelectedRoom2.PlayerNames.IndexOf(player);
+                removeornot = true;
+            }
+        }
+
+        if (removeornot)
+        {
+            SelectedRoom2.PlayerNames.RemoveAt(index);
+            removeornot = false;
+        }
+
+        SelectedRoom2.OnlineUsers -= 1;
         _logger.Info("MainMenu wurde geöffnet.");
         MainViewModel.GoToMainMenu();
     }
-
+    
     private void GoToLobbyCommandMethod()
     {
         SelectedRoom2 = SelectedRoom;
-        MainViewModel.GiveNameVisible = true;
+        if (SelectedRoom2.PasswordSecured)
+        {
+            MainViewModel.PasswordVisible = true;
+        }
+        else
+        {
+            MainViewModel.GiveNameVisible = true;
+        }
+    }
+    private void CreateRoomCommandMethod()
+    {
+        SelectedRoom2 = SelectedRoom;
+
+        MainViewModel.CreateRoomVisible = true;
     }
 }

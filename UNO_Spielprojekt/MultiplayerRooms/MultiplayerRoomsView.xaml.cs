@@ -10,7 +10,6 @@ public partial class MultiplayerRoomsView : UserControl
     public MultiplayerRoomsView()
     {
         InitializeComponent();
-        
     }
 
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(

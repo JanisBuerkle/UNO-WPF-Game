@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:UNO_Spielprojekt.MultiplayerRooms"
              xmlns:multiplayerCreateRoom="clr-namespace:UNO_Spielprojekt.MultiplayerCreateRoom"
              xmlns:multiplayerGiveName="clr-namespace:UNO_Spielprojekt.MultiplayerGiveName"
+             xmlns:multiplayerPassword="clr-namespace:UNO_Spielprojekt.MultiplayerPassword"
              mc:Ignorable="d" Name="MultiplayerRooms">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -15,7 +16,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid DataContext="{Binding ElementName=MultiplayerRooms, Path=ViewModel}">
 
         <Grid.RowDefinitions>
@@ -35,16 +36,16 @@
                 Style="{StaticResource HomeButtonStyle}" />
 
         <Button Grid.Column="2" Grid.Row="2" Content="Create Room" HorizontalAlignment="Center"
-                Command="{Binding GoToLobbyCommand}" Margin="0,0,0,20" />
+                Command="{Binding CreateRoomCommand}" Margin="0,0,0,20" />
 
-        <ListView IsEnabled="{Binding DisableAll}" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Liste}"
-                  SelectedItem="{Binding SelectedRoom}" VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch">
+        <ListView IsEnabled="{Binding DisableAll}" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding RoomList}"
+                  SelectedItem="{Binding SelectedRoom}" VerticalContentAlignment="Top"
+                  HorizontalContentAlignment="Stretch">
             <ListView.Resources>
                 <Style TargetType="ListViewItem">
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="IsSelected" Value="True"/> 
-                            
+                            <Setter Property="IsSelected" Value="True" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -65,11 +66,11 @@
                             <Image Source="pack://application:,,,/Assets/Symbols/schloss.png"></Image>
                         </Border>
 
-                        <TextBlock Grid.Column="1" Text="{Binding RoomName}" VerticalAlignment="Center" FontSize="20" />
+                        <TextBlock Grid.Column="1" Foreground="White" Text="{Binding RoomName}" VerticalAlignment="Center" FontSize="20" />
                         <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,30,0">
                             <TextBlock Foreground="White" FontWeight="Bold" FontSize="20" HorizontalAlignment="Right"
                                        VerticalAlignment="Center" Margin="0,5,5,0">
-                                <Run>1</Run>
+                                <Run Text="{Binding OnlineUsers}" />
                                 <Run>/</Run>
                                 <Run Text="{Binding MaximalUsers}" />
                             </TextBlock>
@@ -96,6 +97,11 @@
         <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000"
               Visibility="{Binding MainViewModel.GiveNameVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
             <multiplayerGiveName:GiveNameView ViewModel="{Binding MainViewModel.GiveNameViewModel}" />
+        </Grid>
+        
+        <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000"
+              Visibility="{Binding MainViewModel.PasswordVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
+            <multiplayerPassword:PasswordView ViewModel="{Binding MainViewModel.PasswordViewModel}" />
         </Grid>
 
     </Grid>

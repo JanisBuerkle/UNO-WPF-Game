@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using UNO_Spielprojekt.MultiplayerRooms;
 
 namespace UNO_Spielprojekt.MultiplayerCreateRoom;
 
@@ -22,7 +24,7 @@ public partial class CreateRoomView
 
     private void TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (TextBox.Text == "" || TextBox.Text == " ")
+        if (Raumname.Text == "" || Raumname.Text == " ")
         {
             ViewModel.IsEnabled = false;
         }
@@ -63,5 +65,12 @@ public partial class CreateRoomView
         {
             ViewModel.IsEnabled = true;
         }
+    }
+
+    private void CreateRoom(object sender, RoutedEventArgs e)
+    {
+
+        ViewModel.MultiplayerRoomsViewModel.RoomList.Add(new Rooms() {RoomName = Raumname.Text, PasswordSecured = ViewModel.IsChecked, Password = PasswortBox.Text , MaximalUsers = 5}); 
+        ViewModel.MultiplayerRoomsViewModel.SelectedRoom2 = ViewModel.MultiplayerRoomsViewModel.RoomList.Last();
     }
 }
