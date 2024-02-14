@@ -33,6 +33,7 @@ public class MainViewModel : ViewModelBase
     public MainMenuViewModel MainMenuViewModel { get; set; }
     public AddPlayerViewModel AddPlayerViewModel { get; set; }
 
+
     public MainViewModel()
     {
         var loggerFactory = new SerilogLoggerFactory();
@@ -52,12 +53,11 @@ public class MainViewModel : ViewModelBase
         MainMenuViewModel = new MainMenuViewModel(this, logger, GameData, ThemeModes);
         AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic, ThemeModes, ApiService);
 
-        MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger);
+        MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger, ApiService);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
-        CreateRoomViewModel = new CreateRoomViewModel(this, logger, MultiplayerRoomsViewModel);
+        CreateRoomViewModel = new CreateRoomViewModel(this, logger, MultiplayerRoomsViewModel, ApiService);
         PasswordViewModel = new PasswordViewModel(this, logger, MultiplayerRoomsViewModel);
-
         MainMenuVisible = true;
     }
 

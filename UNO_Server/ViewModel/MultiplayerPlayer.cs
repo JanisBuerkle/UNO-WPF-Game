@@ -1,4 +1,4 @@
-﻿namespace UNO_Spielprojekt.MultiplayerRooms;
+﻿namespace UNO_Server.ViewModel;
 
 public class MultiplayerPlayer
 {

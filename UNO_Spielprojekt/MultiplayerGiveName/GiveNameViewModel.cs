@@ -48,6 +48,6 @@ public class GiveNameViewModel : ViewModelBase
     private void GoToLobbyCommandMethod()
     {
         MainViewModel.GoToLobby();
-        MultiplayerRoomsViewModel.SelectedRoom2.OnlineUsers += 1;
+        MultiplayerRoomsViewModel.UpdateOnlinePlayer(true);
     }
 }

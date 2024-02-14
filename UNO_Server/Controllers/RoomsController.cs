@@ -11,35 +11,37 @@ namespace UNO_Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayersController : ControllerBase
+    public class RoomsController : ControllerBase
     {
-        private readonly PlayerContext _context;
+        private readonly RoomContext _context;
 
-        public PlayersController(PlayerContext context)
+        public RoomsController(RoomContext context)
         {
             _context = context;
         }
 
         // GET: api/API
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PlayerItem>>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<RoomItem>>> GetTodoItems()
         {
-          if (_context.TodoItems == null)
-          {
-              return NotFound();
-          }
-          return await _context.TodoItems.Include(item => item.Hand).ToListAsync();
+            if (_context.RoomItems == null)
+            {
+                return NotFound();
+            }
+            
+            return await _context.RoomItems.Include(item => item.PlayerNames).ToListAsync();
         }
 
         // GET: api/API/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<PlayerItem>> GetTodoItem(long id)
+        public async Task<ActionResult<RoomItem>> GetTodoItem(long id)
         {
-          if (_context.TodoItems == null)
-          {
-              return NotFound();
-          }
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            if (_context.RoomItems == null)
+            {
+                return NotFound();
+            }
+
+            var todoItem = await _context.RoomItems.FindAsync(id);
 
             if (todoItem == null)
             {
@@ -52,14 +54,29 @@ namespace UNO_Server.Controllers
         // PUT: api/API/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, PlayerItem playerItem)
+        public async Task<IActionResult> PutTodoItem(long id, RoomItem roomItem)
         {
-            if (id != playerItem.Id)
+            if (id != roomItem.Id)
             {
                 return BadRequest();
             }
+            
+            foreach (var player in roomItem.PlayerNames)
+            {
+                var existingPlayer = _context.Players.Find(player.Id);
+                if (existingPlayer != null)
+                {        // Update existing player
+                    _context.Entry(existingPlayer).CurrentValues.SetValues(roomItem);
+                    _context.Entry(existingPlayer).State = EntityState.Modified;
+                }
+                else
+                {
+                    // Add new player
+                    _context.Players.Add(player);
+                }
+            }
 
-            _context.Entry(playerItem).State = EntityState.Modified;
+            _context.Entry(roomItem).State = EntityState.Modified;
 
             try
             {
@@ -83,26 +100,26 @@ namespace UNO_Server.Controllers
         // POST: api/API
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PlayerItem>> PostTodoItem(PlayerItem playerItem)
+        public async Task<ActionResult<RoomItem>> PostTodoItem(RoomItem roomItem)
         {
-            _context.TodoItems.Add(playerItem);
+            _context.RoomItems.Add(roomItem);
             await _context.SaveChangesAsync();
 
             //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
-            return CreatedAtAction(nameof(GetTodoItem), new { id = playerItem.Id }, playerItem);
+            return CreatedAtAction(nameof(GetTodoItem), new { id = roomItem.Id }, roomItem);
         }
 
         // DELETE: api/API/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTodoItem(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var todoItem = await _context.RoomItems.FindAsync(id);
             if (todoItem == null)
             {
                 return NotFound();
             }
 
-            _context.TodoItems.Remove(todoItem);
+            _context.RoomItems.Remove(todoItem);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -110,7 +127,7 @@ namespace UNO_Server.Controllers
 
         private bool TodoItemExists(long id)
         {
-            return (_context.TodoItems?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.RoomItems?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

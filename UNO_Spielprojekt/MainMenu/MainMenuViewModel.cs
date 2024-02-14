@@ -40,6 +40,7 @@ public class MainMenuViewModel : ViewModelBase
     {
         logger.Info("MultiplayerRooms Seite wurde geöffnet.");
         _mainViewModel.GoToMultiplayerRooms();
+        _mainViewModel.MultiplayerRoomsViewModel.GetRoom();
     }
 
     private void GoToScoreboardCommandMethod()

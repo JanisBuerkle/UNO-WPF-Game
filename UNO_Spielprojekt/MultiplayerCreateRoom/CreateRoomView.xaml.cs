@@ -67,10 +67,24 @@ public partial class CreateRoomView
         }
     }
 
-    private void CreateRoom(object sender, RoutedEventArgs e)
+    private async void CreateRoom(object sender, RoutedEventArgs e)
     {
-
-        ViewModel.MultiplayerRoomsViewModel.RoomList.Add(new Rooms() {RoomName = Raumname.Text, PasswordSecured = ViewModel.IsChecked, Password = PasswortBox.Text , MaximalUsers = 5}); 
+        var room = new Rooms()
+        {
+            RoomName = Raumname.Text,
+            PasswordSecured = ViewModel.IsChecked,
+            Password = PasswortBox.Text,
+            MaximalUsers = 5
+        };
+        await ViewModel._apiService.PostRoomAsync(room);
+        
+        ViewModel.MultiplayerRoomsViewModel.RoomList.Add(new Rooms()
+        {
+            RoomName = Raumname.Text,
+            PasswordSecured = ViewModel.IsChecked,
+            Password = PasswortBox.Text,
+            MaximalUsers = 5
+        });
         ViewModel.MultiplayerRoomsViewModel.SelectedRoom2 = ViewModel.MultiplayerRoomsViewModel.RoomList.Last();
     }
 }
