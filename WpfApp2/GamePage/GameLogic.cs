@@ -315,7 +315,7 @@ public class GameLogic
             Hand = Players[numb].Hand,
             Uno = false
         };
-        await _apiService.PostPlayerAsync(player, "Players");
+        // await _apiService.PostPlayerAsync(player, "Players");
     }
     
     public void PlaceFirstCardInCenter()

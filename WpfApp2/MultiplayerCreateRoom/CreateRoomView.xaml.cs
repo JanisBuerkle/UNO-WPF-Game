@@ -76,8 +76,7 @@ public partial class CreateRoomView
             Password = PasswortBox.Text,
             MaximalUsers = 5
         };
-        await ViewModel._apiService.PostRoomAsync(room);
-        
+        //
         ViewModel.MultiplayerRoomsViewModel.RoomList.Add(new Rooms()
         {
             RoomName = Raumname.Text,
@@ -86,5 +85,6 @@ public partial class CreateRoomView
             MaximalUsers = 5
         });
         ViewModel.MultiplayerRoomsViewModel.SelectedRoom2 = ViewModel.MultiplayerRoomsViewModel.RoomList.Last();
+        await ViewModel._apiService.PostRoomAsync(room);
     }
 }

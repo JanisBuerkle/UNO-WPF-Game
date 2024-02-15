@@ -44,32 +44,6 @@ namespace WpfApp2.Service
                 // Handle exceptions (e.g., log the exception).
             }
         }
-        
-        public async Task PostPlayerAsync(Player player, string list)
-        {
-            try
-            {
-                var json = JsonSerializer.Serialize(player);
-                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync($"http://localhost:5221/api/{list}", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    // Process the successful response if needed.
-                }
-                else
-                {
-                    // Handle non-successful response (e.g., log the error).
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (e.g., log the exception).
-            }
-        }
-
         public void Dispose()
         {
             _httpClient.Dispose();
