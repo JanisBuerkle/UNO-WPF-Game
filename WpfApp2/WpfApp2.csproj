@@ -1,0 +1,199 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Page Update="AddPlayer\AddPlayerView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="ChooseColor\ChooseColorView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="ExitConfirm\ExitConfirmWindow.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="GamePage\GameView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="MainMenu\MainMenuView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="MultiplayerCreateRoom\CreateRoomView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="MultiplayerGiveName\GiveNameView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="MultiplayerLobby\LobbyView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="MultiplayerPassword\PasswordView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="MultiplayerRooms\MultiplayerRoomsView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Rules\RulesView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Scoreboard\ScoreboardView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Setting\SettingsView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Styles\Styles.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Window\MainWindowView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Winner\WinnerView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Assets\background.jpg" />
+      <Resource Include="Assets\cards\+2\blue.png" />
+      <Resource Include="Assets\cards\+2\green.png" />
+      <Resource Include="Assets\cards\+2\red.png" />
+      <Resource Include="Assets\cards\+2\yellow.png" />
+      <Resource Include="Assets\cards\+4\blue.png" />
+      <Resource Include="Assets\cards\+4\draw.png" />
+      <Resource Include="Assets\cards\+4\green.png" />
+      <Resource Include="Assets\cards\+4\red.png" />
+      <Resource Include="Assets\cards\+4\yellow.png" />
+      <Resource Include="Assets\cards\0\blue.png" />
+      <Resource Include="Assets\cards\0\green.png" />
+      <Resource Include="Assets\cards\0\red.png" />
+      <Resource Include="Assets\cards\0\yellow.png" />
+      <Resource Include="Assets\cards\1\blue.png" />
+      <Resource Include="Assets\cards\1\green.png" />
+      <Resource Include="Assets\cards\1\red.png" />
+      <Resource Include="Assets\cards\1\yellow.png" />
+      <Resource Include="Assets\cards\2\blue.png" />
+      <Resource Include="Assets\cards\2\green.png" />
+      <Resource Include="Assets\cards\2\red.png" />
+      <Resource Include="Assets\cards\2\yellow.png" />
+      <Resource Include="Assets\cards\3\blue.png" />
+      <Resource Include="Assets\cards\3\green.png" />
+      <Resource Include="Assets\cards\3\red.png" />
+      <Resource Include="Assets\cards\3\yellow.png" />
+      <Resource Include="Assets\cards\4\blue.png" />
+      <Resource Include="Assets\cards\4\green.png" />
+      <Resource Include="Assets\cards\4\red.png" />
+      <Resource Include="Assets\cards\4\yellow.png" />
+      <Resource Include="Assets\cards\5\blue.png" />
+      <Resource Include="Assets\cards\5\green.png" />
+      <Resource Include="Assets\cards\5\red.png" />
+      <Resource Include="Assets\cards\5\yellow.png" />
+      <Resource Include="Assets\cards\6\blue.png" />
+      <Resource Include="Assets\cards\6\green.png" />
+      <Resource Include="Assets\cards\6\red.png" />
+      <Resource Include="Assets\cards\6\yellow.png" />
+      <Resource Include="Assets\cards\7\blue.png" />
+      <Resource Include="Assets\cards\7\green.png" />
+      <Resource Include="Assets\cards\7\red.png" />
+      <Resource Include="Assets\cards\7\yellow.png" />
+      <Resource Include="Assets\cards\8\blue.png" />
+      <Resource Include="Assets\cards\8\green.png" />
+      <Resource Include="Assets\cards\8\red.png" />
+      <Resource Include="Assets\cards\8\yellow.png" />
+      <Resource Include="Assets\cards\9\blue.png" />
+      <Resource Include="Assets\cards\9\green.png" />
+      <Resource Include="Assets\cards\9\red.png" />
+      <Resource Include="Assets\cards\9\yellow.png" />
+      <Resource Include="Assets\cards\Blue 7.png" />
+      <Resource Include="Assets\cards\card_back.png" />
+      <Resource Include="Assets\cards\reverse\blue.png" />
+      <Resource Include="Assets\cards\reverse\green.png" />
+      <Resource Include="Assets\cards\reverse\red.png" />
+      <Resource Include="Assets\cards\reverse\yellow.png" />
+      <Resource Include="Assets\cards\skip\blue.png" />
+      <Resource Include="Assets\cards\skip\green.png" />
+      <Resource Include="Assets\cards\skip\red.png" />
+      <Resource Include="Assets\cards\skip\yellow.png" />
+      <Resource Include="Assets\cards\wild\blue.png" />
+      <Resource Include="Assets\cards\wild\green.png" />
+      <Resource Include="Assets\cards\wild\red.png" />
+      <Resource Include="Assets\cards\wild\wild.png" />
+      <Resource Include="Assets\cards\wild\yellow.png" />
+      <Resource Include="Assets\Languages\english.png" />
+      <Resource Include="Assets\Languages\germany.png" />
+      <Resource Include="Assets\Logos\logo-144.png" />
+      <Resource Include="Assets\Logos\logo-192.png" />
+      <Resource Include="Assets\Logos\logo-320.png" />
+      <Resource Include="Assets\Logos\logo-512.png" />
+      <Resource Include="Assets\Logos\logo.png" />
+      <Resource Include="Assets\Logos\uno_icon.png" />
+      <Resource Include="Assets\Symbols\defaultuser.png" />
+      <Resource Include="Assets\Symbols\fullscreen.png" />
+      <Resource Include="Assets\Symbols\home_black.png" />
+      <Resource Include="Assets\Symbols\home_white.png" />
+      <Resource Include="Assets\Symbols\minus.png" />
+      <Resource Include="Assets\Symbols\plus.png" />
+      <Resource Include="Assets\Symbols\schloss.png" />
+      <Resource Include="Assets\Symbols\schloss_offen.png" />
+      <Resource Include="Assets\Symbols\settings_black.png" />
+      <Resource Include="Assets\Symbols\settings_white.png" />
+      <Resource Include="Assets\Symbols\windowed.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ApplicationDefinition Include="Window\App.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </ApplicationDefinition>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="Serilog" Version="3.1.1" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+      <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+      <PackageReference Include="tt.Tools" Version="1.31.0" />
+      <PackageReference Include="WPF-UI-Enhanced" Version="10.0.0" />
+    </ItemGroup>
+
+</Project>
