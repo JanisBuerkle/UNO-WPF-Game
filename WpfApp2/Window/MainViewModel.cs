@@ -38,7 +38,7 @@ public class MainViewModel : ViewModelBase
         var loggerFactory = new SerilogLoggerFactory();
         var logger = loggerFactory.CreateLogger("Uno-Spielprojekt");
 
-        ApiService = new ApiService();
+        ApiService = new ApiService(this);
         ThemeModes = new ThemeModes();
         SettingsViewModel = new SettingsViewModel(this, logger, ThemeModes);
         PlayViewModel = new PlayViewModel();

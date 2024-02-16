@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using WpfApp2.AddPlayer;
+using Newtonsoft.Json;
 using WpfApp2.MultiplayerRooms;
 using WpfApp2.Window;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace WpfApp2.Service
 {
@@ -13,10 +12,12 @@ namespace WpfApp2.Service
     {
         public MainViewModel MainViewModel { get; set; }
         private readonly HttpClient _httpClient;
-        
-        public ApiService()
+        private readonly MainViewModel _mainViewModel;
+
+        public ApiService(MainViewModel mainViewModel)
         {
             _httpClient = new HttpClient();
+            _mainViewModel = mainViewModel;
         }
 
 
@@ -32,7 +33,9 @@ namespace WpfApp2.Service
                 if (response.IsSuccessStatusCode)
                 {
                     var responseString = await response.Content.ReadAsStringAsync();
-                    // Process the successful response if needed.
+
+                    _mainViewModel.MultiplayerRoomsViewModel.SelectedRoom2 =
+                        JsonConvert.DeserializeObject<Rooms>(responseString);
                 }
                 else
                 {
@@ -44,6 +47,7 @@ namespace WpfApp2.Service
                 // Handle exceptions (e.g., log the exception).
             }
         }
+
         public void Dispose()
         {
             _httpClient.Dispose();

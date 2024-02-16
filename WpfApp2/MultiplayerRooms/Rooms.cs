@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using WpfApp2.AddPlayer;
-using WpfApp2.GamePage;
+﻿using System.Collections.ObjectModel;
 using Newtonsoft.Json;
 
 namespace WpfApp2.MultiplayerRooms;

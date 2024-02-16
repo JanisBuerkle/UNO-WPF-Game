@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UNO_Server.Models;
@@ -94,7 +88,7 @@ namespace UNO_Server.Controllers
                     throw;
                 }
             }
-
+    
             return NoContent();
         }
 
@@ -108,6 +102,7 @@ namespace UNO_Server.Controllers
 
             //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
             return CreatedAtAction(nameof(GetTodoItem), new { id = roomItem.Id }, roomItem);
+            
         }
 
         // DELETE: api/API/5
