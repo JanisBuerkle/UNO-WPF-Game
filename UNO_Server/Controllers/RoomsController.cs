@@ -23,7 +23,7 @@ namespace UNO_Server.Controllers
             {
                 return NotFound();
             }
-            
+
             return await _context.RoomItems.Include(item => item.PlayerNames).ToListAsync();
         }
 
@@ -47,7 +47,6 @@ namespace UNO_Server.Controllers
         }
 
         // PUT: api/API/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, RoomItem roomItem)
         {
@@ -55,12 +54,13 @@ namespace UNO_Server.Controllers
             {
                 return BadRequest();
             }
-            
+
             foreach (var player in roomItem.PlayerNames)
             {
                 var existingPlayer = _context.Players.Find(player.Id);
                 if (existingPlayer != null)
-                {        // Update existing player
+                {
+                    // Update existing player
                     _context.Entry(existingPlayer).CurrentValues.SetValues(roomItem);
                     _context.Entry(existingPlayer).State = EntityState.Modified;
                 }
@@ -88,7 +88,7 @@ namespace UNO_Server.Controllers
                     throw;
                 }
             }
-    
+
             return NoContent();
         }
 
@@ -102,7 +102,6 @@ namespace UNO_Server.Controllers
 
             //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
             return CreatedAtAction(nameof(GetTodoItem), new { id = roomItem.Id }, roomItem);
-            
         }
 
         // DELETE: api/API/5

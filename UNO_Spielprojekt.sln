@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UNO_Server", "UNO_Server\UNO_Server.csproj", "{607361D3-910B-4A9E-90E3-A7859F3E3403}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp2", "WpfApp2\WpfApp2.csproj", "{C912B6E3-0D1C-462B-B5B1-68CDD6683706}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UNO_Spielprojekt", "UNO_Spielprojekt\UNO_Spielprojekt.csproj", "{C912B6E3-0D1C-462B-B5B1-68CDD6683706}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="UNO_Spielprojekt.MainMenu.MainMenuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:resources="clr-namespace:UNO_Spielprojekt.Resources"
+             xmlns:window="clr-namespace:UNO_Spielprojekt.Window"
+             xmlns:setting="clr-namespace:UNO_Spielprojekt.Setting"
+             mc:Ignorable="d"
+             Name="Control">
+    <UserControl.Resources>
+        <window:MainViewModel x:Key="MainViewModel" />
+        <setting:ThemeModes x:Key="ThemeModes"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    
+    <Grid DataContext="{Binding ElementName=Control, Path=ViewModel}">
+        <!-- Einstellungen Button -->
+        <Button Command="{Binding GoToSettings}" Style="{StaticResource SettingsButtonStyle}" />
+
+        <!-- Play, Scoreboard und Exit Button -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}"  Command="{Binding GoToAddPlayerCommand}"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    Content="{x:Static resources:Resource.PlayLocal}"  />
+            <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}"  Command="{Binding GoToMultiplayerRoomsCommand}"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    Content="{x:Static resources:Resource.Multiplayer}"  />
+            <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}" Command="{Binding GoToScoreboardCommand}"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    Content="{x:Static resources:Resource.Scoreboard}" />
+            <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}" Command="{Binding ExitApplicationCommand}"
+                    Style="{StaticResource MainMenuButtonStyle}"
+                    Content="{x:Static resources:Resource.Exit}" />
+        </StackPanel>
+
+    </Grid>
+</UserControl>
