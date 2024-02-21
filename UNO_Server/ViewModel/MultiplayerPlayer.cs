@@ -3,5 +3,5 @@
 public class MultiplayerPlayer
 {
     public long Id { get; set; }
-    public string Names { get; set; }
+    public string Name { get; set; }
 }

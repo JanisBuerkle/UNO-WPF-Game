@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UNO_Server.Models;
+using UNO_Server.ViewModel;
 
 namespace UNO_Server.Controllers
 {
@@ -89,6 +90,40 @@ namespace UNO_Server.Controllers
                 }
             }
 
+            return NoContent();
+        }
+
+        [HttpPut("addPlayer/{playerName}")]
+        public async Task<IActionResult> AddPlayerToRoom(string playerName, RoomItem roomItem)
+        {
+            var player = _context.Players.FirstOrDefault(p => p.Name.Equals(playerName));
+            if (player == null)
+            {
+                player = (await _context.Players.AddAsync(new MultiplayerPlayer { Name = playerName })).Entity;
+            }
+
+            roomItem.PlayerNames.Add(player);
+            roomItem.OnlineUsers++;
+
+            _context.RoomItems.Update(roomItem);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpPut("removePlayer/{playerName}")]
+        public async Task<IActionResult> RemovePlayerFromRoom(string playerName, RoomItem roomItem)
+        {
+            var player = _context.Players.FirstOrDefault(p => p.Name.Equals(playerName));
+            if (player == null)
+            {
+                return NotFound();
+            }
+
+            roomItem.PlayerNames.Remove(player);
+            roomItem.OnlineUsers--;
+
+            _context.RoomItems.Update(roomItem);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 

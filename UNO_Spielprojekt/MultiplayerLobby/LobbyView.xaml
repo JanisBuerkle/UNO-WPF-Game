@@ -40,7 +40,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="5" Padding="5" BorderThickness="2" Background="#2e2e2e" BorderBrush="#2e2e2e" CornerRadius="10">
-                        <TextBlock Background="#2e2e2e" TextAlignment="Center" Foreground="White" Text="{Binding Names }" FontSize="25" />
+                        <TextBlock Background="#2e2e2e" TextAlignment="Center" Foreground="White" Text="{Binding Name }" FontSize="25" />
                     </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

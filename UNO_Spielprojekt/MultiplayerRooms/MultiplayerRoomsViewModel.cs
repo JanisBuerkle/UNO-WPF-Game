@@ -116,38 +116,53 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
         var apiUrl = $"http://localhost:5221/api/Rooms/{roomToUpdate.Id}";
 
+        // ToDo: move delete logic to controller
         if (removeOrAdd) //add
         {
-            roomToUpdate.OnlineUsers += 1;
-            roomToUpdate.PlayerNames.Add(new MultiplayerPlayer() { Names = PlayerName });
+            var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            
+            var addPlayerUrl = $"http://localhost:5221/api/Rooms/addPlayer/{PlayerName}";
+
+            var response = await HttpClient.PutAsync(addPlayerUrl, httpContent);
+            response.EnsureSuccessStatusCode();
         }
         else //remove
         {
-            roomToUpdate.OnlineUsers -= 1;
-            int index = 0;
-            bool removeornot = false;
-            foreach (var player in roomToUpdate.PlayerNames)
-            {
-                if (player.Names == PlayerName)
-                {
-                    index = roomToUpdate.PlayerNames.IndexOf(player);
-                    removeornot = true;
-                }
-            }
+            var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            
+            var addPlayerUrl = $"http://localhost:5221/api/Rooms/removePlayer/{PlayerName}";
 
-            if (removeornot)
-            {
-                roomToUpdate.PlayerNames.RemoveAt(index);
-                removeornot = false;
-            }
+            var response = await HttpClient.PutAsync(addPlayerUrl, httpContent);
+            response.EnsureSuccessStatusCode();
+            
+            
+            
+            // roomToUpdate.OnlineUsers -= 1;
+            // int index = 0;
+            // bool removeornot = false;
+            // foreach (var player in roomToUpdate.PlayerNames)
+            // {
+            //     if (player.Name == PlayerName)
+            //     {
+            //         index = roomToUpdate.PlayerNames.IndexOf(player);
+            //         removeornot = true;
+            //     }
+            // }
+            //
+            // if (removeornot)
+            // {
+            //     roomToUpdate.PlayerNames.RemoveAt(index);
+            //     removeornot = false;
+            // }
+            //
+            // var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+            // var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            //
+            // var response = await HttpClient.PutAsync(apiUrl, httpContent);
+            // response.EnsureSuccessStatusCode();
         }
-
-
-        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
-        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-        var response = await HttpClient.PutAsync(apiUrl, httpContent);
-        response.EnsureSuccessStatusCode();
     }
 
 
