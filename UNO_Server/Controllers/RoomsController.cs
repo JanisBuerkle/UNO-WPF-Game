@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using UNO_Server.Hubs;
 using UNO_Server.Models;
 using UNO_Server.ViewModel;
 
@@ -10,16 +12,22 @@ namespace UNO_Server.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly RoomContext _context;
-
-        public RoomsController(RoomContext context)
+        private readonly MyHub _hub;
+        
+        public RoomsController(RoomContext context, MyHub hub) 
         {
             _context = context;
+            _hub = hub;
+            
+
         }
 
         // GET: api/API
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomItem>>> GetTodoItems()
         {
+            // _hub.Clients.All.SendAsync("SendNachricht", "test");
+            
             if (_context.RoomItems == null)
             {
                 return NotFound();

@@ -52,5 +52,6 @@ namespace UNO_Spielprojekt.Service
         {
             _httpClient.Dispose();
         }
+        
     }
 }

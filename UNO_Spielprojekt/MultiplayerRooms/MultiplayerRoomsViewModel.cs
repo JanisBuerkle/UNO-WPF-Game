@@ -121,7 +121,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         {
             var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
             var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            
+
             var addPlayerUrl = $"http://localhost:5221/api/Rooms/addPlayer/{PlayerName}";
 
             var response = await HttpClient.PutAsync(addPlayerUrl, httpContent);
@@ -131,14 +131,13 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         {
             var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
             var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            
+
             var addPlayerUrl = $"http://localhost:5221/api/Rooms/removePlayer/{PlayerName}";
 
             var response = await HttpClient.PutAsync(addPlayerUrl, httpContent);
             response.EnsureSuccessStatusCode();
-            
-            
-            
+
+
             // roomToUpdate.OnlineUsers -= 1;
             // int index = 0;
             // bool removeornot = false;
