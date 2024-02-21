@@ -12,22 +12,21 @@ namespace UNO_Server.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly RoomContext _context;
-        private readonly MyHub _hub;
-        
-        public RoomsController(RoomContext context, MyHub hub) 
+        private readonly IHubContext<MyHub> _hubContext;
+
+        // 
+        public RoomsController(RoomContext context, IHubContext<MyHub> hubContext)
         {
             _context = context;
-            _hub = hub;
-            
-
+            _hubContext = hubContext;
         }
+        
 
         // GET: api/API
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomItem>>> GetTodoItems()
         {
-            // _hub.Clients.All.SendAsync("SendNachricht", "test");
-            
+            await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
             if (_context.RoomItems == null)
             {
                 return NotFound();
@@ -59,6 +58,7 @@ namespace UNO_Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, RoomItem roomItem)
         {
+            await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
             if (id != roomItem.Id)
             {
                 return BadRequest();
@@ -140,6 +140,8 @@ namespace UNO_Server.Controllers
         [HttpPost]
         public async Task<ActionResult<RoomItem>> PostTodoItem(RoomItem roomItem)
         {
+            await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
+            
             _context.RoomItems.Add(roomItem);
             await _context.SaveChangesAsync();
 

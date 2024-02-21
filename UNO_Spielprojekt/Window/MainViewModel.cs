@@ -23,6 +23,8 @@ public class MainViewModel : ViewModelBase
     public GiveNameViewModel GiveNameViewModel { get; set; }
     public GameData GameData { get; set; }
     private ApiService ApiService { get; set; }
+    
+    private HubService HubService { get; set; }
     public WinnerViewModel WinnerViewModel { get; }
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; }
     public LobbyViewModel LobbyViewModel { get; }
@@ -39,6 +41,7 @@ public class MainViewModel : ViewModelBase
         var logger = loggerFactory.CreateLogger("Uno-Spielprojekt");
 
         ApiService = new ApiService(this);
+        HubService = new HubService(this);
         ThemeModes = new ThemeModes();
         SettingsViewModel = new SettingsViewModel(this, logger, ThemeModes);
         PlayViewModel = new PlayViewModel();
