@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using tt.Tools.Logging;
@@ -22,7 +23,22 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     private readonly ILogger _logger;
     private readonly ApiService _apiService;
     public MainViewModel MainViewModel { get; set; }
-    public ObservableCollection<Rooms> RoomList { get; set; } = new ObservableCollection<Rooms>();
+
+    private ObservableCollection<Rooms> _roomList = new ObservableCollection<Rooms>();
+
+    public ObservableCollection<Rooms> RoomList
+    {
+        get => _roomList;
+        set
+        {
+            if (_roomList != value)
+            {
+                _roomList = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public RelayCommand GoToMainMenuCommand { get; }
     public RelayCommand GoToLobbyCommand { get; }
     public RelayCommand CreateRoomCommand { get; }
@@ -98,6 +114,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         {
             RoomList.Add(room);
         }
+        MessageBox.Show( "hello world" );
     }
 
 

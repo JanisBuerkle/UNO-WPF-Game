@@ -13,20 +13,22 @@ namespace UNO_Server.Controllers
     {
         private readonly RoomContext _context;
         private readonly IHubContext<MyHub> _hubContext;
+        private readonly MyHub _myHub;
 
         // 
-        public RoomsController(RoomContext context, IHubContext<MyHub> hubContext)
+        public RoomsController(RoomContext context, IHubContext<MyHub> hubContext, MyHub myHub)
         {
+            _myHub = myHub;
             _context = context;
             _hubContext = hubContext;
         }
-        
+
 
         // GET: api/API
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomItem>>> GetTodoItems()
         {
-            await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
+            // await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
             if (_context.RoomItems == null)
             {
                 return NotFound();
@@ -58,7 +60,6 @@ namespace UNO_Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, RoomItem roomItem)
         {
-            await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
             if (id != roomItem.Id)
             {
                 return BadRequest();
@@ -98,6 +99,7 @@ namespace UNO_Server.Controllers
                 }
             }
 
+            await _myHub.SendNachricht("hello");
             return NoContent();
         }
 
@@ -115,6 +117,7 @@ namespace UNO_Server.Controllers
 
             _context.RoomItems.Update(roomItem);
             await _context.SaveChangesAsync();
+            await _myHub.SendNachricht("hello");
             return NoContent();
         }
 
@@ -132,6 +135,7 @@ namespace UNO_Server.Controllers
 
             _context.RoomItems.Update(roomItem);
             await _context.SaveChangesAsync();
+            await _myHub.SendNachricht("hello");
             return NoContent();
         }
 
@@ -140,8 +144,6 @@ namespace UNO_Server.Controllers
         [HttpPost]
         public async Task<ActionResult<RoomItem>> PostTodoItem(RoomItem roomItem)
         {
-            await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
-            
             _context.RoomItems.Add(roomItem);
             await _context.SaveChangesAsync();
 
