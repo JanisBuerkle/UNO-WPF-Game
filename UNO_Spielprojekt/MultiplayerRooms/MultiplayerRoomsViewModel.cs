@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -12,7 +11,6 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using tt.Tools.Logging;
 using UNO_Spielprojekt.AddPlayer;
-using UNO_Spielprojekt.MultiplayerCreateRoom;
 using UNO_Spielprojekt.Service;
 using UNO_Spielprojekt.Window;
 
@@ -102,19 +100,20 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public async Task GetRoom()
     {
-        RoomList.Clear();
         HttpClient = new HttpClient();
         var respone = await HttpClient.GetAsync("http://localhost:5221/api/Rooms");
         respone.EnsureSuccessStatusCode();
 
-        var GettedLobbies = await respone.Content.ReadAsStringAsync();
+        var gettedLobbies = await respone.Content.ReadAsStringAsync();
 
-        Rooms = JsonConvert.DeserializeObject<List<Rooms>>(GettedLobbies);
-        foreach (var room in Rooms)
+        Rooms = JsonConvert.DeserializeObject<List<Rooms>>(gettedLobbies);
+
+        Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            RoomList.Add(room);
-        }
-        MessageBox.Show( "hello world" );
+            RoomList = new ObservableCollection<Rooms>(Rooms);
+        });
+
+        // MessageBox.Show("GetRoom wurde ausgeführt.");
     }
 
 

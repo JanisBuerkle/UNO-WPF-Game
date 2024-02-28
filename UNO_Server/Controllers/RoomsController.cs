@@ -99,7 +99,7 @@ namespace UNO_Server.Controllers
                 }
             }
 
-            await _myHub.SendNachricht("hello");
+            await _myHub.SendNachricht("putSended");
             return NoContent();
         }
 
@@ -117,7 +117,7 @@ namespace UNO_Server.Controllers
 
             _context.RoomItems.Update(roomItem);
             await _context.SaveChangesAsync();
-            await _myHub.SendNachricht("hello");
+            await _myHub.SendNachricht("addPlayerSended");
             return NoContent();
         }
 
@@ -135,7 +135,7 @@ namespace UNO_Server.Controllers
 
             _context.RoomItems.Update(roomItem);
             await _context.SaveChangesAsync();
-            await _myHub.SendNachricht("hello");
+            await _myHub.SendNachricht("removePlayerSended");
             return NoContent();
         }
 

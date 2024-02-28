@@ -1,6 +1,4 @@
-﻿// In UNO_Server/MeinHub.cs
-using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace UNO_Server.Hubs
 {
