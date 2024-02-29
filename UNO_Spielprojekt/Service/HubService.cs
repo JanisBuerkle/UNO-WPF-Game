@@ -20,9 +20,9 @@ public class HubService
             .Build();
         
         
-        _hubConnection.On<string>("EmpfangeNachricht", nachricht =>
+        _hubConnection.On<string>("GetAllRooms", nachricht =>
         {
-            _mainViewModel.MultiplayerRoomsViewModel.GetRoom();
+            _mainViewModel.MultiplayerRoomsViewModel.GetAllRooms();
         });
 
         try

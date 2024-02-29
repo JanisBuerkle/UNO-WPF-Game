@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:UNO_Spielprojekt.MultiplayerLobby"
              mc:Ignorable="d" Name="Lobby">
     
     <Grid DataContext="{Binding ElementName=Lobby, Path=ViewModel.MultiplayerRoomsViewModel}">
@@ -19,8 +18,8 @@
         </Grid.ColumnDefinitions>
         
         <!-- Home Button -->
-        <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0"
-                Style="{StaticResource HomeButtonStyle}" />
+            <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0"
+                    Style="{StaticResource HomeButtonStyle}" />
         
         <Label Grid.Row="0" Grid.Column="1" FontSize="35" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Content="{Binding SelectedRoom2.RoomName}" Margin="0,50,0,0"/>
         
@@ -35,8 +34,7 @@
             </Border>
         </StackPanel>
         
-        
-        <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SelectedRoom2.PlayerNames}">
+        <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SelectedRoom2.Players}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="5" Padding="5" BorderThickness="2" Background="#2e2e2e" BorderBrush="#2e2e2e" CornerRadius="10">
@@ -45,5 +43,6 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        
     </Grid>
 </UserControl>

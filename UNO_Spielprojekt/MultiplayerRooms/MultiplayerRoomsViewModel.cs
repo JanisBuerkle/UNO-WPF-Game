@@ -70,10 +70,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
             if (_selectedRoom != value)
             {
                 _selectedRoom = value;
-                if (SelectedRoom != null)
-                {
-                    SelectedRoom2 = SelectedRoom;
-                }
 
                 OnPropertyChanged();
             }
@@ -98,7 +94,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     public List<Rooms> Rooms { get; set; }
     public HttpClient HttpClient;
 
-    public async Task GetRoom()
+    public async Task GetAllRooms()
     {
         HttpClient = new HttpClient();
         var respone = await HttpClient.GetAsync("http://localhost:5221/api/Rooms");
@@ -108,13 +104,32 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
         Rooms = JsonConvert.DeserializeObject<List<Rooms>>(gettedLobbies);
 
-        Application.Current.Dispatcher.InvokeAsync(() =>
-        {
-            RoomList = new ObservableCollection<Rooms>(Rooms);
-        });
+        Application.Current.Dispatcher.InvokeAsync(() => { RoomList = new ObservableCollection<Rooms>(Rooms); });
 
-        // MessageBox.Show("GetRoom wurde ausgeführt.");
+        if (SelectedRoom2 != null)
+        {
+            foreach (var room in Rooms)
+            {
+                if (SelectedRoom2.Id == room.Id)
+                {
+                    SelectedRoom2 = room;
+                }
+            }
+        }
     }
+
+    // public async Task GetRoom(int id)
+    // {
+    //     HttpClient = new HttpClient();
+    //     var respone = await HttpClient.GetAsync($"http://localhost:5221/api/Rooms/{id}");
+    //     respone.EnsureSuccessStatusCode();
+    //
+    //     var gettedLobbies = await respone.Content.ReadAsStringAsync();
+    //
+    //     Rooms = JsonConvert.DeserializeObject<List<Rooms>>(gettedLobbies);
+    //
+    //     Application.Current.Dispatcher.InvokeAsync(() => { RoomList = new ObservableCollection<Rooms>(Rooms); });
+    // }
 
 
     public async Task UpdateOnlinePlayer(bool removeOrAdd)
@@ -127,7 +142,17 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
         Rooms = JsonConvert.DeserializeObject<List<Rooms>>(GettedLobbies);
 
-        Rooms roomToUpdate = Rooms.Last();
+
+        foreach (var room in Rooms)
+        {
+            if (SelectedRoom2.Id == room.Id)
+            {
+                SelectedRoom2 = room;
+            }
+        }
+
+        Rooms roomToUpdate = SelectedRoom2;
+
         HttpClient = new HttpClient();
 
         var apiUrl = $"http://localhost:5221/api/Rooms/{roomToUpdate.Id}";
@@ -178,6 +203,15 @@ public class MultiplayerRoomsViewModel : ViewModelBase
             // var response = await HttpClient.PutAsync(apiUrl, httpContent);
             // response.EnsureSuccessStatusCode();
         }
+
+        await GetAllRooms();
+        foreach (var room in Rooms)
+        {
+            if (SelectedRoom2.Id == room.Id)
+            {
+                SelectedRoom2 = room;
+            }
+        }
     }
 
 
@@ -185,7 +219,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger logger, ApiService apiService)
     {
-        GetRoom();
+        GetAllRooms();
         RoomList.Add(new Rooms()
             { RoomName = "Room1", MaximalUsers = 5, PasswordSecured = true, OnlineUsers = 0, Password = "123" });
         _apiService = apiService;
@@ -226,6 +260,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     private void GoToLobbyCommandMethod()
     {
+        SelectedRoom2 = SelectedRoom;
         if (SelectedRoom2.PasswordSecured)
         {
             MainViewModel.PasswordVisible = true;

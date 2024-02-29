@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using UNO_Server.Hubs;
 using UNO_Server.Models;
 using UNO_Server.ViewModel;
@@ -28,19 +29,21 @@ namespace UNO_Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoomItem>>> GetTodoItems()
         {
+            Log.Information("GET triggered.");
             // await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
             if (_context.RoomItems == null)
             {
                 return NotFound();
             }
 
-            return await _context.RoomItems.Include(item => item.PlayerNames).ToListAsync();
+            return await _context.RoomItems.Include(item => item.Players).ToListAsync();
         }
 
         // GET: api/API/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RoomItem>> GetTodoItem(long id)
         {
+            Log.Information("GET ID triggered.");
             if (_context.RoomItems == null)
             {
                 return NotFound();
@@ -60,12 +63,13 @@ namespace UNO_Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, RoomItem roomItem)
         {
+            Log.Information("Put triggered.");
             if (id != roomItem.Id)
             {
                 return BadRequest();
             }
 
-            foreach (var player in roomItem.PlayerNames)
+            foreach (var player in roomItem.Players)
             {
                 var existingPlayer = _context.Players.Find(player.Id);
                 if (existingPlayer != null)
@@ -99,43 +103,48 @@ namespace UNO_Server.Controllers
                 }
             }
 
-            await _myHub.SendNachricht("putSended");
+            await _myHub.SendGetAllRooms("putSended");
             return NoContent();
         }
 
         [HttpPut("addPlayer/{playerName}")]
         public async Task<IActionResult> AddPlayerToRoom(string playerName, RoomItem roomItem)
         {
+            Log.Information("Player added.");
             var player = _context.Players.FirstOrDefault(p => p.Name.Equals(playerName));
             if (player == null)
             {
-                player = (await _context.Players.AddAsync(new MultiplayerPlayer { Name = playerName })).Entity;
+                player = (await _context.Players.AddAsync(new MultiplayerPlayer { Name = playerName, RoomId = roomItem.Id})).Entity;
             }
 
-            roomItem.PlayerNames.Add(player);
+            roomItem.Players.Add(player);
             roomItem.OnlineUsers++;
 
             _context.RoomItems.Update(roomItem);
             await _context.SaveChangesAsync();
-            await _myHub.SendNachricht("addPlayerSended");
+            await _myHub.SendGetAllRooms("addPlayerSended");
+            
+            
+            await _myHub.SendGetRoom((int)roomItem.Id);
             return NoContent();
         }
 
         [HttpPut("removePlayer/{playerName}")]
         public async Task<IActionResult> RemovePlayerFromRoom(string playerName, RoomItem roomItem)
         {
+            Log.Information("Player removed.");
             var player = _context.Players.FirstOrDefault(p => p.Name.Equals(playerName));
             if (player == null)
             {
                 return NotFound();
             }
 
-            roomItem.PlayerNames.Remove(player);
+            roomItem.Players.Remove(player);
             roomItem.OnlineUsers--;
 
             _context.RoomItems.Update(roomItem);
             await _context.SaveChangesAsync();
-            await _myHub.SendNachricht("removePlayerSended");
+            await _myHub.SendGetAllRooms("removePlayerSended");
             return NoContent();
         }
 
@@ -144,6 +153,7 @@ namespace UNO_Server.Controllers
         [HttpPost]
         public async Task<ActionResult<RoomItem>> PostTodoItem(RoomItem roomItem)
         {
+            Log.Information("Post triggered.");
             _context.RoomItems.Add(roomItem);
             await _context.SaveChangesAsync();
 
@@ -155,6 +165,7 @@ namespace UNO_Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTodoItem(long id)
         {
+            Log.Information("Delete triggered.");
             var todoItem = await _context.RoomItems.FindAsync(id);
             if (todoItem == null)
             {

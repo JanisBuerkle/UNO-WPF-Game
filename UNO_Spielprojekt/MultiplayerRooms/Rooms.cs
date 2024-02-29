@@ -29,18 +29,18 @@ public class Rooms : ViewModelBase
     [JsonProperty("Password")] public string Password { get; set; }
 
 
-    [JsonProperty("_playerNames")]
-    private ObservableCollection<MultiplayerPlayer> _playerNames = new ObservableCollection<MultiplayerPlayer>();
+    [JsonProperty("_players")]
+    private ObservableCollection<MultiplayerPlayer> _players = new ObservableCollection<MultiplayerPlayer>();
 
-    [JsonProperty("PlayerNames")]
-    public ObservableCollection<MultiplayerPlayer> PlayerNames
+    [JsonProperty("Players")]
+    public ObservableCollection<MultiplayerPlayer> Players
     {
-        get => _playerNames;
+        get => _players;
         set
         {
-            if (_playerNames != value)
+            if (_players != value)
             {
-                _playerNames = value;
+                _players = value;
                 OnPropertyChanged();
             }
         }

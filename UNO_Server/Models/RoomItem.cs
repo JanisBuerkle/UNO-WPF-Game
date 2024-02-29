@@ -23,5 +23,5 @@ public class RoomItem : ViewModelBase
     public int MaximalUsers { get; set;}
     public bool PasswordSecured { get; set;}
     public string Password { get; set;}
-    public List<MultiplayerPlayer> PlayerNames { get; set; } = new List<MultiplayerPlayer>();
+    public List<MultiplayerPlayer> Players { get; set; } = new List<MultiplayerPlayer>();
 }

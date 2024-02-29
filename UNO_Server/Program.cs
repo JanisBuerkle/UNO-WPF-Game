@@ -1,14 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using UNO_Server.Hubs;
 using UNO_Server.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.Host.UseSerilog();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<RoomContext>(opt => opt.UseInMemoryDatabase("Rooms"));
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<MyHub>();
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File((Path.Combine(AppContext.BaseDirectory,"Logs", "log.txt")), rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 
 builder.Services.AddEndpointsApiExplorer();
