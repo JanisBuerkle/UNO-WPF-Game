@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.SignalR.Client;
+using UNO_Spielprojekt.MultiplayerRooms;
 using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.Service;
@@ -8,8 +9,10 @@ public class HubService
 {
     private HubConnection _hubConnection;
     private readonly MainViewModel _mainViewModel;
-    public HubService(MainViewModel mainViewModel)
+    private readonly MultiplayerRoomsViewModel _multiplayerRoomsViewModel;
+    public HubService(MainViewModel mainViewModel, MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
+        _multiplayerRoomsViewModel = multiplayerRoomsViewModel;
         _mainViewModel = mainViewModel;
         InitializeSignalR();
     }
@@ -22,7 +25,7 @@ public class HubService
         
         _hubConnection.On<string>("GetAllRooms", nachricht =>
         {
-            _mainViewModel.MultiplayerRoomsViewModel.GetAllRooms();
+           _multiplayerRoomsViewModel.GetAllRooms();
         });
 
         try

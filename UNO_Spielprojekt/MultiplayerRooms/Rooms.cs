@@ -9,6 +9,22 @@ public class Rooms : ViewModelBase
     [JsonProperty("RoomName")] public string RoomName { get; set; }
 
     [JsonProperty("_onlineUsers")] private int _onlineUsers;
+    public bool PlayButtonEnabled { get; set; } = true;
+
+    private string _playButtonContent = "Play";
+
+    public string PlayButtonContent
+    {
+        get => _playButtonContent;
+        set
+        {
+            if (_playButtonContent != value)
+            {
+                _playButtonContent = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     [JsonProperty("OnlineUsers")]
     public int OnlineUsers

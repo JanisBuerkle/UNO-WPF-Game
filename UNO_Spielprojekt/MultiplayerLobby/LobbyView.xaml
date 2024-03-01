@@ -3,7 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:multiplayerLobby="clr-namespace:UNO_Spielprojekt.MultiplayerLobby"
              mc:Ignorable="d" Name="Lobby">
+
+    <UserControl.Resources>
+        <multiplayerLobby:IdToVisibilityConverter x:Key="IdToVisibilityConverter" />
+    </UserControl.Resources>
+    
     
     <Grid DataContext="{Binding ElementName=Lobby, Path=ViewModel.MultiplayerRoomsViewModel}">
         <Grid.RowDefinitions>
@@ -16,33 +22,52 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <!-- Home Button -->
-            <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0"
-                    Style="{StaticResource HomeButtonStyle}" />
-        
-        <Label Grid.Row="0" Grid.Column="1" FontSize="35" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" Content="{Binding SelectedRoom2.RoomName}" Margin="0,50,0,0"/>
-        
-        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="0,0,30,0" >
-            <TextBlock Foreground="White" FontWeight="Bold" FontSize="20" VerticalAlignment="Center" Margin="0,5,5,0" >
-                <Run Text="{Binding SelectedRoom2.OnlineUsers}"/>
+        <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0"
+                Style="{StaticResource HomeButtonStyle}" />
+
+        <Label Grid.Row="0" Grid.Column="1" FontSize="35" FontWeight="Bold" Foreground="White"
+               HorizontalAlignment="Center" Content="{Binding SelectedRoom2.RoomName}" Margin="0,50,0,0" />
+
+        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="0,0,30,0">
+            <TextBlock Foreground="White" FontWeight="Bold" FontSize="20" VerticalAlignment="Center" Margin="0,5,5,0">
+                <Run Text="{Binding SelectedRoom2.OnlineUsers}" />
                 <Run>/</Run>
-                <Run Text="{Binding SelectedRoom2.MaximalUsers}"/>
+                <Run Text="{Binding SelectedRoom2.MaximalUsers}" />
             </TextBlock>
             <Border MaxWidth="40">
                 <Image Source="pack://application:,,,/Assets/Symbols/defaultuser.png"></Image>
             </Border>
         </StackPanel>
-        
+
         <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SelectedRoom2.Players}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Margin="5" Padding="5" BorderThickness="2" Background="#2e2e2e" BorderBrush="#2e2e2e" CornerRadius="10">
-                        <TextBlock Background="#2e2e2e" TextAlignment="Center" Foreground="White" Text="{Binding Name }" FontSize="25" />
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                
+                                    <TextBlock Grid.Column="0" Background="#2e2e2e" TextAlignment="Center" Foreground="White" Text="{Binding Name }" FontSize="25" />
+                                    
+                                    <Label Grid.Column="1" Content="Besitzer" Foreground="Gray"  FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger Binding="{Binding Id}" Value="1">
+                                                <Setter Property="IsVisible" Value="True" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                            </Grid>
+
                     </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        
+
     </Grid>
 </UserControl>

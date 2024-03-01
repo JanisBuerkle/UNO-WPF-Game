@@ -8,10 +8,5 @@ namespace UNO_Server.Hubs
         {
             await Clients.All.SendAsync("GetAllRooms", nachricht);
         }
-        
-        public async Task SendGetRoom(int roomId)
-        {
-            await Clients.All.SendAsync("GetRoom", roomId);
-        }
     }
 }

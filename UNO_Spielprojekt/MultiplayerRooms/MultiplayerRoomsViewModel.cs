@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using tt.Tools.Logging;
-using UNO_Spielprojekt.AddPlayer;
-using UNO_Spielprojekt.Service;
 using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.MultiplayerRooms;
@@ -19,15 +14,13 @@ namespace UNO_Spielprojekt.MultiplayerRooms;
 public class MultiplayerRoomsViewModel : ViewModelBase
 {
     private readonly ILogger _logger;
-    private readonly ApiService _apiService;
     public MainViewModel MainViewModel { get; set; }
-
+    
     private ObservableCollection<Rooms> _roomList = new ObservableCollection<Rooms>();
-
     public ObservableCollection<Rooms> RoomList
     {
         get => _roomList;
-        set
+        private set
         {
             if (_roomList != value)
             {
@@ -40,7 +33,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     public RelayCommand GoToMainMenuCommand { get; }
     public RelayCommand GoToLobbyCommand { get; }
     public RelayCommand CreateRoomCommand { get; }
-    public RelayCommand Testtt { get; }
 
 
     private bool _disableAll;
@@ -91,13 +83,15 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
     }
 
-    public List<Rooms> Rooms { get; set; }
-    public HttpClient HttpClient;
+    private List<Rooms>? Rooms { get; set; }    
+    private List<MultiplayerPlayer>? Players { get; set; }
+    private HttpClient _httpClient;
+    private bool _playButtonEnabled;
 
     public async Task GetAllRooms()
     {
-        HttpClient = new HttpClient();
-        var respone = await HttpClient.GetAsync("http://localhost:5221/api/Rooms");
+        _httpClient = new HttpClient();
+        var respone = await _httpClient.GetAsync("http://localhost:5221/api/Rooms");
         respone.EnsureSuccessStatusCode();
 
         var gettedLobbies = await respone.Content.ReadAsStringAsync();
@@ -116,95 +110,91 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                 }
             }
         }
-    }
-
-    // public async Task GetRoom(int id)
-    // {
-    //     HttpClient = new HttpClient();
-    //     var respone = await HttpClient.GetAsync($"http://localhost:5221/api/Rooms/{id}");
-    //     respone.EnsureSuccessStatusCode();
-    //
-    //     var gettedLobbies = await respone.Content.ReadAsStringAsync();
-    //
-    //     Rooms = JsonConvert.DeserializeObject<List<Rooms>>(gettedLobbies);
-    //
-    //     Application.Current.Dispatcher.InvokeAsync(() => { RoomList = new ObservableCollection<Rooms>(Rooms); });
-    // }
-
-
-    public async Task UpdateOnlinePlayer(bool removeOrAdd)
-    {
-        HttpClient = new HttpClient();
-        var respone = await HttpClient.GetAsync("http://localhost:5221/api/Rooms");
-        respone.EnsureSuccessStatusCode();
-
-        var GettedLobbies = await respone.Content.ReadAsStringAsync();
-
-        Rooms = JsonConvert.DeserializeObject<List<Rooms>>(GettedLobbies);
-
 
         foreach (var room in Rooms)
         {
-            if (SelectedRoom2.Id == room.Id)
+            if (room.OnlineUsers == 5)
             {
-                SelectedRoom2 = room;
+                room.PlayButtonEnabled = false;
+                room.PlayButtonContent = "Voll..";
             }
         }
+    }
+    public async Task GetPlayers()
+    {
+        _httpClient = new HttpClient();
+        var respone = await _httpClient.GetAsync("http://localhost:5221/api/Player");
+        respone.EnsureSuccessStatusCode();
 
+        var gettedLobbies = await respone.Content.ReadAsStringAsync();
+
+        Players = JsonConvert.DeserializeObject<List<MultiplayerPlayer>>(gettedLobbies);
+    }
+
+    private async Task AddPlayer(Rooms roomToUpdate)
+    {
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5221/api/Rooms/addPlayer/{PlayerName}";
+
+        var response = await _httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+    }
+
+    private async Task RemovePlayer(Rooms roomToUpdate)
+    {
+        await GetPlayers();
+        
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5221/api/Rooms/removePlayer/{PlayerName}";
+
+        var response2 = await _httpClient.PutAsync(addPlayerUrl, httpContent);
+        response2.EnsureSuccessStatusCode();
+        
+        
+        
+        int id = 0;
+
+        foreach (var player in Players)
+        {
+            if (player.Name == PlayerName)
+            {
+                id = (int)player.Id;
+            }
+        }
+        var removePlayerUrl = $"http://localhost:5221/api/Player/{id}";
+
+        var response = await _httpClient.DeleteAsync(removePlayerUrl);
+        response.EnsureSuccessStatusCode();
+
+        
+
+
+        await GetAllRooms();
+
+    }
+    
+    public async Task UpdateOnlinePlayer(bool removeOrAdd)
+    {
+        await GetAllRooms();
         Rooms roomToUpdate = SelectedRoom2;
 
-        HttpClient = new HttpClient();
-
-        var apiUrl = $"http://localhost:5221/api/Rooms/{roomToUpdate.Id}";
-
-        // ToDo: move delete logic to controller
+        _httpClient = new HttpClient();
+        
         if (removeOrAdd) //add
         {
-            var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
-            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            var addPlayerUrl = $"http://localhost:5221/api/Rooms/addPlayer/{PlayerName}";
-
-            var response = await HttpClient.PutAsync(addPlayerUrl, httpContent);
-            response.EnsureSuccessStatusCode();
+            await AddPlayer(roomToUpdate);
         }
         else //remove
         {
-            var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
-            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            var addPlayerUrl = $"http://localhost:5221/api/Rooms/removePlayer/{PlayerName}";
-
-            var response = await HttpClient.PutAsync(addPlayerUrl, httpContent);
-            response.EnsureSuccessStatusCode();
-
-
-            // roomToUpdate.OnlineUsers -= 1;
-            // int index = 0;
-            // bool removeornot = false;
-            // foreach (var player in roomToUpdate.PlayerNames)
-            // {
-            //     if (player.Name == PlayerName)
-            //     {
-            //         index = roomToUpdate.PlayerNames.IndexOf(player);
-            //         removeornot = true;
-            //     }
-            // }
-            //
-            // if (removeornot)
-            // {
-            //     roomToUpdate.PlayerNames.RemoveAt(index);
-            //     removeornot = false;
-            // }
-            //
-            // var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
-            // var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            //
-            // var response = await HttpClient.PutAsync(apiUrl, httpContent);
-            // response.EnsureSuccessStatusCode();
+            await RemovePlayer(roomToUpdate);
         }
 
         await GetAllRooms();
+
         foreach (var room in Rooms)
         {
             if (SelectedRoom2.Id == room.Id)
@@ -214,41 +204,16 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
     }
 
-
-    public List<Player> Test { get; set; } = new List<Player>();
-
-    public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger logger, ApiService apiService)
+    public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger logger)
     {
         GetAllRooms();
-        RoomList.Add(new Rooms()
-            { RoomName = "Room1", MaximalUsers = 5, PasswordSecured = true, OnlineUsers = 0, Password = "123" });
-        _apiService = apiService;
         _logger = logger;
         MainViewModel = mainViewModel;
 
         GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
         GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);
         CreateRoomCommand = new RelayCommand(CreateRoomCommandMethod);
-        Testtt = new RelayCommand(TestttCommandMethod);
     }
-
-    public void TestttCommandMethod()
-    {
-        while (true)
-        {
-            if (SelectedRoom == null)
-            {
-                Console.WriteLine("null");
-            }
-            else
-            {
-                Console.WriteLine(SelectedRoom.RoomName);
-            }
-
-            Thread.Sleep(100);
-        }
-    }
-
 
     private void GoToMainMenuCommandMethod()
     {

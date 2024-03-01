@@ -122,10 +122,9 @@ namespace UNO_Server.Controllers
 
             _context.RoomItems.Update(roomItem);
             await _context.SaveChangesAsync();
+            
             await _myHub.SendGetAllRooms("addPlayerSended");
-            
-            
-            await _myHub.SendGetRoom((int)roomItem.Id);
+
             return NoContent();
         }
 
@@ -133,18 +132,12 @@ namespace UNO_Server.Controllers
         public async Task<IActionResult> RemovePlayerFromRoom(string playerName, RoomItem roomItem)
         {
             Log.Information("Player removed.");
-            var player = _context.Players.FirstOrDefault(p => p.Name.Equals(playerName));
-            if (player == null)
-            {
-                return NotFound();
-            }
-
-            roomItem.Players.Remove(player);
+            
             roomItem.OnlineUsers--;
 
             _context.RoomItems.Update(roomItem);
-            await _context.SaveChangesAsync();
             await _myHub.SendGetAllRooms("removePlayerSended");
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
@@ -156,6 +149,8 @@ namespace UNO_Server.Controllers
             Log.Information("Post triggered.");
             _context.RoomItems.Add(roomItem);
             await _context.SaveChangesAsync();
+            
+            await _myHub.SendGetAllRooms("postSended");
 
             //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
             return CreatedAtAction(nameof(GetTodoItem), new { id = roomItem.Id }, roomItem);
@@ -175,6 +170,8 @@ namespace UNO_Server.Controllers
             _context.RoomItems.Remove(todoItem);
             await _context.SaveChangesAsync();
 
+            await _myHub.SendGetAllRooms("removePlayerSended");
+            
             return NoContent();
         }
 

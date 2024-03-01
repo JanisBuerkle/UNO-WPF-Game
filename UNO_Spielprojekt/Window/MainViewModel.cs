@@ -41,7 +41,6 @@ public class MainViewModel : ViewModelBase
         var logger = loggerFactory.CreateLogger("Uno-Spielprojekt");
 
         ApiService = new ApiService(this);
-        HubService = new HubService(this);
         ThemeModes = new ThemeModes();
         SettingsViewModel = new SettingsViewModel(this, logger, ThemeModes);
         PlayViewModel = new PlayViewModel();
@@ -55,7 +54,8 @@ public class MainViewModel : ViewModelBase
         MainMenuViewModel = new MainMenuViewModel(this, logger, GameData, ThemeModes);
         AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic, ThemeModes, ApiService);
 
-        MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger, ApiService);
+        MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger);
+        HubService = new HubService(this, MultiplayerRoomsViewModel);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
         CreateRoomViewModel = new CreateRoomViewModel(this, logger, MultiplayerRoomsViewModel, ApiService);
