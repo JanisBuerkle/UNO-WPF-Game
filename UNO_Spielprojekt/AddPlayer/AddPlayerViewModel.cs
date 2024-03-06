@@ -13,6 +13,7 @@ namespace UNO_Spielprojekt.AddPlayer;
 
 public class AddPlayerViewModel : INotifyPropertyChanged
 {
+    
     private readonly MainViewModel _mainViewModel;
     public RelayCommand GoToMainMenuCommand { get; }
     private GameLogic GameLogic { get; set; }

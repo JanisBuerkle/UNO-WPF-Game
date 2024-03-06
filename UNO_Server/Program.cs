@@ -10,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<RoomContext>(opt => opt.UseInMemoryDatabase("Rooms"));
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<MyHub>();
+builder.WebHost.UseUrls("http://10.10.2.231:5000");
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

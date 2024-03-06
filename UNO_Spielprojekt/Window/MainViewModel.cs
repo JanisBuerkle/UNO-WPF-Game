@@ -1,8 +1,10 @@
-﻿using UNO_Spielprojekt.AddPlayer;
+﻿using System.Windows.Xps;
+using UNO_Spielprojekt.AddPlayer;
 using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Logging;
 using UNO_Spielprojekt.MainMenu;
 using UNO_Spielprojekt.MultiplayerCreateRoom;
+using UNO_Spielprojekt.MultiplayerGamePage;
 using UNO_Spielprojekt.MultiplayerGiveName;
 using UNO_Spielprojekt.MultiplayerLobby;
 using UNO_Spielprojekt.MultiplayerPassword;
@@ -26,7 +28,9 @@ public class MainViewModel : ViewModelBase
     
     private HubService HubService { get; set; }
     public WinnerViewModel WinnerViewModel { get; }
+    
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; }
+    public MPGamePageViewModel MultiplayerGamePageViewModel { get; }
     public LobbyViewModel LobbyViewModel { get; }
     public GameViewModel GameViewModel { get; set; }
     public RulesViewModel RulesViewModel { get; set; }
@@ -47,21 +51,22 @@ public class MainViewModel : ViewModelBase
         WinnerViewModel = new WinnerViewModel(this, ThemeModes);
         GameLogic = new GameLogic(PlayViewModel, logger, ApiService);
         ScoreboardViewModel = new ScoreboardViewModel(this, logger, ThemeModes);
-        GameViewModel = new GameViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel,
-            ThemeModes);
+        GameViewModel = new GameViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel, ThemeModes);
         RulesViewModel = new RulesViewModel(this, logger, ThemeModes);
         GameData = new GameData(ScoreboardViewModel, GameViewModel);
         MainMenuViewModel = new MainMenuViewModel(this, logger, GameData, ThemeModes);
         AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic, ThemeModes, ApiService);
 
         MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger);
+        MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel, ThemeModes);
         HubService = new HubService(this, MultiplayerRoomsViewModel);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
         CreateRoomViewModel = new CreateRoomViewModel(this, logger, MultiplayerRoomsViewModel, ApiService);
         PasswordViewModel = new PasswordViewModel(this, logger, MultiplayerRoomsViewModel);
-
+        
         MainMenuVisible = true;
+        // MultiplayerGamePageVisible = true;
     }
 
     private bool _gameVisible;
@@ -73,6 +78,7 @@ public class MainViewModel : ViewModelBase
     private bool _scoreboardVisible;
 
     private bool _multiplayerRoomsVisible;
+    private bool _multiplayerGamePageVisible;
     private bool _createRoomVisible;
     private bool _passwordVisible;
     private bool _giveNameVisible;
@@ -132,6 +138,17 @@ public class MainViewModel : ViewModelBase
         {
             if (value == _multiplayerRoomsVisible) return;
             _multiplayerRoomsVisible = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool MultiplayerGamePageVisible
+    {
+        get => _multiplayerGamePageVisible;
+        set
+        {
+            if (value == _multiplayerGamePageVisible) return;
+            _multiplayerGamePageVisible = value;
             OnPropertyChanged();
         }
     }
@@ -226,7 +243,8 @@ public class MainViewModel : ViewModelBase
         AddPlayerVisible = false;
         ScoreboardVisible = false;
         CreateRoomVisible = false;
-        MultiplayerRoomsVisible = false;
+        MultiplayerRoomsVisible = false;        
+        MultiplayerGamePageVisible = false;
     }
 
     public void GoToAddPlayer()
@@ -243,6 +261,7 @@ public class MainViewModel : ViewModelBase
         ScoreboardVisible = false;
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
+        MultiplayerGamePageVisible = false;
     }
 
     public void GoToSettings()
@@ -259,11 +278,29 @@ public class MainViewModel : ViewModelBase
         ScoreboardVisible = false;
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
+        MultiplayerGamePageVisible = false;
     }
 
     public void GoToGame()
     {
         GameVisible = true;
+        RulesVisible = false;
+        LobbyVisible = false;
+        WinnerVisible = false;
+        MainMenuVisible = false;
+        SettingsVisible = false;
+        PasswordVisible = false;
+        GiveNameVisible = false;
+        AddPlayerVisible = false;
+        ScoreboardVisible = false;
+        CreateRoomVisible = false;
+        MultiplayerRoomsVisible = false;
+        MultiplayerGamePageVisible = false;
+    }    
+    public void GoToMultiplayerGame()
+    {
+        MultiplayerGamePageVisible = true;
+        GameVisible = false;
         RulesVisible = false;
         LobbyVisible = false;
         WinnerVisible = false;
@@ -291,6 +328,7 @@ public class MainViewModel : ViewModelBase
         AddPlayerVisible = false;
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
+        MultiplayerGamePageVisible = false;
         GameData.Load();
     }
 
@@ -308,6 +346,7 @@ public class MainViewModel : ViewModelBase
         ScoreboardVisible = false;
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
+        MultiplayerGamePageVisible = false;
     }
 
     public void GoToWinner()
@@ -324,6 +363,7 @@ public class MainViewModel : ViewModelBase
         ScoreboardVisible = false;
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
+        MultiplayerGamePageVisible = false;
     }
 
     public void GoToMultiplayerRooms()
@@ -340,6 +380,7 @@ public class MainViewModel : ViewModelBase
         AddPlayerVisible = false;
         ScoreboardVisible = false;
         CreateRoomVisible = false;
+        MultiplayerGamePageVisible = false;
         MultiplayerRoomsViewModel.DisableAll = true;
     }
 
@@ -357,5 +398,6 @@ public class MainViewModel : ViewModelBase
         ScoreboardVisible = false;
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
+        MultiplayerGamePageVisible = false;
     }
 }

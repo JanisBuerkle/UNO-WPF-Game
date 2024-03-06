@@ -55,11 +55,6 @@
                                     <TextBlock Grid.Column="0" Background="#2e2e2e" TextAlignment="Center" Foreground="White" Text="{Binding Name }" FontSize="25" />
                                     
                                     <Label Grid.Column="1" Content="Besitzer" Foreground="Gray"  FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                        <Label.Triggers>
-                                            <DataTrigger Binding="{Binding Id}" Value="1">
-                                                <Setter Property="IsVisible" Value="True" />
-                                            </DataTrigger>
-                                        </Label.Triggers>
                                     </Label>
 
                             </Grid>

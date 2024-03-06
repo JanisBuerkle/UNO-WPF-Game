@@ -91,7 +91,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     public async Task GetAllRooms()
     {
         _httpClient = new HttpClient();
-        var respone = await _httpClient.GetAsync("http://localhost:5221/api/Rooms");
+        var respone = await _httpClient.GetAsync("http://10.10.2.231:5000/api/Rooms");
         respone.EnsureSuccessStatusCode();
 
         var gettedLobbies = await respone.Content.ReadAsStringAsync();
@@ -123,7 +123,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     public async Task GetPlayers()
     {
         _httpClient = new HttpClient();
-        var respone = await _httpClient.GetAsync("http://localhost:5221/api/Player");
+        var respone = await _httpClient.GetAsync("http://10.10.2.231:5000/api/Player");
         respone.EnsureSuccessStatusCode();
 
         var gettedLobbies = await respone.Content.ReadAsStringAsync();
@@ -136,7 +136,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        var addPlayerUrl = $"http://localhost:5221/api/Rooms/addPlayer/{PlayerName}";
+        var addPlayerUrl = $"http://10.10.2.231:5000/api/Rooms/addPlayer/{PlayerName}";
 
         var response = await _httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
@@ -149,7 +149,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        var addPlayerUrl = $"http://localhost:5221/api/Rooms/removePlayer/{PlayerName}";
+        var addPlayerUrl = $"http://10.10.2.231:5000/api/Rooms/removePlayer/{PlayerName}";
 
         var response2 = await _httpClient.PutAsync(addPlayerUrl, httpContent);
         response2.EnsureSuccessStatusCode();
@@ -165,7 +165,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                 id = (int)player.Id;
             }
         }
-        var removePlayerUrl = $"http://localhost:5221/api/Player/{id}";
+        var removePlayerUrl = $"http://10.10.2.231:5000/api/Player/{id}";
 
         var response = await _httpClient.DeleteAsync(removePlayerUrl);
         response.EnsureSuccessStatusCode();
