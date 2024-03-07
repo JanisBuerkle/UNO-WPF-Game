@@ -20,7 +20,20 @@ public class RoomItem : ViewModelBase
             }
         }
     }
-    public int MaximalUsers { get; set;}
+    
+    private int _maximalUsers;
+    public int MaximalUsers
+    {
+        get => _maximalUsers;
+        set
+        {
+            if (_maximalUsers != value)
+            {
+                _maximalUsers = value;
+                OnPropertyChanged();
+            }
+        }
+    }
     public bool PasswordSecured { get; set;}
     public string Password { get; set;}
     public List<MultiplayerPlayer> Players { get; set; } = new List<MultiplayerPlayer>();

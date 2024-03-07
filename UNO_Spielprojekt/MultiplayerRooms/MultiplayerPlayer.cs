@@ -6,6 +6,8 @@ public class MultiplayerPlayer
     public long RoomId { get; set; }
     public string Name { get; set; }
 
+    public bool IsLeader { get; set; }
+
     private bool Equals(MultiplayerPlayer other)
     {
         return Id == other.Id;

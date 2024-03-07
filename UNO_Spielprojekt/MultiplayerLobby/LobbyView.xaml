@@ -3,13 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:multiplayerLobby="clr-namespace:UNO_Spielprojekt.MultiplayerLobby"
              mc:Ignorable="d" Name="Lobby">
-
     <UserControl.Resources>
-        <multiplayerLobby:IdToVisibilityConverter x:Key="IdToVisibilityConverter" />
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
-    
     
     <Grid DataContext="{Binding ElementName=Lobby, Path=ViewModel.MultiplayerRoomsViewModel}">
         <Grid.RowDefinitions>
@@ -36,6 +38,7 @@
                 <Run>/</Run>
                 <Run Text="{Binding SelectedRoom2.MaximalUsers}" />
             </TextBlock>
+            
             <Border MaxWidth="40">
                 <Image Source="pack://application:,,,/Assets/Symbols/defaultuser.png"></Image>
             </Border>
@@ -44,25 +47,37 @@
         <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SelectedRoom2.Players}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="5" Padding="5" BorderThickness="2" Background="#2e2e2e" BorderBrush="#2e2e2e" CornerRadius="10">
+                    
+                    <Border Margin="5" Padding="5" BorderThickness="2" Background="#2e2e2e" BorderBrush="#2e2e2e"
+                            CornerRadius="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                
-                                    <TextBlock Grid.Column="0" Background="#2e2e2e" TextAlignment="Center" Foreground="White" Text="{Binding Name }" FontSize="25" />
-                                    
-                                    <Label Grid.Column="1" Content="Besitzer" Foreground="Gray"  FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                    </Label>
+                            <TextBlock Grid.Column="0" Background="#2e2e2e" TextAlignment="Center" Foreground="White"
+                                       Text="{Binding Name }" FontSize="25" />
 
-                            </Grid>
-
+                            <Label Grid.Column="1" Content="Besitzer" Foreground="Gray" FontSize="15"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   Visibility="{Binding IsLeader, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            </Label>
+                        </Grid>
                     </Border>
+                    
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,0,0, 100"
+                    Visibility="{Binding Player.IsLeader, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+            <ComboBox Foreground="White" Height="50" Width="200"
+                      ItemsSource="{Binding ComboBoxItems}"
+                      SelectedItem="{Binding SelectedMaximalCount}" />
+            <Button Content="Starten" Background="DarkGreen" HorizontalAlignment="Center" Height="50" Width="200" />
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -19,7 +19,7 @@ public class HubService
     private async void InitializeSignalR()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl("http://10.10.2.231:5000/myHub")
+            .WithUrl("http://localhost:5000/myHub")
             .Build();
         
         

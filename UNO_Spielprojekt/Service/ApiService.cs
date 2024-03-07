@@ -28,7 +28,7 @@ namespace UNO_Spielprojekt.Service
                 var json = JsonSerializer.Serialize(room);
                 var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync($"http://10.10.2.231:5000/api/Rooms", content);
+                var response = await _httpClient.PostAsync($"http://localhost:5000/api/Rooms", content);
 
                 if (response.IsSuccessStatusCode)
                 {

@@ -40,7 +40,23 @@ public class Rooms : ViewModelBase
         }
     }
 
-    [JsonProperty("MaximalUsers")] public int MaximalUsers { get; set; }
+
+    private int _maximalUsers;
+
+    [JsonProperty("MaximalUsers")]
+    public int MaximalUsers
+    {
+        get => _maximalUsers;
+        set
+        {
+            if (_maximalUsers != value)
+            {
+                _maximalUsers = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     [JsonProperty("PasswordSecured")] public bool PasswordSecured { get; set; }
     [JsonProperty("Password")] public string Password { get; set; }
 

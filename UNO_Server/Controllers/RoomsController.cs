@@ -107,6 +107,21 @@ namespace UNO_Server.Controllers
             return NoContent();
         }
 
+        [HttpPut("updatemaximalplayers/{selectedMaximalUsers}")]
+        public async Task<IActionResult> UpdateMaximalPlayers(int selectedMaximalUsers, RoomItem roomItem)
+        {
+            Log.Information("UpdateMaximalPlayers triggered.");
+            
+            roomItem.MaximalUsers = selectedMaximalUsers;
+
+            _context.RoomItems.Update(roomItem);
+            await _context.SaveChangesAsync();
+
+            await _myHub.SendGetAllRooms("addPlayerSended");
+
+            return NoContent();
+        }
+        
         [HttpPut("addPlayer/{playerName}")]
         public async Task<IActionResult> AddPlayerToRoom(string playerName, RoomItem roomItem)
         {
@@ -114,7 +129,10 @@ namespace UNO_Server.Controllers
             var player = _context.Players.FirstOrDefault(p => p.Name.Equals(playerName));
             if (player == null)
             {
-                player = (await _context.Players.AddAsync(new MultiplayerPlayer { Name = playerName, RoomId = roomItem.Id})).Entity;
+                bool isLeader = roomItem.Players.Count == 0;
+
+                player = (await _context.Players.AddAsync(new MultiplayerPlayer
+                    { Name = playerName, RoomId = roomItem.Id, IsLeader = isLeader })).Entity;
             }
 
             roomItem.Players.Add(player);
@@ -122,7 +140,7 @@ namespace UNO_Server.Controllers
 
             _context.RoomItems.Update(roomItem);
             await _context.SaveChangesAsync();
-            
+
             await _myHub.SendGetAllRooms("addPlayerSended");
 
             return NoContent();
@@ -132,7 +150,7 @@ namespace UNO_Server.Controllers
         public async Task<IActionResult> RemovePlayerFromRoom(string playerName, RoomItem roomItem)
         {
             Log.Information("Player removed.");
-            
+
             roomItem.OnlineUsers--;
 
             _context.RoomItems.Update(roomItem);
@@ -149,7 +167,7 @@ namespace UNO_Server.Controllers
             Log.Information("Post triggered.");
             _context.RoomItems.Add(roomItem);
             await _context.SaveChangesAsync();
-            
+
             await _myHub.SendGetAllRooms("postSended");
 
             //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
@@ -171,7 +189,7 @@ namespace UNO_Server.Controllers
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("removePlayerSended");
-            
+
             return NoContent();
         }
 
