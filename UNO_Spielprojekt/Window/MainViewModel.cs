@@ -58,7 +58,7 @@ public class MainViewModel : ViewModelBase
         AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic, ThemeModes, ApiService);
 
         MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger);
-        MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel, ThemeModes);
+        MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, MultiplayerRoomsViewModel, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel, ThemeModes);
         HubService = new HubService(this, MultiplayerRoomsViewModel);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
@@ -84,7 +84,8 @@ public class MainViewModel : ViewModelBase
     private bool _giveNameVisible;
     private bool _lobbyVisible;
     private readonly GameLogic GameLogic;
-    private readonly PlayViewModel PlayViewModel;
+    private readonly PlayViewModel PlayViewModel;    
+
 
     public bool MainMenuVisible
     {

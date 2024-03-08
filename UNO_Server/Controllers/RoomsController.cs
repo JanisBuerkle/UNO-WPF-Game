@@ -12,13 +12,17 @@ namespace UNO_Server.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
+
         private readonly RoomContext _context;
         private readonly IHubContext<MyHub> _hubContext;
         private readonly MyHub _myHub;
+        private readonly StartModel _startModel;
+
 
         // 
         public RoomsController(RoomContext context, IHubContext<MyHub> hubContext, MyHub myHub)
         {
+            _startModel = new StartModel(context);
             _myHub = myHub;
             _context = context;
             _hubContext = hubContext;
@@ -36,7 +40,7 @@ namespace UNO_Server.Controllers
                 return NotFound();
             }
 
-            return await _context.RoomItems.Include(item => item.Players).ToListAsync();
+            return await _context.RoomItems.Include(item => item.Players).ThenInclude(card => card.PlayerHand).ToListAsync();
         }
 
         // GET: api/API/5
@@ -107,21 +111,50 @@ namespace UNO_Server.Controllers
             return NoContent();
         }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        private readonly Random _random = new Random();
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        [HttpPut("startroom/{roomid}")]
+        public async Task<IActionResult> RoomId(long roomid, RoomItem roomItem)
+        {
+            Log.Information($"Room {roomid} started.");
+            
+
+
+            int startingPlayer = _random.Next(0, roomItem.Players.Count);
+            await _startModel.ShuffleDeck(roomItem);
+            await _startModel.DealCards(roomItem);
+
+
+            _context.RoomItems.Update(roomItem);
+            await _context.SaveChangesAsync();
+
+
+            await _myHub.SendGetAllRooms("roomStartedSended");
+
+            return NoContent();
+        }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         [HttpPut("updatemaximalplayers/{selectedMaximalUsers}")]
         public async Task<IActionResult> UpdateMaximalPlayers(int selectedMaximalUsers, RoomItem roomItem)
         {
             Log.Information("UpdateMaximalPlayers triggered.");
-            
+
             roomItem.MaximalUsers = selectedMaximalUsers;
 
             _context.RoomItems.Update(roomItem);
             await _context.SaveChangesAsync();
 
-            await _myHub.SendGetAllRooms("addPlayerSended");
+            await _myHub.SendGetAllRooms("UpdateMaximalPlayersSended");
 
             return NoContent();
         }
-        
+
         [HttpPut("addPlayer/{playerName}")]
         public async Task<IActionResult> AddPlayerToRoom(string playerName, RoomItem roomItem)
         {

@@ -13,6 +13,7 @@
         xmlns:winner="clr-namespace:UNO_Spielprojekt.Winner"
         xmlns:unoSpielprojekt="clr-namespace:UNO_Spielprojekt"
         xmlns:multiplayerLobby="clr-namespace:UNO_Spielprojekt.MultiplayerLobby"
+        xmlns:multiplayerGamePage="clr-namespace:UNO_Spielprojekt.MultiplayerGamePage"
         mc:Ignorable="d"
         Title="UNO-Game"
         WindowStartupLocation="CenterScreen" Icon="../Assets/Logos/logo.png"
@@ -47,6 +48,9 @@
             <addPlayer:AddPlayerView
                 Visibility="{Binding AddPlayerVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ViewModel="{Binding AddPlayerViewModel}" />
+            <multiplayerGamePage:MPGamePageView
+                Visibility="{Binding MultiplayerGamePageVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                ViewModel="{Binding MultiplayerGamePageViewModel}" />
             <gamePage:GameView
                 Visibility="{Binding GameVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ViewModel="{Binding GameViewModel}" />

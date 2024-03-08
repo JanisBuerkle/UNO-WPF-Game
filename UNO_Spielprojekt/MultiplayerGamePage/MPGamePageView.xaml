@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:UNO_Spielprojekt.GamePage"
              mc:Ignorable="d"
-             Name="Control">
+             Name="MpGamePage">
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -15,7 +15,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid DataContext="{Binding ElementName=Control, Path=ViewModel}">
+    <Grid DataContext="{Binding ElementName=MpGamePage, Path=ViewModel.MultiplayerRoomsViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -29,10 +29,10 @@
         </Grid.ColumnDefinitions>
 
         <!-- Home Button -->
-        <Button Command="{Binding ExitConfirmCommand}" Style="{StaticResource HomeButtonStyle}" />
+        <Button DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}"  Command="{Binding ExitConfirmCommand}" Style="{StaticResource HomeButtonStyle}" />
 
         <!-- UNO Button -->
-        <Button Grid.Column="0" Grid.Row="3" Style="{StaticResource MyButtonStyle}" Height="100" Width="200"
+        <Button DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}"  Grid.Column="0" Grid.Row="3" Style="{StaticResource MyButtonStyle}" Height="100" Width="200"
                 Command="{Binding UnoCommand}"
                 Margin="10" Background="IndianRed" Content="UNO" FontSize="40" FontWeight="Bold" Foreground="White"
                 VerticalAlignment="Bottom" />
@@ -40,21 +40,21 @@
         <!-- Fertig und der Spielername -->
         <StackPanel Grid.Row="3" Grid.Column="2" VerticalAlignment="Bottom">
             <Button Style="{StaticResource MyButtonStyle}" Foreground="White"
-                    Background="CornflowerBlue" Content="{Binding CurrentPlayerName}" 
+                    Background="CornflowerBlue" Content="{Binding Player.Name }" 
                     FontSize="40" FontWeight="Bold" Height="100" Width="200" Margin="10"/>
 
-            <Button Style="{StaticResource MyButtonStyle}" Command="{Binding FertigCommand}" Foreground="White"
+            <Button DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}"  Style="{StaticResource MyButtonStyle}" Command="{Binding FertigCommand}" Foreground="White"
                     Background="{Binding TheBackground}" Content="Fertig" 
                     FontSize="40" FontWeight="Bold" Height="100" Width="200" Margin="10" />
         </StackPanel>
 
         <!-- Rundenanzeige -->
-        <Label Margin="0,20,0,0" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="0" FontSize="20"
+        <Label DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}"  Margin="0,20,0,0" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="0" FontSize="20"
                Content="{Binding RoundCounterString}" Foreground="Wheat">
         </Label>
 
         <!-- Ziehstapel und Ablagestapel -->
-        <StackPanel Grid.RowSpan="3" Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top"
+        <StackPanel DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}"  Grid.RowSpan="3" Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top"
                     HorizontalAlignment="Center">
             <Button Width="150" Height="225" Style="{StaticResource CardStyle}" Command="{Binding ZiehenCommand}">
                 <Button.Background>
@@ -62,9 +62,9 @@
                 </Button.Background>
             </Button>
 
-            <Button Width="150" Height="225" Style="{StaticResource CardStyle}">
+            <Button DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}" Width="150" Height="225" Style="{StaticResource CardStyle}">
                 <Button.Background>
-                    <ImageBrush ImageSource="{Binding MiddleCardPic}" Stretch="Fill" />
+                    <ImageBrush ImageSource="{Binding MiddleCardPic }" Stretch="Fill" />
                 </Button.Background>
             </Button>
         </StackPanel>
@@ -73,7 +73,7 @@
         <ScrollViewer Grid.Row="3" Grid.Column="1"
                       VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto"
                       PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
-            <ItemsControl ItemsSource="{Binding CurrentHand}">
+            <ItemsControl ItemsSource="{Binding Player.PlayerHand}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" />
@@ -90,7 +90,7 @@
         </ScrollViewer>
         
         <!-- Für die extra Fenster -->
-        <Grid Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="3" ZIndex="1000"
+        <Grid DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}"  Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="3" ZIndex="1000"
               Visibility="{Binding ChooseColorVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <local:ChooseColorView ViewModel="{Binding ChooseColorViewModel}" />
         </Grid>

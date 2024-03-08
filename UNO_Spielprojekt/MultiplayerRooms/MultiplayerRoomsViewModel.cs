@@ -142,11 +142,19 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
         if (SelectedRoom2 != null)
         {
+
             foreach (var room in Rooms)
             {
                 if (SelectedRoom2.Id == room.Id)
                 {
                     SelectedRoom2 = room;
+                }
+            }
+            foreach (var player in SelectedRoom2.Players)
+            {
+                if (PlayerName == player.Name)
+                {
+                    Player = player;
                 }
             }
         }
@@ -183,6 +191,17 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         response.EnsureSuccessStatusCode();
     }
 
+    public async void StartRoom()
+    {
+        var jsonContent = JsonConvert.SerializeObject(SelectedRoom2);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/startroom/{SelectedRoom2.Id}";
+
+        var response = await _httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+    }
+
     private async Task UpdateMaximalPlayers(Rooms roomToUpdate)
     {
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
@@ -194,7 +213,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         response.EnsureSuccessStatusCode();
         await GetAllRooms();
     }
-    
+
     private async Task RemovePlayer(Rooms roomToUpdate)
     {
         await GetPlayers();

@@ -77,7 +77,7 @@
             <ComboBox Foreground="White" Height="50" Width="200"
                       ItemsSource="{Binding ComboBoxItems}"
                       SelectedItem="{Binding SelectedMaximalCount}" />
-            <Button Content="Starten" Background="DarkGreen" HorizontalAlignment="Center" Height="50" Width="200" />
+            <Button DataContext="{Binding ElementName=Lobby, Path=ViewModel}" Content="Starten" Background="DarkGreen" HorizontalAlignment="Center" Height="50" Width="200" Command="{Binding StartRoomCommand }"/>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -13,6 +13,7 @@ using UNO_Spielprojekt.Winner;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
+using UNO_Spielprojekt.MultiplayerRooms;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
 
@@ -62,6 +63,7 @@ public class MPGamePageViewModel : ViewModelBase
     }
 
     private readonly MainViewModel _mainViewModel;
+    public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
     private readonly ILogger _logger;
     private PlayViewModel PlayViewModel { get; }
     private GameLogic GameLogic { get; }
@@ -116,7 +118,7 @@ public class MPGamePageViewModel : ViewModelBase
     public RelayCommand ExitConfirmCommand { get; }
 
 
-    public MPGamePageViewModel(MainViewModel mainViewModel, ILogger logger, PlayViewModel playViewModel, GameLogic gameLogic, WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel, ThemeModes themeModes)
+    public MPGamePageViewModel(MainViewModel mainViewModel, ILogger logger, MultiplayerRoomsViewModel multiplayerRoomsViewModel, PlayViewModel playViewModel, GameLogic gameLogic, WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel, ThemeModes themeModes)
     {
         _scoreboardViewModel = scoreboardViewModel;
         TheBackground = Brushes.Transparent;
@@ -124,6 +126,7 @@ public class MPGamePageViewModel : ViewModelBase
         WinnerViewModel = winnerViewModel;
         PlayViewModel = playViewModel;
         _mainViewModel = mainViewModel;
+        MultiplayerRoomsViewModel = multiplayerRoomsViewModel;
         _logger = logger;
 
         ZiehenCommand = new RelayCommand(ZiehenCommandMethod);
