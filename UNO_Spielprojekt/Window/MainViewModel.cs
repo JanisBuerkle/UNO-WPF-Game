@@ -58,7 +58,7 @@ public class MainViewModel : ViewModelBase
         AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic, ThemeModes, ApiService);
 
         MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger);
-        MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, MultiplayerRoomsViewModel, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel, ThemeModes);
+        MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel, MultiplayerRoomsViewModel);
         HubService = new HubService(this, MultiplayerRoomsViewModel);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
@@ -313,6 +313,8 @@ public class MainViewModel : ViewModelBase
         ScoreboardVisible = false;
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
+        OnPropertyChanged(nameof(MultiplayerRoomsViewModel));
+
     }
 
     public void GoToScoreboard()

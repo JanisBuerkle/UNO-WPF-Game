@@ -40,11 +40,11 @@
         <!-- Fertig und der Spielername -->
         <StackPanel Grid.Row="3" Grid.Column="2" VerticalAlignment="Bottom">
             <Button Style="{StaticResource MyButtonStyle}" Foreground="White"
-                    Background="CornflowerBlue" Content="{Binding CurrentPlayerName}" 
-                    FontSize="40" FontWeight="Bold" Height="100" Width="200" Margin="10"/>
+                    Background="CornflowerBlue" Content="{Binding CurrentPlayerName}"
+                    FontSize="40" FontWeight="Bold" Height="100" Width="200" Margin="10" />
 
             <Button Style="{StaticResource MyButtonStyle}" Command="{Binding FertigCommand}" Foreground="White"
-                    Background="{Binding TheBackground}" Content="Fertig" 
+                    Background="{Binding TheBackground}" Content="Fertig"
                     FontSize="40" FontWeight="Bold" Height="100" Width="200" Margin="10" />
         </StackPanel>
 
@@ -88,7 +88,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-        
+
         <!-- Für die extra Fenster -->
         <Grid Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="3" ZIndex="1000"
               Visibility="{Binding ChooseColorVisible, Converter={StaticResource BooleanToVisibilityConverter}}">

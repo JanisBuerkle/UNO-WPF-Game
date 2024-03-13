@@ -2,21 +2,22 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using UNO_Spielprojekt.GamePage;
+using UNO_Spielprojekt.MultiplayerRooms;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
 
-public partial class MPGamePageView : UserControl
+public partial class MpGamePageView : UserControl
 {
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-        nameof(ViewModel), typeof(MPGamePageViewModel), typeof(MPGamePageView), new PropertyMetadata(default(MPGamePageViewModel)));
+        nameof(ViewModel), typeof(MPGamePageViewModel), typeof(MpGamePageView), new PropertyMetadata(default(MPGamePageViewModel)));
 
     public MPGamePageViewModel ViewModel
     {
-        get { return (MPGamePageViewModel)GetValue(ViewModelProperty); }
-        set { SetValue(ViewModelProperty, value); }
+        get => (MPGamePageViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
     
-    public MPGamePageView()
+    public MpGamePageView()
     {
         InitializeComponent();
     }
@@ -25,7 +26,7 @@ public partial class MPGamePageView : UserControl
     {
         if (sender is Button button && button.DataContext is CardViewModel card)
         {
-            int selectedIndex = ViewModel.CurrentHand.IndexOf(card);
+            int selectedIndex = ViewModel.MultiplayerRoomsViewModel.Player.PlayerHand.IndexOf(card);
             ViewModel.SelectedCardIndex = selectedIndex;
             ViewModel.LegenCommandMethod();
         }
@@ -37,5 +38,11 @@ public partial class MPGamePageView : UserControl
         double scrollFactor = 1.0;
         scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - e.Delta * scrollFactor);
         e.Handled = true;
+    }
+
+    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+        ItemsControl.Items.Refresh();
+        ItemsControl.UpdateLayout();
     }
 }

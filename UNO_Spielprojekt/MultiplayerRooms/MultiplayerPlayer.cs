@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UNO_Spielprojekt.GamePage;
 
 namespace UNO_Spielprojekt.MultiplayerRooms;
@@ -11,8 +12,8 @@ public class MultiplayerPlayer : ViewModelBase
 
     public bool IsLeader { get; set; }
 
-    private ObservableCollection<CardViewModel> _playerHand = new ObservableCollection<CardViewModel>();
-    public ObservableCollection<CardViewModel> PlayerHand
+    private List<CardViewModel> _playerHand = new();
+    public List<CardViewModel> PlayerHand
     {
         get => _playerHand;
         set

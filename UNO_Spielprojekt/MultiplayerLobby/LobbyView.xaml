@@ -12,7 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid DataContext="{Binding ElementName=Lobby, Path=ViewModel.MultiplayerRoomsViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -38,16 +38,16 @@
                 <Run>/</Run>
                 <Run Text="{Binding SelectedRoom2.MaximalUsers}" />
             </TextBlock>
-            
+
             <Border MaxWidth="40">
-                <Image Source="pack://application:,,,/Assets/Symbols/defaultuser.png"></Image>
+                <Image Source="pack://application:,,,/Assets/Symbols/defaultuser.png" />
             </Border>
         </StackPanel>
 
         <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SelectedRoom2.Players}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    
+
                     <Border Margin="5" Padding="5" BorderThickness="2" Background="#2e2e2e" BorderBrush="#2e2e2e"
                             CornerRadius="10">
                         <Grid>
@@ -65,7 +65,7 @@
                             </Label>
                         </Grid>
                     </Border>
-                    
+
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
@@ -77,7 +77,8 @@
             <ComboBox Foreground="White" Height="50" Width="200"
                       ItemsSource="{Binding ComboBoxItems}"
                       SelectedItem="{Binding SelectedMaximalCount}" />
-            <Button DataContext="{Binding ElementName=Lobby, Path=ViewModel}" Content="Starten" Background="DarkGreen" HorizontalAlignment="Center" Height="50" Width="200" Command="{Binding StartRoomCommand }"/>
+            <Button DataContext="{Binding ElementName=Lobby, Path=ViewModel}" Content="Starten" Background="DarkGreen"
+                    HorizontalAlignment="Center" Height="50" Width="200" Command="{Binding StartRoomCommand }" />
         </StackPanel>
     </Grid>
 </UserControl>

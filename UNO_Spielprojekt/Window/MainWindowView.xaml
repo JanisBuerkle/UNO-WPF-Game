@@ -48,7 +48,7 @@
             <addPlayer:AddPlayerView
                 Visibility="{Binding AddPlayerVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ViewModel="{Binding AddPlayerViewModel}" />
-            <multiplayerGamePage:MPGamePageView
+            <multiplayerGamePage:MpGamePageView
                 Visibility="{Binding MultiplayerGamePageVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ViewModel="{Binding MultiplayerGamePageViewModel}" />
             <gamePage:GameView
