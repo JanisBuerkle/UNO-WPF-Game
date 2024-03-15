@@ -6,7 +6,6 @@ using UNO_Server.ViewModel;
 
 namespace UNO_Server.Controllers
 {
-    
     [Route("api/[controller]")]
     [ApiController]
     public class PlayerController : ControllerBase
@@ -115,7 +114,7 @@ namespace UNO_Server.Controllers
 
             _context.Players.Remove(multiplayerPlayer);
             await _context.SaveChangesAsync();
-            
+
             await _myHub.SendGetAllRooms("deletePlayerSended");
             return NoContent();
         }

@@ -2,6 +2,7 @@
 using UNO_Server.ViewModel;
 
 namespace UNO_Server.Models;
+
 public class RoomContext : DbContext
 {
     public RoomContext(DbContextOptions<RoomContext> options) : base(options)

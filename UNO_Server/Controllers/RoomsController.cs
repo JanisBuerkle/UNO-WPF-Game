@@ -12,7 +12,6 @@ namespace UNO_Server.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
-
         private readonly RoomContext _context;
         private readonly IHubContext<MyHub> _hubContext;
         private readonly MyHub _myHub;
@@ -40,7 +39,8 @@ namespace UNO_Server.Controllers
                 return NotFound();
             }
 
-            return await _context.RoomItems.Include(item => item.Players).ThenInclude(card => card.PlayerHand).ToListAsync();
+            return await _context.RoomItems.Include(item => item.Players).ThenInclude(card => card.PlayerHand)
+                .ToListAsync();
         }
 
         // GET: api/API/5
@@ -122,7 +122,6 @@ namespace UNO_Server.Controllers
         public async Task<IActionResult> RoomId(long roomid, RoomItem roomItem)
         {
             Log.Information($"Room {roomid} started.");
-            
 
 
             int startingPlayer = _random.Next(0, roomItem.Players.Count);

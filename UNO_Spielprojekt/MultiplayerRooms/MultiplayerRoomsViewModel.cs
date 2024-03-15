@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
@@ -9,6 +8,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using tt.Tools.Logging;
+using UNO_Spielprojekt.MultiplayerGamePage;
 using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.MultiplayerRooms;
@@ -54,7 +54,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     private readonly ILogger _logger;
     public MainViewModel MainViewModel { get; set; }
-
+    
     private ObservableCollection<Rooms> _roomList = new ObservableCollection<Rooms>();
 
     public ObservableCollection<Rooms> RoomList
@@ -126,7 +126,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     private List<Rooms>? Rooms { get; set; }
     private List<MultiplayerPlayer>? Players { get; set; }
     private HttpClient _httpClient;
-    private bool _playButtonEnabled;
 
     public async Task GetAllRooms()
     {
@@ -138,11 +137,15 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
         Rooms = JsonConvert.DeserializeObject<List<Rooms>>(gettedLobbies);
 
-        Application.Current.Dispatcher.InvokeAsync(() => { RoomList = new ObservableCollection<Rooms>(Rooms); });
-
+        Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            if (Rooms != null) RoomList = new ObservableCollection<Rooms>(Rooms);
+        });
+        
+        
+         
         if (SelectedRoom2 != null)
         {
-
             foreach (var room in Rooms)
             {
                 if (SelectedRoom2.Id == room.Id)
@@ -150,15 +153,20 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                     SelectedRoom2 = room;
                 }
             }
+
             foreach (var player in SelectedRoom2.Players)
             {
                 if (PlayerName == player.Name)
                 {
                     Player = player;
+
+                    Application.Current.Dispatcher.InvokeAsync(() => MainViewModel.MultiplayerGamePageViewModel.SetCurrentHand());
                 }
             }
-        }
 
+
+        }
+        
         foreach (var room in Rooms)
         {
             if (room.OnlineUsers == 5)

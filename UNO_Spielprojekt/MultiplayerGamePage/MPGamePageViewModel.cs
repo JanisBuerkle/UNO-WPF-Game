@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Xml.Serialization;
+﻿using System.Collections.ObjectModel;
 using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Scoreboard;
-using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Window;
 using UNO_Spielprojekt.Winner;
 using System.Windows.Media;
@@ -27,7 +20,7 @@ public class MPGamePageViewModel : ViewModelBase
         set
         {
             _theBackground = value;
-            OnPropertyChanged(nameof(TheBackground));
+            OnPropertyChanged();
         }
     }
 
@@ -49,7 +42,20 @@ public class MPGamePageViewModel : ViewModelBase
         }
     }
 
-    public ObservableCollection<CardViewModel> CurrentHand { get; set; } = new();
+    private ObservableCollection<CardViewModel> _currentHand = new ObservableCollection<CardViewModel>();
+
+    public ObservableCollection<CardViewModel> CurrentHand
+    {
+        get => _currentHand;
+        set
+        {
+            if (_currentHand != value)
+            {
+                _currentHand = value;
+                OnPropertyChanged();
+            }
+        }
+    }
     private CardViewModel SelectedCard { get; set; }
 
     private readonly MainViewModel _mainViewModel;
@@ -96,7 +102,8 @@ public class MPGamePageViewModel : ViewModelBase
 
     private void ZiehenCommandMethod()
     {
-        MultiplayerRoomsViewModel.Player.PlayerHand.Add(new CardViewModel(){ Color = "Blue", Value = "2", ImageUri = "pack://application:,,,/Assets/cards/2/Blue.png" });
+        SetCurrentHand();
+        // MultiplayerRoomsViewModel.Player.PlayerHand.Add(new CardViewModel(){ Color = "Blue", Value = "2", ImageUri = "pack://application:,,,/Assets/cards/2/Blue.png" });
         OnPropertyChanged(nameof(MultiplayerRoomsViewModel));
     }
 
@@ -107,6 +114,20 @@ public class MPGamePageViewModel : ViewModelBase
 
     public void LegenCommandMethod()
     {
+        
         SelectedCard = MultiplayerRoomsViewModel.Player.PlayerHand[SelectedCardIndex];
+    }
+    
+    public void SetCurrentHand()
+    {
+        if (MultiplayerRoomsViewModel.Player.PlayerHand != null)
+        {
+            CurrentHand.Clear();
+            foreach (var card in MultiplayerRoomsViewModel.Player.PlayerHand)
+            {
+                CurrentHand.Add(card);
+            }
+            _logger.Info("CurrentHand wurde gesetzt.");
+        }
     }
 }

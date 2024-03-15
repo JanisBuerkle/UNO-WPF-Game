@@ -14,7 +14,7 @@ builder.Services.AddSingleton<MyHub>();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File((Path.Combine(AppContext.BaseDirectory,"Logs", "log.txt")), rollingInterval: RollingInterval.Day)
+    .WriteTo.File((Path.Combine(AppContext.BaseDirectory, "Logs", "log.txt")), rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 

@@ -4,7 +4,6 @@ namespace UNO_Server.Models;
 
 public class StartModel
 {
-    
     public readonly List<CardViewModel> WildCards = new List<CardViewModel>()
     {
         new CardViewModel
@@ -269,16 +268,18 @@ public class StartModel
         foreach (var card in WildCards)
         {
             roomItem.Cards.Add(card);
-        }        
+        }
+
         foreach (var card in Draw4Cards)
         {
             roomItem.Cards.Add(card);
-        }      
+        }
+
         foreach (var card in cards)
         {
             roomItem.Cards.Add(card);
         }
-        
+
         var number = roomItem.Cards.Count;
         while (number > 1)
         {

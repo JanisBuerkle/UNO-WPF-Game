@@ -65,7 +65,8 @@
                             <Image Source="pack://application:,,,/Assets/Symbols/schloss.png"></Image>
                         </Border>
 
-                        <TextBlock Grid.Column="1" Foreground="White" Text="{Binding RoomName}" VerticalAlignment="Center" FontSize="20" />
+                        <TextBlock Grid.Column="1" Foreground="White" Text="{Binding RoomName}"
+                                   VerticalAlignment="Center" FontSize="20" />
                         <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,30,0">
                             <TextBlock Foreground="White" FontWeight="Bold" FontSize="20" HorizontalAlignment="Right"
                                        VerticalAlignment="Center" Margin="0,5,5,0">
@@ -78,10 +79,11 @@
                             </Border>
                         </StackPanel>
 
-                        <Button Grid.Column="3" Width="90" Height="40" HorizontalAlignment="Right" IsEnabled="{Binding PlayButtonEnabled}"
+                        <Button Grid.Column="3" Width="90" Height="40" HorizontalAlignment="Right"
+                                IsEnabled="{Binding PlayButtonEnabled}"
                                 Background="DarkGreen" Foreground="White" FontSize="20" FontWeight="Bold"
-                                Content="{Binding PlayButtonContent}"         
-                                Command="{Binding DataContext.GoToLobbyCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"/>
+                                Content="{Binding PlayButtonContent}"
+                                Command="{Binding DataContext.GoToLobbyCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -97,7 +99,7 @@
               Visibility="{Binding MainViewModel.GiveNameVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
             <multiplayerGiveName:GiveNameView ViewModel="{Binding MainViewModel.GiveNameViewModel}" />
         </Grid>
-        
+
         <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000"
               Visibility="{Binding MainViewModel.PasswordVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
             <multiplayerPassword:PasswordView ViewModel="{Binding MainViewModel.PasswordViewModel}" />

@@ -7,8 +7,9 @@ public class RoomItem : ViewModelBase
 {
     public long Id { get; set; }
     public string RoomName { get; set; }
-    
+
     private int _onlineUsers;
+
     public int OnlineUsers
     {
         get => _onlineUsers;
@@ -21,8 +22,9 @@ public class RoomItem : ViewModelBase
             }
         }
     }
-    
+
     private int _maximalUsers;
+
     public int MaximalUsers
     {
         get => _maximalUsers;
@@ -35,11 +37,13 @@ public class RoomItem : ViewModelBase
             }
         }
     }
-    public bool PasswordSecured { get; set;}
-    public string Password { get; set;}
+
+    public bool PasswordSecured { get; set; }
+    public string Password { get; set; }
     public List<MultiplayerPlayer> Players { get; set; } = new List<MultiplayerPlayer>();
-    
+
     private ObservableCollection<CardViewModel> _cards = new();
+
     public ObservableCollection<CardViewModel> Cards
     {
         get => _cards;

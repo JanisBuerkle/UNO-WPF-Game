@@ -314,6 +314,7 @@ public class MainViewModel : ViewModelBase
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
         OnPropertyChanged(nameof(MultiplayerRoomsViewModel));
+        
 
     }
 

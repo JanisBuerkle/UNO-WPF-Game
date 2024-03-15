@@ -3,8 +3,8 @@
 public class CardViewModel : ViewModelBase
 {
     public long Id { get; set; }
-    
-    
+
+
     private string _value;
     private string _color;
     private string _imageUri;

@@ -78,9 +78,9 @@ public class Rooms : ViewModelBase
             }
         }
     }
-    
-    [JsonProperty("_cards")]
-    private ObservableCollection<CardViewModel> _cards = new();
+
+    [JsonProperty("_cards")] private ObservableCollection<CardViewModel> _cards = new();
+
     [JsonProperty("Cards")]
     public ObservableCollection<CardViewModel> Cards
     {
