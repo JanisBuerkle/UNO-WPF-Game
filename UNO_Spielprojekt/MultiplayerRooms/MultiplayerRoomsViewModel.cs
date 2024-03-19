@@ -54,7 +54,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     private readonly ILogger _logger;
     public MainViewModel MainViewModel { get; set; }
-    
+
     private ObservableCollection<Rooms> _roomList = new ObservableCollection<Rooms>();
 
     public ObservableCollection<Rooms> RoomList
@@ -141,9 +141,8 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         {
             if (Rooms != null) RoomList = new ObservableCollection<Rooms>(Rooms);
         });
-        
-        
-         
+
+
         if (SelectedRoom2 != null)
         {
             foreach (var room in Rooms)
@@ -160,13 +159,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                 {
                     Player = player;
 
-                    Application.Current.Dispatcher.InvokeAsync(() => MainViewModel.MultiplayerGamePageViewModel.SetCurrentHand());
+                    Application.Current.Dispatcher.InvokeAsync(() =>
+                        MainViewModel.MultiplayerGamePageViewModel.SetCurrentHand());
                 }
             }
-
-
         }
-        
+
         foreach (var room in Rooms)
         {
             if (room.OnlineUsers == 5)

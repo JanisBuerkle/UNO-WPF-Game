@@ -39,8 +39,9 @@ namespace UNO_Server.Controllers
                 return NotFound();
             }
 
-            return await _context.RoomItems.Include(item => item.Players).ThenInclude(card => card.PlayerHand)
-                .ToListAsync();
+            var allRooms = await _context.RoomItems.Include(item => item.Players).ThenInclude(item => item.PlayerHand).Include(item => item.Cards).ToListAsync();
+
+            return allRooms;
         }
 
         // GET: api/API/5
@@ -123,6 +124,21 @@ namespace UNO_Server.Controllers
         {
             Log.Information($"Room {roomid} started.");
 
+            roomItem.Cards.Clear();
+            foreach (var card in _startModel.WildCards)
+            {
+                roomItem.Cards.Add(card);
+            }
+
+            foreach (var card in _startModel.Draw4Cards)
+            {
+                roomItem.Cards.Add(card);
+            }
+
+            foreach (var card in _startModel.cards)
+            {
+                roomItem.Cards.Add(card);
+            }
 
             int startingPlayer = _random.Next(0, roomItem.Players.Count);
             await _startModel.ShuffleDeck(roomItem);
@@ -138,6 +154,28 @@ namespace UNO_Server.Controllers
             return NoContent();
         }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        [HttpPut("drawCard/{playerName}")]
+        public async Task<IActionResult> UpdateMaximalPlayers(string playerName, RoomItem roomItem)
+        {
+            Log.Information("DrawCard triggered.");
+
+            foreach (var player in roomItem.Players)
+            {
+                if (player.Name == playerName)
+                {
+                    player.PlayerHand.Add(roomItem.Cards.First());
+                    roomItem.Cards.Remove(roomItem.Cards.First());
+                }
+            }
+
+            _context.RoomItems.Update(roomItem);
+            await _context.SaveChangesAsync();
+
+            await _myHub.SendGetAllRooms("drawCard");
+
+            return NoContent();
+        }
 
         [HttpPut("updatemaximalplayers/{selectedMaximalUsers}")]
         public async Task<IActionResult> UpdateMaximalPlayers(int selectedMaximalUsers, RoomItem roomItem)

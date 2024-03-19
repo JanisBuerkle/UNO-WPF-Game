@@ -10,7 +10,7 @@ public class MultiplayerPlayer : ViewModelBase
     public string Name { get; set; }
     public bool IsLeader { get; set; }
 
-    private ObservableCollection<CardViewModel> _playerHand  = new ObservableCollection<CardViewModel>();
+    private ObservableCollection<CardViewModel> _playerHand = new ObservableCollection<CardViewModel>();
 
     public ObservableCollection<CardViewModel> PlayerHand
     {

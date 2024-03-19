@@ -25,10 +25,10 @@ public class MainViewModel : ViewModelBase
     public GiveNameViewModel GiveNameViewModel { get; set; }
     public GameData GameData { get; set; }
     private ApiService ApiService { get; set; }
-    
+
     private HubService HubService { get; set; }
     public WinnerViewModel WinnerViewModel { get; }
-    
+
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; }
     public MPGamePageViewModel MultiplayerGamePageViewModel { get; }
     public LobbyViewModel LobbyViewModel { get; }
@@ -64,7 +64,7 @@ public class MainViewModel : ViewModelBase
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
         CreateRoomViewModel = new CreateRoomViewModel(this, logger, MultiplayerRoomsViewModel, ApiService);
         PasswordViewModel = new PasswordViewModel(this, logger, MultiplayerRoomsViewModel);
-        
+
         MainMenuVisible = true;
         // MultiplayerGamePageVisible = true;
     }
@@ -84,7 +84,7 @@ public class MainViewModel : ViewModelBase
     private bool _giveNameVisible;
     private bool _lobbyVisible;
     private readonly GameLogic GameLogic;
-    private readonly PlayViewModel PlayViewModel;    
+    private readonly PlayViewModel PlayViewModel;
 
 
     public bool MainMenuVisible
@@ -142,7 +142,7 @@ public class MainViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
-    
+
     public bool MultiplayerGamePageVisible
     {
         get => _multiplayerGamePageVisible;
@@ -244,7 +244,7 @@ public class MainViewModel : ViewModelBase
         AddPlayerVisible = false;
         ScoreboardVisible = false;
         CreateRoomVisible = false;
-        MultiplayerRoomsVisible = false;        
+        MultiplayerRoomsVisible = false;
         MultiplayerGamePageVisible = false;
     }
 
@@ -297,7 +297,8 @@ public class MainViewModel : ViewModelBase
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
         MultiplayerGamePageVisible = false;
-    }    
+    }
+
     public void GoToMultiplayerGame()
     {
         MultiplayerGamePageVisible = true;
@@ -314,8 +315,6 @@ public class MainViewModel : ViewModelBase
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
         OnPropertyChanged(nameof(MultiplayerRoomsViewModel));
-        
-
     }
 
     public void GoToScoreboard()

@@ -13,14 +13,9 @@ public partial class LobbyView
         get => (LobbyViewModel)GetValue(ViewModelProperty);
         set => SetValue(ViewModelProperty, value);
     }
-    
+
     public LobbyView()
     {
         InitializeComponent();
-    }
-
-    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-    {
-        ViewModel.MultiplayerRoomsViewModel.SelectedRoom2.Players.Add(new MultiplayerPlayer() {Name = "TestSpieler123", RoomId = 1});
     }
 }

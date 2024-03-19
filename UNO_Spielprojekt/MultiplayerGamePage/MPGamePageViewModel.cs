@@ -1,11 +1,16 @@
 ﻿using System.Collections.ObjectModel;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Scoreboard;
 using UNO_Spielprojekt.Window;
 using UNO_Spielprojekt.Winner;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json;
 using tt.Tools.Logging;
+using UNO_Spielprojekt.AddPlayer;
 using UNO_Spielprojekt.MultiplayerRooms;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
@@ -56,6 +61,7 @@ public class MPGamePageViewModel : ViewModelBase
             }
         }
     }
+
     private CardViewModel SelectedCard { get; set; }
 
     private readonly MainViewModel _mainViewModel;
@@ -72,12 +78,13 @@ public class MPGamePageViewModel : ViewModelBase
     public RelayCommand FertigCommand { get; }
     public RelayCommand UnoCommand { get; }
     public RelayCommand ExitConfirmCommand { get; }
-
+    private HttpClient _httpClient;
 
     public MPGamePageViewModel(MainViewModel mainViewModel, ILogger logger, PlayViewModel playViewModel,
         GameLogic gameLogic, WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel,
         MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
+        _httpClient = new HttpClient();
         MultiplayerRoomsViewModel = multiplayerRoomsViewModel;
         _scoreboardViewModel = scoreboardViewModel;
         GameLogic = gameLogic;
@@ -90,7 +97,7 @@ public class MPGamePageViewModel : ViewModelBase
 
         RoundCounter = 1;
         RoundCounterString = $"Runde: {RoundCounter}/\u221e";
-        
+
         ZiehenCommand = new RelayCommand(ZiehenCommandMethod);
         // LegenCommand = new RelayCommand(LegenCommandMethod);
         // FertigCommand = new RelayCommand(FertigCommandMethod);
@@ -100,8 +107,21 @@ public class MPGamePageViewModel : ViewModelBase
 
     // public List<string> TestListe { get; set; }= new List<string>() {"sddsds", "dsdsdsas", "dsadsa" };
 
+    private async Task DrawCard(Rooms roomToUpdate)
+    {
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/drawCard/{MultiplayerRoomsViewModel.Player.Name}";
+
+        var response = await _httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+
+        await MultiplayerRoomsViewModel.GetAllRooms();
+    }
     private void ZiehenCommandMethod()
     {
+        DrawCard(MultiplayerRoomsViewModel.SelectedRoom2);
         SetCurrentHand();
         // MultiplayerRoomsViewModel.Player.PlayerHand.Add(new CardViewModel(){ Color = "Blue", Value = "2", ImageUri = "pack://application:,,,/Assets/cards/2/Blue.png" });
         OnPropertyChanged(nameof(MultiplayerRoomsViewModel));
@@ -114,10 +134,9 @@ public class MPGamePageViewModel : ViewModelBase
 
     public void LegenCommandMethod()
     {
-        
         SelectedCard = MultiplayerRoomsViewModel.Player.PlayerHand[SelectedCardIndex];
     }
-    
+
     public void SetCurrentHand()
     {
         if (MultiplayerRoomsViewModel.Player.PlayerHand != null)
@@ -127,6 +146,7 @@ public class MPGamePageViewModel : ViewModelBase
             {
                 CurrentHand.Add(card);
             }
+
             _logger.Info("CurrentHand wurde gesetzt.");
         }
     }
