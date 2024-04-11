@@ -25,7 +25,7 @@ public class HubService
             .Build();
 
 
-        _hubConnection.On<string>("GetAllRooms", nachricht => { _multiplayerRoomsViewModel.GetAllRooms(); });
+        _hubConnection.On<string>("GetAllRooms", nachricht => { _multiplayerRoomsViewModel.GetRooms(); });
 
         try
         {

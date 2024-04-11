@@ -1,5 +1,4 @@
-﻿using System.Windows.Xps;
-using UNO_Spielprojekt.AddPlayer;
+﻿using UNO_Spielprojekt.AddPlayer;
 using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Logging;
 using UNO_Spielprojekt.MainMenu;
@@ -14,6 +13,7 @@ using UNO_Spielprojekt.Scoreboard;
 using UNO_Spielprojekt.Service;
 using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Winner;
+using UNO.Contract;
 
 namespace UNO_Spielprojekt.Window;
 
@@ -38,6 +38,8 @@ public class MainViewModel : ViewModelBase
     public ScoreboardViewModel ScoreboardViewModel { get; }
     public MainMenuViewModel MainMenuViewModel { get; set; }
     public AddPlayerViewModel AddPlayerViewModel { get; set; }
+    
+    private RoomClient RoomClient { get; set; }
 
     public MainViewModel()
     {
@@ -51,14 +53,21 @@ public class MainViewModel : ViewModelBase
         WinnerViewModel = new WinnerViewModel(this, ThemeModes);
         GameLogic = new GameLogic(PlayViewModel, logger, ApiService);
         ScoreboardViewModel = new ScoreboardViewModel(this, logger, ThemeModes);
-        GameViewModel = new GameViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel, ThemeModes);
+        GameViewModel = new GameViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel,
+            ThemeModes);
         RulesViewModel = new RulesViewModel(this, logger, ThemeModes);
         GameData = new GameData(ScoreboardViewModel, GameViewModel);
-        MainMenuViewModel = new MainMenuViewModel(this, logger, GameData, ThemeModes);
+        MainMenuViewModel = new MainMenuViewModel(this, logger, GameData);
         AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic, ThemeModes, ApiService);
 
-        MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger);
-        MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel, MultiplayerRoomsViewModel);
+
+        RoomClient = new RoomClient();
+        
+        
+        
+        MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger, RoomClient);
+        MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel,
+            ScoreboardViewModel, MultiplayerRoomsViewModel);
         HubService = new HubService(this, MultiplayerRoomsViewModel);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
@@ -85,8 +94,7 @@ public class MainViewModel : ViewModelBase
     private bool _lobbyVisible;
     private readonly GameLogic GameLogic;
     private readonly PlayViewModel PlayViewModel;
-
-
+    
     public bool MainMenuVisible
     {
         get => _mainMenuVisible;

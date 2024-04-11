@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Windows.Media;
-using System.Xml.Serialization;
-using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
-using UNO_Spielprojekt.Scoreboard;
-using UNO_Spielprojekt.Setting;
-using UNO_Spielprojekt.Window;
+using System.Windows.Media;
+using System.ComponentModel;
 using UNO_Spielprojekt.Winner;
+using UNO_Spielprojekt.Window;
+using UNO_Spielprojekt.Setting;
+using System.Xml.Serialization;
+using System.Collections.Generic;
+using CommunityToolkit.Mvvm.Input;
+using UNO_Spielprojekt.Scoreboard;
+using System.Collections.ObjectModel;
 
 namespace UNO_Spielprojekt.GamePage;
 
@@ -20,6 +20,7 @@ public class GameViewModel : ViewModelBase
     private readonly Random _random = new();
 
     private Brush _theBackground;
+
     public Brush TheBackground
     {
         get => _theBackground;
@@ -115,7 +116,8 @@ public class GameViewModel : ViewModelBase
     public RelayCommand ExitConfirmCommand { get; }
 
 
-    public GameViewModel(MainViewModel mainViewModel, ILogger logger, PlayViewModel playViewModel, GameLogic gameLogic, WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel, ThemeModes themeModes)
+    public GameViewModel(MainViewModel mainViewModel, ILogger logger, PlayViewModel playViewModel, GameLogic gameLogic,
+        WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel, ThemeModes themeModes)
     {
         _scoreboardViewModel = scoreboardViewModel;
         TheBackground = Brushes.Transparent;
@@ -580,6 +582,7 @@ public class GameViewModel : ViewModelBase
                     { PlayerScoreboardName = CurrentPlayerName, PlayerScoreboardScore = 1 });
                 SavePlayerToXml(players);
             }
+
             ResetAllPropertys();
             _mainViewModel.GameData.Load();
         }
@@ -602,7 +605,6 @@ public class GameViewModel : ViewModelBase
         var x = (List<ScoreboardPlayer>)serializer.Deserialize(fileStream)!;
         fileStream.Close();
         return x;
-        
     }
 
     public void InitializeGame()

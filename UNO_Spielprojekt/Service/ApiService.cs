@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UNO_Spielprojekt.MultiplayerRooms;
 using UNO_Spielprojekt.Window;
+using UNO.Contract;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace UNO_Spielprojekt.Service
@@ -35,7 +36,7 @@ namespace UNO_Spielprojekt.Service
                     var responseString = await response.Content.ReadAsStringAsync();
 
                     _mainViewModel.MultiplayerRoomsViewModel.SelectedRoom2 =
-                        JsonConvert.DeserializeObject<Rooms>(responseString);
+                        JsonConvert.DeserializeObject<RoomDTO>(responseString);
                 }
                 else
                 {

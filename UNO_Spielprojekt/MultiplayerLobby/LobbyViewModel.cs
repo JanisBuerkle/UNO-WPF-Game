@@ -9,7 +9,7 @@ namespace UNO_Spielprojekt.MultiplayerLobby;
 public class LobbyViewModel : ViewModelBase
 {
     private readonly ILogger _logger;
-    public MainViewModel MainViewModel { get; set; }
+    private MainViewModel MainViewModel { get; set; }
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
     public RelayCommand StartRoomCommand { get; }
 
@@ -24,7 +24,7 @@ public class LobbyViewModel : ViewModelBase
 
     private void StartRoomCommandMethod()
     {
-        MultiplayerRoomsViewModel.StartRoom();
+        MultiplayerRoomsViewModel.RoomClient.StartRoom(MultiplayerRoomsViewModel.SelectedRoom2);
         MainViewModel.GoToMultiplayerGame();
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using UNO_Spielprojekt.MultiplayerRooms;
+using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerCreateRoom;
 
@@ -77,7 +78,7 @@ public partial class CreateRoomView
             MaximalUsers = 5
         };
         //
-        ViewModel.MultiplayerRoomsViewModel.RoomList.Add(new Rooms()
+        ViewModel.MultiplayerRoomsViewModel.RoomList.Add(new RoomDTO()
         {
             RoomName = Raumname.Text,
             PasswordSecured = ViewModel.IsChecked,

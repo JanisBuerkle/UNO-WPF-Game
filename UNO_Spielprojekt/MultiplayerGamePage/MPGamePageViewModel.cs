@@ -1,17 +1,17 @@
-﻿using System.Collections.ObjectModel;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using UNO_Spielprojekt.GamePage;
+﻿using UNO_Spielprojekt.MultiplayerRooms;
+using System.Collections.ObjectModel;
 using UNO_Spielprojekt.Scoreboard;
+using CommunityToolkit.Mvvm.Input;
+using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Window;
 using UNO_Spielprojekt.Winner;
+using System.Threading.Tasks;
 using System.Windows.Media;
-using CommunityToolkit.Mvvm.Input;
-using Newtonsoft.Json;
 using tt.Tools.Logging;
-using UNO_Spielprojekt.AddPlayer;
-using UNO_Spielprojekt.MultiplayerRooms;
+using Newtonsoft.Json;
+using System.Net.Http;
+using UNO.Contract;
+using System.Text;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
 
@@ -47,9 +47,9 @@ public class MPGamePageViewModel : ViewModelBase
         }
     }
 
-    private ObservableCollection<CardViewModel> _currentHand = new ObservableCollection<CardViewModel>();
+    private ObservableCollection<CardDTO> _currentHand = new ObservableCollection<CardDTO>();
 
-    public ObservableCollection<CardViewModel> CurrentHand
+    public ObservableCollection<CardDTO> CurrentHand
     {
         get => _currentHand;
         set
@@ -62,7 +62,7 @@ public class MPGamePageViewModel : ViewModelBase
         }
     }
 
-    private CardViewModel SelectedCard { get; set; }
+    private CardDTO SelectedCard { get; set; }
 
     private readonly MainViewModel _mainViewModel;
     private readonly ILogger _logger;
@@ -78,7 +78,7 @@ public class MPGamePageViewModel : ViewModelBase
     public RelayCommand FertigCommand { get; }
     public RelayCommand UnoCommand { get; }
     public RelayCommand ExitConfirmCommand { get; }
-    private HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
 
     public MPGamePageViewModel(MainViewModel mainViewModel, ILogger logger, PlayViewModel playViewModel,
         GameLogic gameLogic, WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel,
@@ -94,7 +94,6 @@ public class MPGamePageViewModel : ViewModelBase
         _logger = logger;
 
         TheBackground = Brushes.Transparent;
-
         RoundCounter = 1;
         RoundCounterString = $"Runde: {RoundCounter}/\u221e";
 
@@ -105,9 +104,7 @@ public class MPGamePageViewModel : ViewModelBase
         // ExitConfirmCommand = new RelayCommand(ExitConfirmCommandMethod);
     }
 
-    // public List<string> TestListe { get; set; }= new List<string>() {"sddsds", "dsdsdsas", "dsadsa" };
-
-    private async Task DrawCard(Rooms roomToUpdate)
+    private async Task DrawCard(RoomDTO roomToUpdate)
     {
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
@@ -117,8 +114,9 @@ public class MPGamePageViewModel : ViewModelBase
         var response = await _httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
 
-        await MultiplayerRoomsViewModel.GetAllRooms();
+        await MultiplayerRoomsViewModel.GetRooms();
     }
+
     private void ZiehenCommandMethod()
     {
         DrawCard(MultiplayerRoomsViewModel.SelectedRoom2);
@@ -146,7 +144,6 @@ public class MPGamePageViewModel : ViewModelBase
             {
                 CurrentHand.Add(card);
             }
-
             _logger.Info("CurrentHand wurde gesetzt.");
         }
     }

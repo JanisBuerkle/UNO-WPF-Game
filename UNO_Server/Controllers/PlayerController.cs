@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using UNO_Server.Hubs;
 using UNO_Server.Models;
 using UNO_Server.ViewModel;
+using UNO.Contract;
 
 namespace UNO_Server.Controllers
 {
@@ -21,7 +22,7 @@ namespace UNO_Server.Controllers
 
         // GET: api/Player
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MultiplayerPlayer>>> GetPlayers()
+        public async Task<ActionResult<IEnumerable<MultiplayerDTO>>> GetPlayers()
         {
             if (_context.Players == null)
             {
@@ -33,7 +34,7 @@ namespace UNO_Server.Controllers
 
         // GET: api/Player/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MultiplayerPlayer>> GetMultiplayerPlayer(long id)
+        public async Task<ActionResult<MultiplayerDTO>> GetMultiplayerPlayer(long id)
         {
             if (_context.Players == null)
             {
@@ -53,7 +54,7 @@ namespace UNO_Server.Controllers
         // PUT: api/Player/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMultiplayerPlayer(long id, MultiplayerPlayer multiplayerPlayer)
+        public async Task<IActionResult> PutMultiplayerPlayer(long id, MultiplayerDTO multiplayerPlayer)
         {
             if (id != multiplayerPlayer.Id)
             {
@@ -80,11 +81,11 @@ namespace UNO_Server.Controllers
 
             return NoContent();
         }
-
+        
         // POST: api/Player
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MultiplayerPlayer>> PostMultiplayerPlayer(MultiplayerPlayer multiplayerPlayer)
+        public async Task<ActionResult<MultiplayerDTO>> PostMultiplayerPlayer(MultiplayerDTO multiplayerPlayer)
         {
             if (_context.Players == null)
             {

@@ -1,0 +1,90 @@
+﻿using System.Text;
+using Newtonsoft.Json;
+
+namespace UNO.Contract;
+public class RoomClient
+{
+    public async Task<string> GetAllRooms()
+    {
+        var httpClient = new HttpClient();
+        var respone = await httpClient.GetAsync("http://localhost:5000/api/Rooms");
+        respone.EnsureSuccessStatusCode();
+        
+        var gettedRooms = await respone.Content.ReadAsStringAsync();
+        return gettedRooms;
+    }
+
+    private async Task GetPlayers()
+    {
+        var httpClient = new HttpClient();
+        var respone = await httpClient.GetAsync("http://localhost:5000/api/Player");
+        respone.EnsureSuccessStatusCode();
+        
+        var gettedLobbies = await respone.Content.ReadAsStringAsync();
+        var players = JsonConvert.DeserializeObject<List<MultiplayerDTO>>(gettedLobbies);
+    }
+
+    public async Task AddPlayer(RoomDTO roomToUpdate, string playerName)
+    {
+        var httpClient = new HttpClient();
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+        
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/addPlayer/{playerName}";
+
+        var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async void StartRoom(RoomDTO room)
+    {
+        var httpClient = new HttpClient();
+        var jsonContent = JsonConvert.SerializeObject(room);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+        
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/startroom/{room.Id}";
+
+        var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task UpdateMaximalPlayers(RoomDTO roomToUpdate, int selectedMaximalCount)
+    {
+        var httpClient = new HttpClient();
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/updatemaximalplayers/{selectedMaximalCount}";
+
+        var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task RemovePlayer(RoomDTO roomToUpdate, string playerName, List<MultiplayerDTO> players)
+    {
+        await GetPlayers();
+
+        var httpClient = new HttpClient();
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/removePlayer/{playerName}";
+
+        var response2 = await httpClient.PutAsync(addPlayerUrl, httpContent);
+        response2.EnsureSuccessStatusCode();
+
+        int id = 0;
+        foreach (var player in players)
+        {
+            if (player.Name == playerName)
+            {
+                id = (int)player.Id;
+            }
+        }
+
+        var removePlayerUrl = $"http://localhost:5000/api/Player/{id}";
+
+        var response = await httpClient.DeleteAsync(removePlayerUrl);
+        response.EnsureSuccessStatusCode();
+    }
+}

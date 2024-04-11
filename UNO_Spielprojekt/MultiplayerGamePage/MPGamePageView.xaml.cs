@@ -1,30 +1,30 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using UNO_Spielprojekt.GamePage;
-using UNO_Spielprojekt.MultiplayerRooms;
+using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
 
-public partial class MpGamePageView : UserControl
+public partial class MpGamePageView
 {
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-        nameof(ViewModel), typeof(MPGamePageViewModel), typeof(MpGamePageView), new PropertyMetadata(default(MPGamePageViewModel)));
+        nameof(ViewModel), typeof(MPGamePageViewModel), typeof(MpGamePageView),
+        new PropertyMetadata(default(MPGamePageViewModel)));
 
     public MPGamePageViewModel ViewModel
     {
         get => (MPGamePageViewModel)GetValue(ViewModelProperty);
         set => SetValue(ViewModelProperty, value);
     }
-    
+
     public MpGamePageView()
     {
         InitializeComponent();
     }
-    
+
     private void CardButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button && button.DataContext is CardViewModel card)
+        if (sender is Button button && button.DataContext is CardDTO card)
         {
             int selectedIndex = ViewModel.MultiplayerRoomsViewModel.Player.PlayerHand.IndexOf(card);
             ViewModel.SelectedCardIndex = selectedIndex;

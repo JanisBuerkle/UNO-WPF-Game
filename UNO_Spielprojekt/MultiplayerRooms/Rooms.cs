@@ -9,11 +9,10 @@ public class Rooms : ViewModelBase
     [JsonProperty("Id")] public long Id { get; set; }
     [JsonProperty("RoomName")] public string RoomName { get; set; }
 
-    [JsonProperty("_onlineUsers")] private int _onlineUsers;
-    public bool PlayButtonEnabled { get; set; } = true;
-
+    [JsonProperty("PlayButtonEnabled")] public bool PlayButtonEnabled { get; set; } = true;
     private string _playButtonContent = "Play";
 
+    [JsonProperty("PlayButtonContent")]
     public string PlayButtonContent
     {
         get => _playButtonContent;
@@ -26,6 +25,8 @@ public class Rooms : ViewModelBase
             }
         }
     }
+
+    private int _onlineUsers;
 
     [JsonProperty("OnlineUsers")]
     public int OnlineUsers
@@ -60,7 +61,6 @@ public class Rooms : ViewModelBase
 
     [JsonProperty("PasswordSecured")] public bool PasswordSecured { get; set; }
     [JsonProperty("Password")] public string Password { get; set; }
-
 
     [JsonProperty("_players")]
     private ObservableCollection<MultiplayerPlayer> _players = new ObservableCollection<MultiplayerPlayer>();

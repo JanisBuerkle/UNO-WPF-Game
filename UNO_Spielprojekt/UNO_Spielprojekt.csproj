@@ -198,4 +198,8 @@
       <PackageReference Include="WPF-UI-Enhanced" Version="10.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\UNO.Contract\UNO.Contract.csproj" />
+    </ItemGroup>
+
 </Project>

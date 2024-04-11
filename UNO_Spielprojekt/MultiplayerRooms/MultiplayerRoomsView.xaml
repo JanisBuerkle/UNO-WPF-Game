@@ -15,7 +15,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-
     <Grid DataContext="{Binding ElementName=MultiplayerRooms, Path=ViewModel}">
 
         <Grid.RowDefinitions>
@@ -54,15 +53,15 @@
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="9*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="9*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <Border Grid.Column="0" HorizontalAlignment="Left" MaxWidth="40"
                                 Visibility="{Binding PasswordSecured, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Image Source="pack://application:,,,/Assets/Symbols/schloss.png"></Image>
+                            <Image Source="pack://application:,,,/Assets/Symbols/schloss.png" />
                         </Border>
 
                         <TextBlock Grid.Column="1" Foreground="White" Text="{Binding RoomName}"
@@ -75,7 +74,7 @@
                                 <Run Text="{Binding MaximalUsers}" />
                             </TextBlock>
                             <Border MaxWidth="40">
-                                <Image Source="pack://application:,,,/Assets/Symbols/defaultuser.png"></Image>
+                                <Image Source="pack://application:,,,/Assets/Symbols/defaultuser.png" />
                             </Border>
                         </StackPanel>
 

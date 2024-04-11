@@ -43,6 +43,7 @@ public class RoomItem : ViewModelBase
     public List<MultiplayerPlayer> Players { get; set; } = new List<MultiplayerPlayer>();
 
     private ObservableCollection<CardViewModel> _cards = new();
+
     public ObservableCollection<CardViewModel> Cards
     {
         get => _cards;
