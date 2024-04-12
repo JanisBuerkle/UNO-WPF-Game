@@ -167,6 +167,11 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                 room.PlayButtonContent = "Voll..";
             }
         }
+
+        foreach (var card in SelectedRoom2.Center)
+        {
+            
+        }
     }
 
     public async Task UpdateOnlinePlayer(bool removeOrAdd)

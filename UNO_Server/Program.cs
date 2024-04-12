@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UNO_Server.Hubs;
 using UNO_Server.Models;
@@ -17,7 +18,10 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File((Path.Combine(AppContext.BaseDirectory, "Logs", "log.txt")), rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
-
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

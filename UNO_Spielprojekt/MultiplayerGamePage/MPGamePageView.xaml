@@ -41,7 +41,7 @@
         <!-- Fertig und der Spielername -->
         <StackPanel Grid.Row="3" Grid.Column="2" VerticalAlignment="Bottom">
             <Button Style="{StaticResource MyButtonStyle}" Foreground="White" Click="ButtonBase_OnClick"
-                    Background="CornflowerBlue" Content="{Binding Player.Name }"
+                    Background="CornflowerBlue" Content="{Binding MultiplayerRoomsViewModel.Player.Name }"
                     FontSize="40" FontWeight="Bold" Height="100" Width="200" Margin="10" />
 
             <Button DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}"
@@ -69,7 +69,7 @@
             <Button DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}" Width="150" Height="225"
                     Style="{StaticResource CardStyle}">
                 <Button.Background>
-                    <ImageBrush ImageSource="{Binding MiddleCardPic }" Stretch="Fill" />
+                    <ImageBrush ImageSource="{Binding MultiplayerRoomsViewModel.SelectedRoom2.MiddleCardPic }" Stretch="Fill" />
                 </Button.Background>
             </Button>
         </StackPanel>

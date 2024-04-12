@@ -40,23 +40,7 @@ public class CreateRoomViewModel : ViewModelBase
             }
         }
     }
-
-    private Rooms _createdRoom;
-
-    public Rooms CreatedRoom
-    {
-        get => _createdRoom;
-        set
-        {
-            if (_createdRoom != value)
-            {
-                _createdRoom = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-    
-
+ 
     public CreateRoomViewModel(MainViewModel mainViewModel, ILogger logger, MultiplayerRoomsViewModel multiplayerRoomsViewModel, ApiService apiService)
     {
         _logger = logger;

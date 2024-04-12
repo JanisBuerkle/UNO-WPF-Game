@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Serilog;
 using UNO.Contract;
 using UNO_Server.Hubs;
@@ -27,7 +28,7 @@ namespace UNO_Server.Controllers
 
         // GET: api/API
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRooms()
         {
             Log.Information("GET triggered.");
             // await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
@@ -44,7 +45,7 @@ namespace UNO_Server.Controllers
 
         // GET: api/API/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomDTO>> GetTodoItem(long id)
+        public async Task<ActionResult<RoomDTO>> GetRoom(long id)
         {
             Log.Information("GET ID triggered.");
             if (_context.RoomItems == null)
@@ -52,19 +53,19 @@ namespace UNO_Server.Controllers
                 return NotFound();
             }
 
-            var todoItem = await _context.RoomItems.FindAsync(id);
+            var roomItem = await _context.RoomItems.FindAsync(id);
 
-            if (todoItem == null)
+            if (roomItem == null)
             {
                 return NotFound();
             }
 
-            return todoItem;
+            return roomItem;
         }
 
         // PUT: api/API/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, RoomDTO roomItem)
+        public async Task<IActionResult> PutRoom(long id, RoomDTO roomItem)
         {
             Log.Information("Put triggered.");
             if (id != roomItem.Id)
@@ -96,7 +97,7 @@ namespace UNO_Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TodoItemExists(id))
+                if (!RoomExists(id))
                 {
                     return NotFound();
                 }
@@ -142,6 +143,17 @@ namespace UNO_Server.Controllers
             var selectedCard = roomItem.Cards[randomCard];
             roomItem.Cards.RemoveAt(randomCard);
             roomItem.Center.Add(selectedCard);
+            
+            roomItem.MiddleCard = roomItem.Center.First();
+            roomItem.SelectedCard = roomItem.MiddleCard;
+            if (roomItem.MiddleCard.Color == "Wild" || roomItem.MiddleCard.Color == "Draw")
+            {
+
+            }
+
+            var middleCardPath = roomItem.MiddleCard.ImageUri;
+            roomItem.MiddleCardPic = middleCardPath;
+            
 
             int startingPlayer = _random.Next(0, roomItem.Players.Count);
             await _startModel.ShuffleDeck(roomItem);
@@ -157,9 +169,31 @@ namespace UNO_Server.Controllers
             return NoContent();
         }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       
+        [HttpPut("placecard/{card}")]
+        public async Task<IActionResult> PlaceCard(string card, RoomDTO roomItem)
+        {
+            Log.Information($"{card} gelegt.");
+
+            string color = Regex.Match(card, "[A-Za-z]+").Value;
+            string value = Regex.Match(card, "\\d+").Value;
+            
+            string path = $"pack://application:,,,/Assets/cards/{value}/{color}.png";
+            roomItem.Center.Add(new CardDTO(){Color = color, Value = value, ImageUri = path});
+            
+            _context.RoomItems.Update(roomItem);
+            await _context.SaveChangesAsync();
+
+            await _myHub.SendGetAllRooms("placeCard");
+
+            return NoContent();
+        }
+        
+        
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPut("drawCard/{playerName}")]
-        public async Task<IActionResult> UpdateMaximalPlayers(string playerName, RoomDTO roomItem)
+        public async Task<IActionResult> DrawCard(string playerName, RoomDTO roomItem)
         {
             Log.Information("DrawCard triggered.");
 
@@ -235,7 +269,7 @@ namespace UNO_Server.Controllers
         // POST: api/API
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RoomDTO>> PostTodoItem(RoomDTO roomItem)
+        public async Task<ActionResult<RoomDTO>> PostRoom(RoomDTO roomItem)
         {
             Log.Information("Post triggered.");
             _context.RoomItems.Add(roomItem);
@@ -243,22 +277,22 @@ namespace UNO_Server.Controllers
 
             await _myHub.SendGetAllRooms("postSended");
 
-            //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
-            return CreatedAtAction(nameof(GetTodoItem), new { id = roomItem.Id }, roomItem);
+            //    return CreatedAtAction("GetRoom", new { id = roomItem.Id }, roomItem);
+            return CreatedAtAction(nameof(GetRoom), new { id = roomItem.Id }, roomItem);
         }
 
         // DELETE: api/API/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
+        public async Task<IActionResult> DeleteRoom(long id)
         {
             Log.Information("Delete triggered.");
-            var todoItem = await _context.RoomItems.FindAsync(id);
-            if (todoItem == null)
+            var roomItem = await _context.RoomItems.FindAsync(id);
+            if (roomItem == null)
             {
                 return NotFound();
             }
 
-            _context.RoomItems.Remove(todoItem);
+            _context.RoomItems.Remove(roomItem);
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("removePlayerSended");
@@ -266,7 +300,7 @@ namespace UNO_Server.Controllers
             return NoContent();
         }
 
-        private bool TodoItemExists(long id)
+        private bool RoomExists(long id)
         {
             return (_context.RoomItems?.Any(e => e.Id == id)).GetValueOrDefault();
         }

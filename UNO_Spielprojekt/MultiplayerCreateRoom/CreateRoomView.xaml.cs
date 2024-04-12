@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using UNO_Spielprojekt.MultiplayerRooms;
+using UNO_Spielprojekt.Window;
 using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerCreateRoom;
@@ -70,7 +71,7 @@ public partial class CreateRoomView
 
     private async void CreateRoom(object sender, RoutedEventArgs e)
     {
-        var room = new Rooms()
+        var room = new RoomDTO()
         {
             RoomName = Raumname.Text,
             PasswordSecured = ViewModel.IsChecked,
@@ -86,6 +87,6 @@ public partial class CreateRoomView
             MaximalUsers = 5
         });
         ViewModel.MultiplayerRoomsViewModel.SelectedRoom2 = ViewModel.MultiplayerRoomsViewModel.RoomList.Last();
-        await ViewModel._apiService.PostRoomAsync(room);
+        ViewModel.MultiplayerRoomsViewModel.SelectedRoom2 = await ViewModel.MultiplayerRoomsViewModel.RoomClient.PostRoomAsync(room);
     }
 }

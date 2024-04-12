@@ -133,6 +133,17 @@ public class MPGamePageViewModel : ViewModelBase
     public void LegenCommandMethod()
     {
         SelectedCard = MultiplayerRoomsViewModel.Player.PlayerHand[SelectedCardIndex];
+        foreach (var card in MultiplayerRoomsViewModel.Player.PlayerHand)
+        {
+            if (card == SelectedCard)
+            {
+                MultiplayerRoomsViewModel.Player.PlayerHand.Remove(card);
+                MultiplayerRoomsViewModel.RoomClient.PlaceCard(MultiplayerRoomsViewModel.SelectedRoom2, card.Color + card.Value);
+                return;
+            }
+        }
+        MultiplayerRoomsViewModel.GetRooms();
+        SetCurrentHand();
     }
 
     public void SetCurrentHand()

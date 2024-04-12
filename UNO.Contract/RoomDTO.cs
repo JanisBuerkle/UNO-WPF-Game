@@ -10,6 +10,9 @@ public class RoomDTO
     public string PlayButtonContent { get; set; } = "Play";
     public int OnlineUsers { get; set; }
     public ObservableCollection<CardDTO> Center { get; set; } = new ObservableCollection<CardDTO>();
+    public CardDTO MiddleCard { get; set; } = new CardDTO() {Color = "", Value = "", ImageUri = ""};
+    public string MiddleCardPic { get; set; } = "";
+    public CardDTO SelectedCard { get; set; } = new CardDTO() {Color = "", Value = "", ImageUri = ""};
     public int MaximalUsers { get; set; }
     public bool PasswordSecured { get; set; }
     public string Password { get; set; }
