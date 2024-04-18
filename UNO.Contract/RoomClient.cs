@@ -48,14 +48,26 @@ public class RoomClient
         var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
     }
-    
-    public async Task PlaceCard(RoomDTO roomToUpdate, string card)
+
+    public async Task PlaceCard(string card, RoomDTO roomToUpdate)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
         var addPlayerUrl = $"http://localhost:5000/api/Rooms/placecard/{card}";
+
+        var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+    }
+    
+    public async Task DrawCard(string playername, RoomDTO roomToUpdate)
+    {
+        var httpClient = new HttpClient();
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/drawCard/{playername}";
 
         var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
@@ -115,15 +127,13 @@ public class RoomClient
                 var responseString = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<RoomDTO>(responseString);
             }
-            else
-            {
-                
-            }
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            
+            Console.Write(e);
+            // ignored
         }
+
         return room;
     }
 }

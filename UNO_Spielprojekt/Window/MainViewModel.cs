@@ -66,8 +66,7 @@ public class MainViewModel : ViewModelBase
         
         
         MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger, RoomClient);
-        MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel,
-            ScoreboardViewModel, MultiplayerRoomsViewModel);
+        MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, MultiplayerRoomsViewModel);
         HubService = new HubService(this, MultiplayerRoomsViewModel);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);

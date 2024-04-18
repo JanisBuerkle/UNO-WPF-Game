@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UNO_Server.Hubs;
 using UNO_Server.Models;
-using UNO_Server.ViewModel;
 using UNO.Contract;
 
 namespace UNO_Server.Controllers
@@ -22,7 +21,7 @@ namespace UNO_Server.Controllers
 
         // GET: api/Player
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MultiplayerDTO>>> GetPlayers()
+        public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
         {
             if (_context.Players == null)
             {
@@ -34,7 +33,7 @@ namespace UNO_Server.Controllers
 
         // GET: api/Player/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MultiplayerDTO>> GetMultiplayerPlayer(long id)
+        public async Task<ActionResult<Player>> GetMultiplayerPlayer(long id)
         {
             if (_context.Players == null)
             {
@@ -63,6 +62,7 @@ namespace UNO_Server.Controllers
 
             _context.Entry(multiplayerPlayer).State = EntityState.Modified;
 
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -81,21 +81,22 @@ namespace UNO_Server.Controllers
 
             return NoContent();
         }
-        
+
         // POST: api/Player
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<MultiplayerDTO>> PostMultiplayerPlayer(MultiplayerDTO multiplayerPlayer)
         {
+            var player = _context.Players.First(p => p.Id.Equals(multiplayerPlayer.Id));
             if (_context.Players == null)
             {
                 return Problem("Entity set 'RoomContext.Players'  is null.");
             }
 
-            _context.Players.Add(multiplayerPlayer);
+            _context.Players.Add(player);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMultiplayerPlayer", new { id = multiplayerPlayer.Id }, multiplayerPlayer);
+            return CreatedAtAction("GetMultiplayerPlayer", new { id = player.Id }, player);
         }
 
         // DELETE: api/Player/5

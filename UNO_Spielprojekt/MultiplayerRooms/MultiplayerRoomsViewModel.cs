@@ -35,7 +35,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     }
 
     private int _selectedItem;
-
     public int SelectedMaximalCount
     {
         get => _selectedItem;
@@ -52,7 +51,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
     }
 
-
     private ObservableCollection<RoomDTO> _roomList = new ObservableCollection<RoomDTO>();
 
     public ObservableCollection<RoomDTO> RoomList
@@ -68,13 +66,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
     }
 
-    public RelayCommand GoToMainMenuCommand { get; }
-    public RelayCommand GoToLobbyCommand { get; }
-    public RelayCommand CreateRoomCommand { get; }
-
-
+    
+    
     private bool _disableAll;
-
     public bool DisableAll
     {
         get => _disableAll;
@@ -87,11 +81,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
             }
         }
     }
-
     public string PlayerName { get; set; }
 
     private RoomDTO _selectedRoom;
-
     public RoomDTO SelectedRoom
     {
         get => _selectedRoom;
@@ -107,7 +99,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     }
 
     private RoomDTO _selectedRoom2;
-
     public RoomDTO SelectedRoom2
     {
         get => _selectedRoom2;
@@ -127,6 +118,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public async Task GetRooms()
     {
+        _logger.Info("GetRooms wurde ausgeführt, alle Räume wurden gegettet und entsprechende Propertys wurden gesetzt.");
         Task<string> gettedRoomsTask = RoomClient.GetAllRooms();
         var gettedRooms = await gettedRoomsTask;
 
@@ -209,6 +201,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     private readonly ILogger _logger;
     public MainViewModel MainViewModel { get; set; }
     public RoomClient RoomClient { get; set; }
+    public RelayCommand GoToMainMenuCommand { get; }
+    public RelayCommand GoToLobbyCommand { get; }
+    public RelayCommand CreateRoomCommand { get; }
 
     public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger logger, RoomClient roomClient)
     {
@@ -217,6 +212,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         RoomClient = roomClient;
 
         _selectedItem = 5;
+        _logger.Info("_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
 
         GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
         GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);
@@ -228,7 +224,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     {
         UpdateOnlinePlayer(false);
 
-        _logger.Info("MainMenu wurde geöffnet.");
+        _logger.Info("MainMenu wurde geöffnet, GoToMainMenuCommandMethod wurde ausgeführt.");
         MainViewModel.GoToMainMenu();
     }
 

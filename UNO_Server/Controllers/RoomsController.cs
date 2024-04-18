@@ -4,7 +4,6 @@ using UNO.Contract;
 using UNO_Server.Hubs;
 using UNO_Server.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace UNO_Server.Controllers
@@ -14,21 +13,19 @@ namespace UNO_Server.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly RoomContext _context;
-        private readonly IHubContext<MyHub> _hubContext;
         private readonly MyHub _myHub;
         private readonly StartModel _startModel;
 
-        public RoomsController(RoomContext context, IHubContext<MyHub> hubContext, MyHub myHub)
+        public RoomsController(RoomContext context, MyHub myHub)
         {
             _startModel = new StartModel(context);
             _myHub = myHub;
             _context = context;
-            _hubContext = hubContext;
         }
 
         // GET: api/API
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RoomDTO>>> GetRooms()
+        public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
         {
             Log.Information("GET triggered.");
             // await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
@@ -38,14 +35,14 @@ namespace UNO_Server.Controllers
             }
 
             var allRooms = await _context.RoomItems.Include(item => item.Players).ThenInclude(item => item.PlayerHand)
-                .Include(item => item.Cards).ToListAsync();
+                .Include(item => item.Cards).Include(item => item.MiddleCard).ToListAsync();
 
             return allRooms;
         }
 
         // GET: api/API/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RoomDTO>> GetRoom(long id)
+        public async Task<ActionResult<Room>> GetRoom(long id)
         {
             Log.Information("GET ID triggered.");
             if (_context.RoomItems == null)
@@ -67,13 +64,15 @@ namespace UNO_Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRoom(long id, RoomDTO roomItem)
         {
+            
             Log.Information("Put triggered.");
             if (id != roomItem.Id)
             {
                 return BadRequest();
             }
 
-            foreach (var player in roomItem.Players)
+            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.Players).First(r => r.Id.Equals(roomItem.Id));
+            foreach (var player in room.Players)
             {
                 var existingPlayer = _context.Players.Find(player.Id);
                 if (existingPlayer != null)
@@ -89,7 +88,7 @@ namespace UNO_Server.Controllers
                 }
             }
 
-            _context.RoomItems.Update(roomItem);
+            _context.RoomItems.Update(room);
 
             try
             {
@@ -122,45 +121,47 @@ namespace UNO_Server.Controllers
         {
             Log.Information($"Room {roomid} started.");
 
-            roomItem.Cards.Clear();
+            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
+            
+            room.Cards.Clear();
             foreach (var card in _startModel.WildCards)
             {
-                roomItem.Cards.Add(card);
+                room.Cards.Add(card);
             }
 
             foreach (var card in _startModel.Draw4Cards)
             {
-                roomItem.Cards.Add(card);
+                room.Cards.Add(card);
             }
 
             foreach (var card in _startModel.cards)
             {
-                roomItem.Cards.Add(card);
+                room.Cards.Add(card);
             }
-            
+
             Log.Information("Die Center Karte wurde ermittelt und gelegt.");
-            var randomCard = _random.Next(roomItem.Cards.Count);
-            var selectedCard = roomItem.Cards[randomCard];
-            roomItem.Cards.RemoveAt(randomCard);
-            roomItem.Center.Add(selectedCard);
-            
-            roomItem.MiddleCard = roomItem.Center.First();
-            roomItem.SelectedCard = roomItem.MiddleCard;
-            if (roomItem.MiddleCard.Color == "Wild" || roomItem.MiddleCard.Color == "Draw")
-            {
+            var randomCard = _random.Next(room.Cards.Count);
+            var selectedCard = room.Cards[randomCard];
+            room.Cards.RemoveAt(randomCard);
+            room.Center.Add(selectedCard);
 
+
+            if (room.MiddleCard.Color == "Wild" || room.MiddleCard.Color == "Draw")
+            {
             }
 
-            var middleCardPath = roomItem.MiddleCard.ImageUri;
-            roomItem.MiddleCardPic = middleCardPath;
-            
-
-            int startingPlayer = _random.Next(0, roomItem.Players.Count);
-            await _startModel.ShuffleDeck(roomItem);
-            await _startModel.DealCards(roomItem);
+            room.MiddleCard = room.Center.First();
+            room.SelectedCard = room.MiddleCard;
+            var middleCardPath = room.MiddleCard.ImageUri;
+            room.MiddleCardPic = middleCardPath;
 
 
-            _context.RoomItems.Update(roomItem);
+            room.StartingPlayer = _random.Next(0, room.Players.Count);
+            await _startModel.ShuffleDeck(room);
+            await _startModel.DealCards(room);
+
+
+            _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
 
 
@@ -169,27 +170,28 @@ namespace UNO_Server.Controllers
             return NoContent();
         }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-       
+
         [HttpPut("placecard/{card}")]
         public async Task<IActionResult> PlaceCard(string card, RoomDTO roomItem)
         {
             Log.Information($"{card} gelegt.");
 
+            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
             string color = Regex.Match(card, "[A-Za-z]+").Value;
             string value = Regex.Match(card, "\\d+").Value;
-            
+
             string path = $"pack://application:,,,/Assets/cards/{value}/{color}.png";
-            roomItem.Center.Add(new CardDTO(){Color = color, Value = value, ImageUri = path});
-            
-            _context.RoomItems.Update(roomItem);
+            roomItem.Center.Add(new CardDTO() { Color = color, Value = value, ImageUri = path });
+
+            _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("placeCard");
 
             return NoContent();
         }
-        
-        
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPut("drawCard/{playerName}")]
@@ -197,31 +199,32 @@ namespace UNO_Server.Controllers
         {
             Log.Information("DrawCard triggered.");
 
-            foreach (var player in roomItem.Players)
-            {
-                if (player.Name == playerName)
-                {
-                    player.PlayerHand.Add(roomItem.Cards.First());
-                    roomItem.Cards.Remove(roomItem.Cards.First());
-                }
-            }
+            var player = _context.Players.First(p => p.Name.Equals(playerName));
+            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
 
-            _context.RoomItems.Update(roomItem);
+            var card = room.Cards.First();
+            player.PlayerHand.Add(card);
+            room.Cards.Remove(card);
+
+            _context.Players.Update(player);
+            _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("drawCard");
 
             return NoContent();
         }
-        
+
         [HttpPut("updatemaximalplayers/{selectedMaximalUsers}")]
         public async Task<IActionResult> UpdateMaximalPlayers(int selectedMaximalUsers, RoomDTO roomItem)
         {
             Log.Information("UpdateMaximalPlayers triggered.");
 
-            roomItem.MaximalUsers = selectedMaximalUsers;
+            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
 
-            _context.RoomItems.Update(roomItem);
+            room.MaximalUsers = selectedMaximalUsers;
+
+            _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("UpdateMaximalPlayersSended");
@@ -234,18 +237,20 @@ namespace UNO_Server.Controllers
         {
             Log.Information("Player added.");
             var player = _context.Players.FirstOrDefault(p => p.Name.Equals(playerName));
+            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
+            
             if (player == null)
             {
-                bool isLeader = roomItem.Players.Count == 0;
+                bool isLeader = room.Players.Count == 0;
 
-                player = (await _context.Players.AddAsync(new MultiplayerDTO()
-                    { Name = playerName, RoomId = roomItem.Id, IsLeader = isLeader })).Entity;
+                player = (await _context.Players.AddAsync(
+                    new Player() { Name = playerName, RoomId = room.Id, IsLeader = isLeader })).Entity;
             }
 
-            roomItem.Players.Add(player);
-            roomItem.OnlineUsers++;
+            room.Players.Add(player);
+            room.OnlineUsers++;
 
-            _context.RoomItems.Update(roomItem);
+            _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("addPlayerSended");
@@ -257,10 +262,11 @@ namespace UNO_Server.Controllers
         public async Task<IActionResult> RemovePlayerFromRoom(string playerName, RoomDTO roomItem)
         {
             Log.Information("Player removed.");
+            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
 
-            roomItem.OnlineUsers--;
+            room.OnlineUsers--;
 
-            _context.RoomItems.Update(roomItem);
+            _context.RoomItems.Update(room);
             await _myHub.SendGetAllRooms("removePlayerSended");
             await _context.SaveChangesAsync();
             return NoContent();
@@ -272,13 +278,15 @@ namespace UNO_Server.Controllers
         public async Task<ActionResult<RoomDTO>> PostRoom(RoomDTO roomItem)
         {
             Log.Information("Post triggered.");
-            _context.RoomItems.Add(roomItem);
+            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
+            
+            _context.RoomItems.Add(room);
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("postSended");
 
             //    return CreatedAtAction("GetRoom", new { id = roomItem.Id }, roomItem);
-            return CreatedAtAction(nameof(GetRoom), new { id = roomItem.Id }, roomItem);
+            return CreatedAtAction(nameof(GetRoom), new { id = room.Id }, room);
         }
 
         // DELETE: api/API/5

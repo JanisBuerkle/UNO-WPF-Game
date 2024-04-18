@@ -1,12 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace UNO.Contract;
+namespace UNO_Server.Models;
 
-public class MultiplayerDTO
+public class Player
 {
     public long Id { get; set; }
     public long RoomId { get; set; }
     public string Name { get; set; }
     public bool IsLeader { get; set; }
-    public ObservableCollection<CardDTO > PlayerHand { get; set; }
+    public ObservableCollection<Card> PlayerHand { get; set; }
 }

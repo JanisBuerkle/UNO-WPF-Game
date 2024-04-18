@@ -1,17 +1,10 @@
 ﻿using UNO_Spielprojekt.MultiplayerRooms;
 using System.Collections.ObjectModel;
-using UNO_Spielprojekt.Scoreboard;
 using CommunityToolkit.Mvvm.Input;
-using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Window;
-using UNO_Spielprojekt.Winner;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using tt.Tools.Logging;
-using Newtonsoft.Json;
-using System.Net.Http;
 using UNO.Contract;
-using System.Text;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
 
@@ -66,36 +59,26 @@ public class MPGamePageViewModel : ViewModelBase
 
     private readonly MainViewModel _mainViewModel;
     private readonly ILogger _logger;
-    private PlayViewModel PlayViewModel { get; }
-    private GameLogic GameLogic { get; }
-    private WinnerViewModel WinnerViewModel { get; }
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
 
-    public ScoreboardViewModel _scoreboardViewModel;
-
     public RelayCommand ZiehenCommand { get; }
-    public RelayCommand LegenCommand { get; }
-    public RelayCommand FertigCommand { get; }
-    public RelayCommand UnoCommand { get; }
-    public RelayCommand ExitConfirmCommand { get; }
-    private readonly HttpClient _httpClient;
+    // public RelayCommand LegenCommand { get; }
+    // public RelayCommand FertigCommand { get; }
+    // public RelayCommand UnoCommand { get; }
+    // public RelayCommand ExitConfirmCommand { get; }
 
-    public MPGamePageViewModel(MainViewModel mainViewModel, ILogger logger, PlayViewModel playViewModel,
-        GameLogic gameLogic, WinnerViewModel winnerViewModel, ScoreboardViewModel scoreboardViewModel,
+    public MPGamePageViewModel(MainViewModel mainViewModel, ILogger logger,
         MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
-        _httpClient = new HttpClient();
         MultiplayerRoomsViewModel = multiplayerRoomsViewModel;
-        _scoreboardViewModel = scoreboardViewModel;
-        GameLogic = gameLogic;
-        WinnerViewModel = winnerViewModel;
-        PlayViewModel = playViewModel;
         _mainViewModel = mainViewModel;
         _logger = logger;
 
         TheBackground = Brushes.Transparent;
         RoundCounter = 1;
         RoundCounterString = $"Runde: {RoundCounter}/\u221e";
+        _logger.Info(
+            "Der Hintergrund des Buttons TheBackground, RoundCounter und RoundCounterString wurden auf ihre Standartwerte gesetzt.");
 
         ZiehenCommand = new RelayCommand(ZiehenCommandMethod);
         // LegenCommand = new RelayCommand(LegenCommandMethod);
@@ -104,58 +87,53 @@ public class MPGamePageViewModel : ViewModelBase
         // ExitConfirmCommand = new RelayCommand(ExitConfirmCommandMethod);
     }
 
-    private async Task DrawCard(RoomDTO roomToUpdate)
+    // private bool _legen;
+    // private bool _ziehen;
+    // private ChooseColorViewModel _chooseColorViewModel;
+    // private bool _chooseColorVisible;
+
+    private async void ZiehenCommandMethod()
     {
-        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
-        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-        var addPlayerUrl = $"http://localhost:5000/api/Rooms/drawCard/{MultiplayerRoomsViewModel.Player.Name}";
-
-        var response = await _httpClient.PutAsync(addPlayerUrl, httpContent);
-        response.EnsureSuccessStatusCode();
-
+        _logger.Info("Eine Karte wurde gezogen, ZiehenCommandMethod wurde ausgeführt.");
+        await MultiplayerRoomsViewModel.RoomClient.DrawCard(MultiplayerRoomsViewModel.Player.Name,
+            MultiplayerRoomsViewModel.SelectedRoom2);
         await MultiplayerRoomsViewModel.GetRooms();
-    }
 
-    private void ZiehenCommandMethod()
-    {
-        DrawCard(MultiplayerRoomsViewModel.SelectedRoom2);
         SetCurrentHand();
-        // MultiplayerRoomsViewModel.Player.PlayerHand.Add(new CardViewModel(){ Color = "Blue", Value = "2", ImageUri = "pack://application:,,,/Assets/cards/2/Blue.png" });
         OnPropertyChanged(nameof(MultiplayerRoomsViewModel));
     }
 
-    private bool _legen;
-    private bool _ziehen;
-    private ChooseColorViewModel _chooseColorViewModel;
-    private bool _chooseColorVisible;
-
-    public void LegenCommandMethod()
+    public async void LegenCommandMethod()
     {
+        _logger.Info("Eine Karte wurde angeklickt, LegenCommandMethod wurde ausgeführt.");
         SelectedCard = MultiplayerRoomsViewModel.Player.PlayerHand[SelectedCardIndex];
         foreach (var card in MultiplayerRoomsViewModel.Player.PlayerHand)
         {
             if (card == SelectedCard)
             {
                 MultiplayerRoomsViewModel.Player.PlayerHand.Remove(card);
-                MultiplayerRoomsViewModel.RoomClient.PlaceCard(MultiplayerRoomsViewModel.SelectedRoom2, card.Color + card.Value);
+                await MultiplayerRoomsViewModel.RoomClient.PlaceCard(card.Color + card.Value,
+                    MultiplayerRoomsViewModel.SelectedRoom2);
+                _logger.Info($"{card.Color + card.Value} wurde ausgespielt.");
                 return;
             }
         }
-        MultiplayerRoomsViewModel.GetRooms();
+
+        await MultiplayerRoomsViewModel.GetRooms();
         SetCurrentHand();
     }
 
     public void SetCurrentHand()
     {
+        _logger.Info("Die Hand des Spielers wurde geupdatet, SetCurrentHand wurde ausgeführt.");
         if (MultiplayerRoomsViewModel.Player.PlayerHand != null)
         {
+            var unused = MultiplayerRoomsViewModel.SelectedRoom2.MiddleCard; //test
             CurrentHand.Clear();
             foreach (var card in MultiplayerRoomsViewModel.Player.PlayerHand)
             {
                 CurrentHand.Add(card);
             }
-            _logger.Info("CurrentHand wurde gesetzt.");
         }
     }
 }

@@ -16,6 +16,7 @@ public class RoomDTO
     public int MaximalUsers { get; set; }
     public bool PasswordSecured { get; set; }
     public string Password { get; set; }
+    public int StartingPlayer { get; set; }
     public List<MultiplayerDTO> Players { get; set; } = new List<MultiplayerDTO>();
     public ObservableCollection<CardDTO> Cards { get; set; } = new ObservableCollection<CardDTO>();
 }

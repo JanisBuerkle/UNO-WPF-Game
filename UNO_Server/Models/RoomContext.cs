@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UNO_Server.ViewModel;
 using UNO.Contract;
 
 namespace UNO_Server.Models;
@@ -10,6 +9,6 @@ public class RoomContext : DbContext
     {
     }
 
-    public DbSet<RoomDTO> RoomItems { get; set; } = null!;
-    public DbSet<MultiplayerDTO> Players { get; set; } = null!;
+    public DbSet<Room> RoomItems { get; set; } = null!;
+    public DbSet<Player> Players { get; set; } = null!;
 }
