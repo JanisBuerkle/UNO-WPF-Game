@@ -11,7 +11,6 @@ namespace UNO_Spielprojekt.MultiplayerGamePage;
 public class MPGamePageViewModel : ViewModelBase
 {
     private Brush _theBackground;
-
     public Brush TheBackground
     {
         get => _theBackground;
@@ -26,7 +25,6 @@ public class MPGamePageViewModel : ViewModelBase
     private int RoundCounter { get; set; }
 
     private string _roundCounterString;
-
     public string RoundCounterString
     {
         get => _roundCounterString;
@@ -41,7 +39,6 @@ public class MPGamePageViewModel : ViewModelBase
     }
 
     private ObservableCollection<CardDTO> _currentHand = new ObservableCollection<CardDTO>();
-
     public ObservableCollection<CardDTO> CurrentHand
     {
         get => _currentHand;

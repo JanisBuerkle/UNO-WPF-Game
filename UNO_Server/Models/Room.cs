@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Microsoft.EntityFrameworkCore;
 
 namespace UNO_Server.Models;
 
@@ -11,9 +10,9 @@ public class Room
     public string PlayButtonContent { get; set; } = "Play";
     public int OnlineUsers { get; set; }
     public ObservableCollection<Card> Center { get; set; } = new ObservableCollection<Card>();
-    public Card MiddleCard { get; set; } = new Card() {Color = "", Value = "", ImageUri = ""};
+    public Card MiddleCard { get; set; } = new Card() { Color = "", Value = "", ImageUri = "" };
     public string MiddleCardPic { get; set; } = "";
-    public Card SelectedCard { get; set; } = new Card() {Color = "", Value = "", ImageUri = ""};
+    public Card SelectedCard { get; set; } = new Card() { Color = "", Value = "", ImageUri = "" };
     public int MaximalUsers { get; set; }
     public bool PasswordSecured { get; set; }
     public string Password { get; set; }

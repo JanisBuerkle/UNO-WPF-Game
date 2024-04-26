@@ -8,7 +8,6 @@ namespace UNO_Spielprojekt.MultiplayerCreateRoom;
 
 public class CreateRoomViewModel : ViewModelBase
 {
-    private bool _isChecked;
     private readonly ILogger _logger;
     public ApiService _apiService;
     private MainViewModel MainViewModel { get; set; }
@@ -16,6 +15,7 @@ public class CreateRoomViewModel : ViewModelBase
     public RelayCommand CloseCreateRoomCommand { get; }
     public RelayCommand GoToGiveNameCommand { get; }
 
+    private bool _isChecked;
     public bool IsChecked
     {
         get { return _isChecked; }
@@ -27,7 +27,6 @@ public class CreateRoomViewModel : ViewModelBase
     }
 
     private bool _isEnabled;
-
     public bool IsEnabled
     {
         get => _isEnabled;
@@ -40,7 +39,7 @@ public class CreateRoomViewModel : ViewModelBase
             }
         }
     }
- 
+
     public CreateRoomViewModel(MainViewModel mainViewModel, ILogger logger, MultiplayerRoomsViewModel multiplayerRoomsViewModel, ApiService apiService)
     {
         _logger = logger;
@@ -53,7 +52,6 @@ public class CreateRoomViewModel : ViewModelBase
 
     private void GoToGiveNameCommandMethod()
     {
-        
         MainViewModel.CreateRoomVisible = false;
         MainViewModel.GiveNameVisible = true;
     }
