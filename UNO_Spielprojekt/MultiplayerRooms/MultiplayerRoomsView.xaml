@@ -33,9 +33,11 @@
         <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0"
                 Style="{StaticResource HomeButtonStyle}" />
 
+        <!-- Create Room Button -->
         <Button Grid.Column="2" Grid.Row="2" Content="Create Room" HorizontalAlignment="Center"
                 Command="{Binding CreateRoomCommand}" Margin="0,0,0,20" />
 
+        <!-- RaumListe -->
         <ListView IsEnabled="{Binding DisableAll}" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding RoomList}"
                   SelectedItem="{Binding SelectedRoom}" VerticalContentAlignment="Top"
                   HorizontalContentAlignment="Stretch">
@@ -88,17 +90,20 @@
             </ListView.ItemTemplate>
         </ListView>
 
-
+        
+        <!-- CreateRoom Fenster -->
         <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000"
               Visibility="{Binding MainViewModel.CreateRoomVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
             <multiplayerCreateRoom:CreateRoomView ViewModel="{Binding MainViewModel.CreateRoomViewModel}" />
         </Grid>
 
+        <!-- GiveName Fenster -->
         <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000"
               Visibility="{Binding MainViewModel.GiveNameVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
             <multiplayerGiveName:GiveNameView ViewModel="{Binding MainViewModel.GiveNameViewModel}" />
         </Grid>
 
+        <!-- Password Fenster -->
         <Grid Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="4" ZIndex="1000"
               Visibility="{Binding MainViewModel.PasswordVisible , Converter={StaticResource BooleanToVisibilityConverter}}">
             <multiplayerPassword:PasswordView ViewModel="{Binding MainViewModel.PasswordViewModel}" />

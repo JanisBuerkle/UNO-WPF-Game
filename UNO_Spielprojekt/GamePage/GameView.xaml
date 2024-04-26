@@ -89,7 +89,7 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <!-- Für die extra Fenster -->
+        <!-- ChooseColor Fenster -->
         <Grid Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="3" ZIndex="1000"
               Visibility="{Binding ChooseColorVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <local:ChooseColorView ViewModel="{Binding ChooseColorViewModel}" />
