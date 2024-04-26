@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UNO.Contract;
 
 namespace UNO_Server.Models;
 

@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using UNO_Spielprojekt.MultiplayerRooms;
-using UNO_Spielprojekt.Window;
 using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerCreateRoom;

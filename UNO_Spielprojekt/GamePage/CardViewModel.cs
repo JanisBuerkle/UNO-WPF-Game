@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace UNO_Spielprojekt.GamePage;
+﻿namespace UNO_Spielprojekt.GamePage;
 
 public class CardViewModel : ViewModelBase
 {
