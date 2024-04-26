@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using Serilog;
 using UNO.Contract;
@@ -15,12 +16,14 @@ namespace UNO_Server.Controllers
         private readonly RoomContext _context;
         private readonly MyHub _myHub;
         private readonly StartModel _startModel;
+        private readonly DTOConverter _dtoConverter;
 
         public RoomsController(RoomContext context, MyHub myHub)
         {
             _startModel = new StartModel(context);
             _myHub = myHub;
             _context = context;
+            _dtoConverter = new DTOConverter();
         }
 
         // GET: api/API
@@ -121,7 +124,8 @@ namespace UNO_Server.Controllers
         {
             Log.Information($"Room {roomid} started.");
 
-            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
+            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.MiddleCard)
+                .Include(room => room.Center).Include(room => room.Players).First(r => r.Id.Equals(roomItem.Id));
             
             room.Cards.Clear();
             foreach (var card in _startModel.WildCards)
@@ -275,17 +279,18 @@ namespace UNO_Server.Controllers
         // POST: api/API
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<RoomDTO>> PostRoom(RoomDTO roomItem)
+        public async Task<ActionResult<RoomDTO>> PostRoom(RoomDTO roomDto)
         {
             Log.Information("Post triggered.");
-            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
+            
+            Room room = _dtoConverter.DtoConverterMethod(roomDto);
             
             _context.RoomItems.Add(room);
             await _context.SaveChangesAsync();
+            var room2 = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomDto.Id));
 
             await _myHub.SendGetAllRooms("postSended");
-
-            //    return CreatedAtAction("GetRoom", new { id = roomItem.Id }, roomItem);
+            
             return CreatedAtAction(nameof(GetRoom), new { id = room.Id }, room);
         }
 
