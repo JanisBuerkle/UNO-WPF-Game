@@ -22,7 +22,7 @@ public class RoomClient
         respone.EnsureSuccessStatusCode();
 
         var gettedLobbies = await respone.Content.ReadAsStringAsync();
-        var players = JsonConvert.DeserializeObject<List<MultiplayerDTO>>(gettedLobbies);
+        var players = JsonConvert.DeserializeObject<List<PlayerDTO>>(gettedLobbies);
     }
 
     public async Task AddPlayer(RoomDTO roomToUpdate, string playerName)
@@ -60,7 +60,7 @@ public class RoomClient
         var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
     }
-    
+
     public async Task DrawCard(string playername, RoomDTO roomToUpdate)
     {
         var httpClient = new HttpClient();
@@ -85,7 +85,7 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task RemovePlayer(RoomDTO roomToUpdate, string playerName, List<MultiplayerDTO> players)
+    public async Task RemovePlayer(RoomDTO roomToUpdate, string playerName, List<PlayerDTO> players)
     {
         await GetPlayers();
 

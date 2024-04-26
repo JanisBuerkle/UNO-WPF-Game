@@ -19,9 +19,8 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         "2", "3", "4", "5"
     };
 
-    private MultiplayerDTO _player;
-
-    public MultiplayerDTO Player
+    private PlayerDTO _player;
+    public PlayerDTO Player
     {
         get => _player;
         set
@@ -52,7 +51,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     }
 
     private ObservableCollection<RoomDTO> _roomList = new ObservableCollection<RoomDTO>();
-
     public ObservableCollection<RoomDTO> RoomList
     {
         get => _roomList;
@@ -66,8 +64,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
     }
 
-    
-    
+
     private bool _disableAll;
     public bool DisableAll
     {
@@ -81,6 +78,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
             }
         }
     }
+
     public string PlayerName { get; set; }
 
     private RoomDTO _selectedRoom;
@@ -113,12 +111,13 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     }
 
     private List<RoomDTO>? Rooms { get; set; }
-    public List<MultiplayerDTO>? Players { get; set; }
+    public List<PlayerDTO>? Players { get; set; }
     public HttpClient HttpClient;
 
     public async Task GetRooms()
     {
-        _logger.Info("GetRooms wurde ausgeführt, alle Räume wurden gegettet und entsprechende Propertys wurden gesetzt.");
+        _logger.Info(
+            "GetRooms wurde ausgeführt, alle Räume wurden gegettet und entsprechende Propertys wurden gesetzt.");
         Task<string> gettedRoomsTask = RoomClient.GetAllRooms();
         var gettedRooms = await gettedRoomsTask;
 
@@ -162,7 +161,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
         foreach (var card in SelectedRoom2.Center)
         {
-            
         }
     }
 
@@ -212,7 +210,8 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         RoomClient = roomClient;
 
         _selectedItem = 5;
-        _logger.Info("_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
+        _logger.Info(
+            "_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
 
         GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
         GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);
