@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Windows;
 using UNO.Contract;
 using System.Linq;
+using UNO_Spielprojekt.MultiplayerGamePage;
 
 namespace UNO_Spielprojekt.MultiplayerRooms;
 
@@ -42,12 +43,24 @@ public class MultiplayerRoomsViewModel : ViewModelBase
             if (_selectedItem != value)
             {
                 _selectedItem = value;
+                if (value < SelectedRoom2.OnlineUsers)
+                {
+                    for (int i = SelectedRoom2.OnlineUsers; i > value; i--)
+                    {
+                        RemoveMorePlayers();
+                    }
+                }
                 OnPropertyChanged();
             }
 
             RoomClient.UpdateMaximalPlayers(SelectedRoom2, SelectedMaximalCount);
             GetRooms();
         }
+    }
+
+    private async void RemoveMorePlayers()
+    {
+        await RoomClient.RemovePlayer(SelectedRoom2, (int)SelectedRoom2.Players.Last().Id);
     }
 
     private ObservableCollection<RoomDTO> _roomList = new ObservableCollection<RoomDTO>();
@@ -152,15 +165,23 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
         foreach (var room in Rooms)
         {
-            if (room.OnlineUsers == 5)
+            if (room.OnlineUsers == room.MaximalUsers)
             {
                 room.PlayButtonEnabled = false;
                 room.PlayButtonContent = "Voll..";
             }
         }
 
-        foreach (var card in SelectedRoom2.Center)
+        if (Player != null)
         {
+            if (Player.Id != SelectedRoom2.PlayerTurnId)
+            {
+                MainViewModel.MultiplayerGamePageViewModel.DisableAllFunctions = false;
+            }
+            else
+            {
+                MainViewModel.MultiplayerGamePageViewModel.DisableAllFunctions = true;
+            }
         }
     }
 
@@ -177,7 +198,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
         else //remove
         {
-            await RoomClient.RemovePlayer(roomToUpdate, PlayerName, Players);
+            await RoomClient.RemovePlayer(roomToUpdate, (int)Player.Id);
         }
 
         await GetRooms();
@@ -198,6 +219,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     private readonly ILogger _logger;
     public MainViewModel MainViewModel { get; set; }
+    public MPGamePageViewModel MPGamePageViewModel { get; set; }
     public RoomClient RoomClient { get; set; }
     public RelayCommand GoToMainMenuCommand { get; }
     public RelayCommand GoToLobbyCommand { get; }
