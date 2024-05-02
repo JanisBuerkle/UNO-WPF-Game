@@ -10,8 +10,9 @@ public class Rooms : ViewModelBase
     [JsonProperty("Id")] public long Id { get; set; }
     [JsonProperty("RoomName")] public string RoomName { get; set; }
     [JsonProperty("PlayButtonEnabled")] public bool PlayButtonEnabled { get; set; } = true;
-    
+
     private string _playButtonContent = "Play";
+
     [JsonProperty("PlayButtonContent")]
     public string PlayButtonContent
     {
@@ -27,6 +28,7 @@ public class Rooms : ViewModelBase
     }
 
     private int _onlineUsers;
+
     [JsonProperty("OnlineUsers")]
     public int OnlineUsers
     {
@@ -43,6 +45,7 @@ public class Rooms : ViewModelBase
 
 
     private int _maximalUsers;
+
     [JsonProperty("MaximalUsers")]
     public int MaximalUsers
     {
@@ -65,6 +68,7 @@ public class Rooms : ViewModelBase
     [JsonProperty("SelectedCard")] public CardDTO SelectedCard { get; set; }
 
     private ObservableCollection<MultiplayerPlayer> _players = new ObservableCollection<MultiplayerPlayer>();
+
     [JsonProperty("Players")]
     public ObservableCollection<MultiplayerPlayer> Players
     {
@@ -79,7 +83,16 @@ public class Rooms : ViewModelBase
         }
     }
 
+    [JsonProperty("PlayerTurnId")] public int PlayerTurnId { get; set; }
+
+    [JsonProperty("NextPlayer")] public int NextPlayer { get; set; }
+
+    [JsonProperty("IsReverse")] public bool IsReverse { get; set; }
+
+    [JsonProperty("IsSkip")] public bool IsSkip { get; set; }
+
     private ObservableCollection<CardViewModel> _cards = new();
+
     [JsonProperty("Cards")]
     public ObservableCollection<CardViewModel> Cards
     {

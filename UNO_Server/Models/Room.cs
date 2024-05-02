@@ -16,6 +16,10 @@ public class Room
     public int MaximalUsers { get; set; }
     public bool PasswordSecured { get; set; }
     public string Password { get; set; }
+    public int PlayerTurnId { get; set; }
+    public int NextPlayer { get; set; }
+    public bool IsReverse { get; set; }
+    public bool IsSkip { get; set; }
     public int StartingPlayer { get; set; }
     public List<Player> Players { get; set; } = new List<Player>();
     public ObservableCollection<Card> Cards { get; set; } = new ObservableCollection<Card>();
