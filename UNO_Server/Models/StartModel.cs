@@ -278,7 +278,7 @@ public class StartModel
     {
         foreach (var player in roomItem.Players)
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 7; i++)
             {
                 player.PlayerHand.Add(roomItem.Cards.First());
                 roomItem.Cards.Remove(roomItem.Cards.First());
