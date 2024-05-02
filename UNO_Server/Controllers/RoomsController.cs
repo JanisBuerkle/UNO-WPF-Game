@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using Serilog;
 using UNO.Contract;
 using UNO_Server.Hubs;
@@ -67,14 +65,14 @@ namespace UNO_Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRoom(long id, RoomDTO roomItem)
         {
-            
             Log.Information("Put triggered.");
             if (id != roomItem.Id)
             {
                 return BadRequest();
             }
 
-            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.Players).First(r => r.Id.Equals(roomItem.Id));
+            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.Players)
+                .First(r => r.Id.Equals(roomItem.Id));
             foreach (var player in room.Players)
             {
                 var existingPlayer = _context.Players.Find(player.Id);
@@ -113,11 +111,11 @@ namespace UNO_Server.Controllers
             return NoContent();
         }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private readonly Random _random = new Random();
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPut("startroom/{roomid}")]
         public async Task<IActionResult> RoomId(long roomid, RoomDTO roomItem)
@@ -126,17 +124,17 @@ namespace UNO_Server.Controllers
 
             var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.MiddleCard)
                 .Include(room => room.Center).Include(room => room.Players).First(r => r.Id.Equals(roomItem.Id));
-            
-            room.Cards.Clear();
-            foreach (var card in _startModel.WildCards)
-            {
-                room.Cards.Add(card);
-            }
 
-            foreach (var card in _startModel.Draw4Cards)
-            {
-                room.Cards.Add(card);
-            }
+            room.Cards.Clear();
+            // foreach (var card in _startModel.WildCards)
+            // {
+            //     room.Cards.Add(card);
+            // }
+            //
+            // foreach (var card in _startModel.Draw4Cards)
+            // {
+            //     room.Cards.Add(card);
+            // }
 
             foreach (var card in _startModel.cards)
             {
@@ -144,23 +142,32 @@ namespace UNO_Server.Controllers
             }
 
             Log.Information("Die Center Karte wurde ermittelt und gelegt.");
+
             var randomCard = _random.Next(room.Cards.Count);
             var selectedCard = room.Cards[randomCard];
-            room.Cards.RemoveAt(randomCard);
-            room.Center.Add(selectedCard);
 
-
-            if (room.MiddleCard.Color == "Wild" || room.MiddleCard.Color == "Draw")
+            if (selectedCard.Color == "Wild" || selectedCard.Color == "Draw")
             {
+                while (selectedCard.Color == "Wild" || selectedCard.Color == "Draw")
+                {
+                    randomCard = _random.Next(room.Cards.Count);
+                    selectedCard = room.Cards[randomCard];
+                }
+            }
+            else
+            {
+                room.Cards.RemoveAt(randomCard);
+                room.Center.Add(selectedCard);
+                room.MiddleCard = room.Center.First();
+                room.SelectedCard = room.MiddleCard;
+                room.MiddleCardPic = room.MiddleCard.ImageUri;
             }
 
-            room.MiddleCard = room.Center.First();
-            room.SelectedCard = room.MiddleCard;
-            var middleCardPath = room.MiddleCard.ImageUri;
-            room.MiddleCardPic = middleCardPath;
+            int maxPlayersCount = room.Players.Count;
 
+            room.StartingPlayer = _random.Next(1, maxPlayersCount);
+            room.PlayerTurnId = room.StartingPlayer;
 
-            room.StartingPlayer = _random.Next(0, room.Players.Count);
             await _startModel.ShuffleDeck(room);
             await _startModel.DealCards(room);
 
@@ -168,35 +175,219 @@ namespace UNO_Server.Controllers
             _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
 
-
+            await _myHub.ConnectToRoom("roomStarted");
             await _myHub.SendGetAllRooms("roomStartedSended");
+            // await _myHub.NextPlayersMove("roomStartedSended");
 
             return NoContent();
         }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPut("placecard/{card}")]
         public async Task<IActionResult> PlaceCard(string card, RoomDTO roomItem)
         {
             Log.Information($"{card} gelegt.");
 
-            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
-            string color = Regex.Match(card, "[A-Za-z]+").Value;
-            string value = Regex.Match(card, "\\d+").Value;
+            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.Center)
+                .Include(room => room.Players).ThenInclude(player => player.PlayerHand).Include(room => room.MiddleCard)
+                .First(r => r.Id.Equals(roomItem.Id));
+            var players = _context.Players.Include(player => player.PlayerHand)
+                .First(p => p.RoomId.Equals(roomItem.Id));
 
+            string[] splitted = card.Split("-");
+            string color = splitted[0];
+            string value = splitted[1];
+            int cardId = Convert.ToInt32(splitted[2]);
             string path = $"pack://application:,,,/Assets/cards/{value}/{color}.png";
-            roomItem.Center.Add(new CardDTO() { Color = color, Value = value, ImageUri = path });
+
+            // Prüfen ob die Karte passt, Farbe oder Zahl gleich oder Draw/Wild.
+            if (room.MiddleCard.Color == color || room.MiddleCard.Value == value || color == "Wild" || color == "Draw")
+            {
+                room.Center.Add(new Card() { Color = color, Value = value, ImageUri = path });
+                room.MiddleCard = room.Center.Last();
+                room.SelectedCard = room.MiddleCard;
+                room.MiddleCardPic = room.MiddleCard.ImageUri;
+                foreach (var player in room.Players)
+                {
+                    foreach (var playerCard in player.PlayerHand)
+                    {
+                        if ((int)playerCard.Id == cardId)
+                        {
+                            player.PlayerHand.Remove(playerCard);
+
+                            if (playerCard.Color == "Wild" || playerCard.Color == "Draw")
+                            {
+                                await _myHub
+                                    .OpenChooseColorWindow(
+                                        "placeCard"); // Hub benutzen um beim client etwas auszuführen, vllt doch keine gute idee prüfen ob es dann bei jedem ausgeführt wird.
+                            }
+
+                            if (playerCard.Value == "+2")
+                            {
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    var rndCard = _random.Next(room.Cards.Count);
+                                    var selectedCard = room.Cards[rndCard];
+                                    room.Players[room.NextPlayer].PlayerHand.Add(selectedCard);
+                                }
+                            }
+                            else if (playerCard.Value == "+4")
+                            {
+                                for (int i = 0; i < 4; i++)
+                                {
+                                    var rndCard = _random.Next(room.Cards.Count);
+                                    var selectedCard = room.Cards[rndCard];
+                                    room.Players[room.NextPlayer].PlayerHand.Add(selectedCard);
+                                }
+                            }
+                            else if (playerCard.Value == "Skip")
+                            {
+                                room.IsSkip = true;
+                            }
+                            else if (playerCard.Value == "Reverse")
+                            {
+                                if (room.IsReverse)
+                                {
+                                    room.IsReverse = false;
+                                }
+                                else
+                                {
+                                    room.IsReverse = true;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
 
             _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("placeCard");
 
+
+            return NoContent();
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        [HttpPut("playerendmove/{playerId}")]
+        public async Task<IActionResult> PlayerEndMove(int playerId, RoomDTO roomItem)
+        {
+            Log.Information($"{playerId} hat seinen Zug beendet.");
+
+            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.Center)
+                .Include(room => room.Players).ThenInclude(player => player.PlayerHand).Include(room => room.MiddleCard)
+                .First(r => r.Id.Equals(roomItem.Id));
+            var players = _context.Players.Include(player => player.PlayerHand)
+                .First(p => p.RoomId.Equals(roomItem.Id));
+
+            foreach (var player in room.Players)
+            {
+                if (room.IsReverse && room.PlayerTurnId == playerId)
+                {
+                    if (room.PlayerTurnId == 1)
+                    {
+                        room.PlayerTurnId = room.Players.Count;
+                        if (room.IsSkip)
+                        {
+                            room.PlayerTurnId = room.Players.Count - 2;
+                            room.IsSkip = false;
+                        }
+                
+                        if (room.PlayerTurnId == 0)
+                        {
+                            room.NextPlayer = room.Players.Count;
+                        }
+                        else
+                        {
+                            room.NextPlayer = room.PlayerTurnId - 1;
+                        }
+                        
+                        // RoundCounter++;
+                        // RoundCounterString = $"Runde: {RoundCounter}/\u221e";
+                        
+                    }
+                    else
+                    {
+                        room.PlayerTurnId--;
+                        if (room.IsSkip)
+                        {
+                            if (room.PlayerTurnId == 1)
+                            {
+                                room.PlayerTurnId = room.Players.Count;
+                            }
+                
+                            room.IsSkip = false;
+                        }
+                
+                        if (room.PlayerTurnId == 1)
+                        {
+                            room.NextPlayer = room.Players.Count;
+                        }
+                    }
+                }
+                if (!room.IsReverse && room.PlayerTurnId == playerId)
+                {
+                    if (room.PlayerTurnId == room.Players.Count)
+                    {
+                        room.PlayerTurnId = 1;
+                        if (room.IsSkip)
+                        {
+                            room.PlayerTurnId += 1;
+                            room.IsSkip = false;
+                        }
+
+                        if (room.PlayerTurnId == room.Players.Count)
+                        {
+                            room.NextPlayer = 1;
+                        }
+                        else
+                        {
+                            room.NextPlayer = room.PlayerTurnId + 1;
+                        }
+
+                        // RoundCounter++;
+                        // RoundCounterString = $"Runde: {RoundCounter}/\u221e";
+                    }
+                    else
+                    {
+                        room.PlayerTurnId++;
+                        if (room.IsSkip)
+                        {
+                            if (room.PlayerTurnId == room.Players.Count)
+                            {
+                                room.PlayerTurnId = 0;
+                            }
+                            room.IsSkip = false;
+                        }
+
+                        if (room.PlayerTurnId == room.Players.Count)
+                        {
+                            room.NextPlayer = 1;
+                        }
+                        else
+                        {
+                            room.NextPlayer = room.PlayerTurnId + 1;
+                        }
+                    }
+                }
+            }
+
+
+            _context.RoomItems.Update(room);
+            await _context.SaveChangesAsync();
+
+            await _myHub.SendGetAllRooms("playerToMove");
+            // await _myHub.NextPlayersMove("playerToMove");
+
             return NoContent();
         }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [HttpPut("drawCard/{playerName}")]
         public async Task<IActionResult> DrawCard(string playerName, RoomDTO roomItem)
@@ -241,8 +432,9 @@ namespace UNO_Server.Controllers
         {
             Log.Information("Player added.");
             var player = _context.Players.FirstOrDefault(p => p.Name.Equals(playerName));
-            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
-            
+            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.Players)
+                .First(r => r.Id.Equals(roomItem.Id));
+
             if (player == null)
             {
                 bool isLeader = room.Players.Count == 0;
@@ -251,8 +443,12 @@ namespace UNO_Server.Controllers
                     new Player() { Name = playerName, RoomId = room.Id, IsLeader = isLeader })).Entity;
             }
 
-            room.Players.Add(player);
-            room.OnlineUsers++;
+            if (room.OnlineUsers != room.MaximalUsers)
+            {
+                room.Players.Add(player);
+                room.OnlineUsers++;
+            }
+
 
             _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
@@ -262,8 +458,8 @@ namespace UNO_Server.Controllers
             return NoContent();
         }
 
-        [HttpPut("removePlayer/{playerName}")]
-        public async Task<IActionResult> RemovePlayerFromRoom(string playerName, RoomDTO roomItem)
+        [HttpPut("removePlayer/{id}")]
+        public async Task<IActionResult> RemovePlayerFromRoom(string id, RoomDTO roomItem)
         {
             Log.Information("Player removed.");
             var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
@@ -282,15 +478,15 @@ namespace UNO_Server.Controllers
         public async Task<ActionResult<RoomDTO>> PostRoom(RoomDTO roomDto)
         {
             Log.Information("Post triggered.");
-            
+
             Room room = _dtoConverter.DtoConverterMethod(roomDto);
-            
+
             _context.RoomItems.Add(room);
             await _context.SaveChangesAsync();
-            var room2 = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomDto.Id));
+            // var room2 = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomDto.Id));
 
             await _myHub.SendGetAllRooms("postSended");
-            
+
             return CreatedAtAction(nameof(GetRoom), new { id = room.Id }, room);
         }
 
