@@ -25,7 +25,20 @@ public class HubService
             .Build();
 
 
-        _hubConnection.On<string>("GetAllRooms", nachricht => { _multiplayerRoomsViewModel.GetRooms(); });
+        _hubConnection.On<string>("GetAllRooms", nachricht =>
+        {
+            _multiplayerRoomsViewModel.GetRooms();
+        });
+        
+        _hubConnection.On<string>("ConnectToRoom", nachricht =>
+        {
+            _mainViewModel.GoToMultiplayerGame();
+        });
+        
+        _hubConnection.On<string>("NextPlayersMove", nachricht =>
+        {
+            _mainViewModel.MultiplayerGamePageViewModel.DiableAllFunctions();
+        });
 
         try
         {
