@@ -60,6 +60,17 @@ public class RoomClient
         var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
     }
+    public async Task PlayerEndMove(int playerId, RoomDTO roomToUpdate)
+    {
+        var httpClient = new HttpClient();
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/playerendmove/{playerId}";
+
+        var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+    }
 
     public async Task DrawCard(string playername, RoomDTO roomToUpdate)
     {
@@ -85,7 +96,7 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task RemovePlayer(RoomDTO roomToUpdate, string playerName, List<PlayerDTO> players)
+    public async Task RemovePlayer(RoomDTO roomToUpdate, int id)
     {
         await GetPlayers();
 
@@ -93,19 +104,11 @@ public class RoomClient
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        var addPlayerUrl = $"http://localhost:5000/api/Rooms/removePlayer/{playerName}";
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/removePlayer/{id}";
 
         var response2 = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response2.EnsureSuccessStatusCode();
-
-        int id = 0;
-        foreach (var player in players)
-        {
-            if (player.Name == playerName)
-            {
-                id = (int)player.Id;
-            }
-        }
+        
 
         var removePlayerUrl = $"http://localhost:5000/api/Player/{id}";
 
