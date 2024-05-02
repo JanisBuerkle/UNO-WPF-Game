@@ -11,6 +11,7 @@ namespace UNO_Spielprojekt.MultiplayerGamePage;
 public class MPGamePageViewModel : ViewModelBase
 {
     private Brush _theBackground;
+
     public Brush TheBackground
     {
         get => _theBackground;
@@ -25,6 +26,7 @@ public class MPGamePageViewModel : ViewModelBase
     private int RoundCounter { get; set; }
 
     private string _roundCounterString;
+
     public string RoundCounterString
     {
         get => _roundCounterString;
@@ -39,6 +41,7 @@ public class MPGamePageViewModel : ViewModelBase
     }
 
     private ObservableCollection<CardDTO> _currentHand = new ObservableCollection<CardDTO>();
+
     public ObservableCollection<CardDTO> CurrentHand
     {
         get => _currentHand;
@@ -58,9 +61,48 @@ public class MPGamePageViewModel : ViewModelBase
     private readonly ILogger _logger;
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
 
+    private bool _disableAllFunctions;
+    public bool DisableAllFunctions
+    {
+        get => _disableAllFunctions;
+        set
+        {
+            if (_disableAllFunctions != value)
+            {
+                _disableAllFunctions = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+    
+
+    private bool _fertigButtonIsEnabled;
+
+    public bool FertigButtonIsEnabled
+    {
+        get => _fertigButtonIsEnabled;
+        set
+        {
+            if (_fertigButtonIsEnabled != value)
+            {
+                _fertigButtonIsEnabled = value;
+
+                if (value == false)
+                {
+                    TheBackground = Brushes.Transparent;
+                }
+                else
+                {
+                    TheBackground = Brushes.Green;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+    }
     public RelayCommand ZiehenCommand { get; }
     // public RelayCommand LegenCommand { get; }
-    // public RelayCommand FertigCommand { get; }
+    public RelayCommand FertigCommand { get; }
     // public RelayCommand UnoCommand { get; }
     // public RelayCommand ExitConfirmCommand { get; }
 
@@ -70,8 +112,7 @@ public class MPGamePageViewModel : ViewModelBase
         MultiplayerRoomsViewModel = multiplayerRoomsViewModel;
         _mainViewModel = mainViewModel;
         _logger = logger;
-
-        TheBackground = Brushes.Transparent;
+        
         RoundCounter = 1;
         RoundCounterString = $"Runde: {RoundCounter}/\u221e";
         _logger.Info(
@@ -79,45 +120,83 @@ public class MPGamePageViewModel : ViewModelBase
 
         ZiehenCommand = new RelayCommand(ZiehenCommandMethod);
         // LegenCommand = new RelayCommand(LegenCommandMethod);
-        // FertigCommand = new RelayCommand(FertigCommandMethod);
+        FertigCommand = new RelayCommand(FertigCommandMethod);
         // UnoCommand = new RelayCommand(UnoCommandMethod);
         // ExitConfirmCommand = new RelayCommand(ExitConfirmCommandMethod);
     }
 
-    // private bool _legen;
-    // private bool _ziehen;
+    private bool _gelegt;
+    private bool _gezogen;
     // private ChooseColorViewModel _chooseColorViewModel;
     // private bool _chooseColorVisible;
 
     private async void ZiehenCommandMethod()
     {
-        _logger.Info("Eine Karte wurde gezogen, ZiehenCommandMethod wurde ausgeführt.");
-        await MultiplayerRoomsViewModel.RoomClient.DrawCard(MultiplayerRoomsViewModel.Player.Name,
-            MultiplayerRoomsViewModel.SelectedRoom2);
-        await MultiplayerRoomsViewModel.GetRooms();
+        if (!_gezogen && !_gelegt)
+        {
+            _logger.Info("Eine Karte wurde gezogen, ZiehenCommandMethod wurde ausgeführt.");
+            var savePlayerCardCount = MultiplayerRoomsViewModel.Player.PlayerHand.Count;
+            await MultiplayerRoomsViewModel.RoomClient.DrawCard(MultiplayerRoomsViewModel.Player.Name,
+                MultiplayerRoomsViewModel.SelectedRoom2);
+            await MultiplayerRoomsViewModel.GetRooms();
 
-        SetCurrentHand();
-        OnPropertyChanged(nameof(MultiplayerRoomsViewModel));
+            SetCurrentHand();
+            OnPropertyChanged(nameof(MultiplayerRoomsViewModel));
+
+            if (savePlayerCardCount < MultiplayerRoomsViewModel.Player.PlayerHand.Count)
+            {
+                _gezogen = true;
+                FertigButtonIsEnabled = true;
+            }
+        }
     }
 
     public async void LegenCommandMethod()
     {
-        _logger.Info("Eine Karte wurde angeklickt, LegenCommandMethod wurde ausgeführt.");
-        SelectedCard = MultiplayerRoomsViewModel.Player.PlayerHand[SelectedCardIndex];
-        foreach (var card in MultiplayerRoomsViewModel.Player.PlayerHand)
+        if (!_gezogen && !_gelegt)
         {
-            if (card == SelectedCard)
+            _logger.Info("Eine Karte wurde angeklickt, LegenCommandMethod wurde ausgeführt.");
+            var saveMiddleCard = MultiplayerRoomsViewModel.SelectedRoom2.MiddleCard;
+            SelectedCard = MultiplayerRoomsViewModel.Player.PlayerHand[SelectedCardIndex];
+
+            MultiplayerRoomsViewModel.Player.PlayerHand.Remove(SelectedCard);
+            string reinholen = SelectedCard.Color + "-" + SelectedCard.Value + "-" + SelectedCard.Id;
+            await MultiplayerRoomsViewModel.RoomClient.PlaceCard(reinholen, MultiplayerRoomsViewModel.SelectedRoom2);
+            _logger.Info($"{SelectedCard.Color + SelectedCard.Value} wurde ausgespielt.");
+            
+            await MultiplayerRoomsViewModel.GetRooms();
+            SetCurrentHand();
+            
+            if (saveMiddleCard.Id != MultiplayerRoomsViewModel.SelectedRoom2.MiddleCard.Id)
             {
-                MultiplayerRoomsViewModel.Player.PlayerHand.Remove(card);
-                await MultiplayerRoomsViewModel.RoomClient.PlaceCard(card.Color + card.Value,
-                    MultiplayerRoomsViewModel.SelectedRoom2);
-                _logger.Info($"{card.Color + card.Value} wurde ausgespielt.");
-                return;
+                _gelegt = true;
+                //Fertig Button Farbig machen
+                FertigButtonIsEnabled = true;
+            }
+            else
+            {
+                int test = 1;
             }
         }
+        
 
-        await MultiplayerRoomsViewModel.GetRooms();
-        SetCurrentHand();
+    }    
+    private async void FertigCommandMethod()
+    {
+        if (_gelegt || _gezogen)
+        {
+            _logger.Info("Fertig Button wurde geklickt, FertigCommandMethod wurde ausgeführt.");
+        
+            await MultiplayerRoomsViewModel.RoomClient.PlayerEndMove((int)MultiplayerRoomsViewModel.Player.Id, MultiplayerRoomsViewModel.SelectedRoom2);
+            _logger.Info($"{MultiplayerRoomsViewModel.PlayerName} hat seinen Zug beendet.");
+
+            await MultiplayerRoomsViewModel.GetRooms();
+
+            _gelegt = false;
+            _gezogen = false;
+            FertigButtonIsEnabled = false;
+            // Fertig Button unsichtbar machen 
+        }
     }
 
     public void SetCurrentHand()
@@ -125,12 +204,23 @@ public class MPGamePageViewModel : ViewModelBase
         _logger.Info("Die Hand des Spielers wurde geupdatet, SetCurrentHand wurde ausgeführt.");
         if (MultiplayerRoomsViewModel.Player.PlayerHand != null)
         {
-            var unused = MultiplayerRoomsViewModel.SelectedRoom2.MiddleCard; //test
             CurrentHand.Clear();
             foreach (var card in MultiplayerRoomsViewModel.Player.PlayerHand)
             {
                 CurrentHand.Add(card);
             }
+        }
+    }
+
+    public void DiableAllFunctions()
+    {
+        if (_mainViewModel.MultiplayerRoomsViewModel.Player.Id != MultiplayerRoomsViewModel.SelectedRoom2.PlayerTurnId)
+        {
+            DisableAllFunctions = false;
+        }
+        else
+        {
+            DisableAllFunctions = true;
         }
     }
 }
