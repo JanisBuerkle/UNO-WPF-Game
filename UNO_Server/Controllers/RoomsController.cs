@@ -11,16 +11,16 @@ namespace UNO_Server.Controllers
     [ApiController]
     public class RoomsController : ControllerBase
     {
-        private readonly RoomContext _context;
         private readonly MyHub _myHub;
+        private readonly RoomContext _context;
         private readonly StartModel _startModel;
         private readonly DTOConverter _dtoConverter;
 
         public RoomsController(RoomContext context, MyHub myHub)
         {
-            _startModel = new StartModel(context);
             _myHub = myHub;
             _context = context;
+            _startModel = new StartModel(context);
             _dtoConverter = new DTOConverter();
         }
 
@@ -29,7 +29,6 @@ namespace UNO_Server.Controllers
         public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
         {
             Log.Information("GET triggered.");
-            // await _hubContext.Clients.All.SendAsync("EmpfangeNachricht", "Test");
             if (_context.RoomItems == null)
             {
                 return NotFound();
@@ -73,6 +72,7 @@ namespace UNO_Server.Controllers
 
             var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.Players)
                 .First(r => r.Id.Equals(roomItem.Id));
+
             foreach (var player in room.Players)
             {
                 var existingPlayer = _context.Players.Find(player.Id);
@@ -126,6 +126,7 @@ namespace UNO_Server.Controllers
                 .Include(room => room.Center).Include(room => room.Players).First(r => r.Id.Equals(roomItem.Id));
 
             room.Cards.Clear();
+
             // foreach (var card in _startModel.WildCards)
             // {
             //     room.Cards.Add(card);
@@ -167,6 +168,14 @@ namespace UNO_Server.Controllers
 
             room.StartingPlayer = _random.Next(1, maxPlayersCount);
             room.PlayerTurnId = room.StartingPlayer;
+            if (room.PlayerTurnId != room.Players.Count)
+            {
+                room.NextPlayer = room.PlayerTurnId + 1;
+            }
+            else
+            {
+                room.NextPlayer = 1;
+            }
 
             await _startModel.ShuffleDeck(room);
             await _startModel.DealCards(room);
@@ -177,7 +186,6 @@ namespace UNO_Server.Controllers
 
             await _myHub.ConnectToRoom("roomStarted");
             await _myHub.SendGetAllRooms("roomStartedSended");
-            // await _myHub.NextPlayersMove("roomStartedSended");
 
             return NoContent();
         }
@@ -199,10 +207,55 @@ namespace UNO_Server.Controllers
             string color = splitted[0];
             string value = splitted[1];
             int cardId = Convert.ToInt32(splitted[2]);
+            if (splitted.Length >= 4)
+            {
+                foreach (var player in room.Players)
+                {
+                    foreach (var playerCard in player.PlayerHand)
+                    {
+                        if ((int)playerCard.Id == cardId)
+                        {
+                            string wildOrDraw = splitted[3];
+                            int number = Convert.ToInt32(splitted[4]);
+                            if (wildOrDraw == "Draw")
+                            {
+                                room.Center.Add(_startModel.Draw4Cards[number]);
+                                room.MiddleCard = room.Center.Last();
+                                room.SelectedCard = room.MiddleCard;
+                                room.MiddleCardPic = room.MiddleCard.ImageUri;
+                                player.PlayerHand.Remove(playerCard);
+                                break;
+                            }
+                            else if (wildOrDraw == "Wild")
+                            {
+                                room.Center.Add(_startModel.WildCards[number]);
+                                room.MiddleCard = room.Center.Last();
+                                room.SelectedCard = room.MiddleCard;
+                                room.MiddleCardPic = room.MiddleCard.ImageUri;
+                                player.PlayerHand.Remove(playerCard);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
             string path = $"pack://application:,,,/Assets/cards/{value}/{color}.png";
 
             // Prüfen ob die Karte passt, Farbe oder Zahl gleich oder Draw/Wild.
-            if (room.MiddleCard.Color == color || room.MiddleCard.Value == value || color == "Wild" || color == "Draw")
+            if (color == "Wild" || color == "Draw")
+            {
+                if (value == "+4")
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        var rndCard = _random.Next(room.Cards.Count);
+                        var selectedCard = room.Cards[rndCard];
+                        room.Players[room.NextPlayer - 1].PlayerHand.Add(selectedCard);
+                    }
+                }
+            }
+            else if (room.MiddleCard.Color == color || room.MiddleCard.Value == value)
             {
                 room.Center.Add(new Card() { Color = color, Value = value, ImageUri = path });
                 room.MiddleCard = room.Center.Last();
@@ -216,29 +269,13 @@ namespace UNO_Server.Controllers
                         {
                             player.PlayerHand.Remove(playerCard);
 
-                            if (playerCard.Color == "Wild" || playerCard.Color == "Draw")
-                            {
-                                await _myHub
-                                    .OpenChooseColorWindow(
-                                        "placeCard"); // Hub benutzen um beim client etwas auszuführen, vllt doch keine gute idee prüfen ob es dann bei jedem ausgeführt wird.
-                            }
-
-                            if (playerCard.Value == "+2")
+                            if (value == "+2")
                             {
                                 for (int i = 0; i < 2; i++)
                                 {
                                     var rndCard = _random.Next(room.Cards.Count);
                                     var selectedCard = room.Cards[rndCard];
-                                    room.Players[room.NextPlayer].PlayerHand.Add(selectedCard);
-                                }
-                            }
-                            else if (playerCard.Value == "+4")
-                            {
-                                for (int i = 0; i < 4; i++)
-                                {
-                                    var rndCard = _random.Next(room.Cards.Count);
-                                    var selectedCard = room.Cards[rndCard];
-                                    room.Players[room.NextPlayer].PlayerHand.Add(selectedCard);
+                                    room.Players[room.NextPlayer - 1].PlayerHand.Add(selectedCard);
                                 }
                             }
                             else if (playerCard.Value == "Skip")
@@ -256,6 +293,7 @@ namespace UNO_Server.Controllers
                                     room.IsReverse = true;
                                 }
                             }
+
                             break;
                         }
                     }
@@ -266,7 +304,6 @@ namespace UNO_Server.Controllers
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("placeCard");
-
 
             return NoContent();
         }
@@ -293,11 +330,11 @@ namespace UNO_Server.Controllers
                         room.PlayerTurnId = room.Players.Count;
                         if (room.IsSkip)
                         {
-                            room.PlayerTurnId = room.Players.Count - 2;
+                            room.PlayerTurnId = room.Players.Count - 1;
                             room.IsSkip = false;
                         }
-                
-                        if (room.PlayerTurnId == 0)
+
+                        if (room.PlayerTurnId == 1)
                         {
                             room.NextPlayer = room.Players.Count;
                         }
@@ -305,10 +342,9 @@ namespace UNO_Server.Controllers
                         {
                             room.NextPlayer = room.PlayerTurnId - 1;
                         }
-                        
+
                         // RoundCounter++;
                         // RoundCounterString = $"Runde: {RoundCounter}/\u221e";
-                        
                     }
                     else
                     {
@@ -319,16 +355,27 @@ namespace UNO_Server.Controllers
                             {
                                 room.PlayerTurnId = room.Players.Count;
                             }
-                
+                            else
+                            {
+                                room.PlayerTurnId -= 1;
+                            }
+
                             room.IsSkip = false;
                         }
-                
+
                         if (room.PlayerTurnId == 1)
                         {
                             room.NextPlayer = room.Players.Count;
                         }
+                        else
+                        {
+                            room.NextPlayer = room.Players.Count;
+                        }
                     }
+
+                    break;
                 }
+
                 if (!room.IsReverse && room.PlayerTurnId == playerId)
                 {
                     if (room.PlayerTurnId == room.Players.Count)
@@ -359,8 +406,13 @@ namespace UNO_Server.Controllers
                         {
                             if (room.PlayerTurnId == room.Players.Count)
                             {
-                                room.PlayerTurnId = 0;
+                                room.PlayerTurnId = 1;
                             }
+                            else
+                            {
+                                room.PlayerTurnId += 1;
+                            }
+
                             room.IsSkip = false;
                         }
 
@@ -373,6 +425,8 @@ namespace UNO_Server.Controllers
                             room.NextPlayer = room.PlayerTurnId + 1;
                         }
                     }
+
+                    break;
                 }
             }
 
@@ -385,7 +439,6 @@ namespace UNO_Server.Controllers
 
             return NoContent();
         }
-
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

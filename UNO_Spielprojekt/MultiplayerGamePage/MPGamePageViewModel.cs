@@ -1,9 +1,11 @@
 ﻿using UNO_Spielprojekt.MultiplayerRooms;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UNO_Spielprojekt.Window;
 using System.Windows.Media;
 using tt.Tools.Logging;
+using UNO_Spielprojekt.GamePage;
 using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
@@ -57,11 +59,13 @@ public class MPGamePageViewModel : ViewModelBase
 
     private CardDTO SelectedCard { get; set; }
 
-    private readonly MainViewModel _mainViewModel;
+    public MainViewModel MainViewModel { get; set; }
     private readonly ILogger _logger;
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
+    public RoomClient RoomClient { get; set; }
 
     private bool _disableAllFunctions;
+
     public bool DisableAllFunctions
     {
         get => _disableAllFunctions;
@@ -74,7 +78,30 @@ public class MPGamePageViewModel : ViewModelBase
             }
         }
     }
-    
+
+    public bool ChooseColorVisible
+    {
+        get => _chooseColorVisible;
+        set
+        {
+            if (value == _chooseColorVisible) return;
+            _chooseColorVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+    public ChooseColorViewModel ChooseColorViewModel
+    {
+        get => _chooseColorViewModel;
+        set
+        {
+            if (Equals(value, _chooseColorViewModel)) return;
+            _chooseColorViewModel = value;
+            OnPropertyChanged();
+        }
+    }
+
 
     private bool _fertigButtonIsEnabled;
 
@@ -100,7 +127,9 @@ public class MPGamePageViewModel : ViewModelBase
             }
         }
     }
+
     public RelayCommand ZiehenCommand { get; }
+
     // public RelayCommand LegenCommand { get; }
     public RelayCommand FertigCommand { get; }
     // public RelayCommand UnoCommand { get; }
@@ -110,9 +139,9 @@ public class MPGamePageViewModel : ViewModelBase
         MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
         MultiplayerRoomsViewModel = multiplayerRoomsViewModel;
-        _mainViewModel = mainViewModel;
+        MainViewModel = mainViewModel;
         _logger = logger;
-        
+
         RoundCounter = 1;
         RoundCounterString = $"Runde: {RoundCounter}/\u221e";
         _logger.Info(
@@ -127,8 +156,8 @@ public class MPGamePageViewModel : ViewModelBase
 
     private bool _gelegt;
     private bool _gezogen;
-    // private ChooseColorViewModel _chooseColorViewModel;
-    // private bool _chooseColorVisible;
+    private ChooseColorViewModel _chooseColorViewModel;
+    private bool _chooseColorVisible;
 
     private async void ZiehenCommandMethod()
     {
@@ -161,12 +190,23 @@ public class MPGamePageViewModel : ViewModelBase
 
             MultiplayerRoomsViewModel.Player.PlayerHand.Remove(SelectedCard);
             string reinholen = SelectedCard.Color + "-" + SelectedCard.Value + "-" + SelectedCard.Id;
-            await MultiplayerRoomsViewModel.RoomClient.PlaceCard(reinholen, MultiplayerRoomsViewModel.SelectedRoom2);
-            _logger.Info($"{SelectedCard.Color + SelectedCard.Value} wurde ausgespielt.");
-            
+
+            if (SelectedCard.Color == "Draw" || SelectedCard.Value == "Wild")
+            {
+                ChooseColorViewModel = new ChooseColorViewModel();
+                ChooseColorViewModel.PropertyChanged += ColorChoosen;
+                ChooseColorVisible = true;
+            }
+            else
+            {
+                await MultiplayerRoomsViewModel.RoomClient.PlaceCard(reinholen,
+                    MultiplayerRoomsViewModel.SelectedRoom2);
+                _logger.Info($"{SelectedCard.Color + SelectedCard.Value} wurde ausgespielt.");
+            }
+
             await MultiplayerRoomsViewModel.GetRooms();
             SetCurrentHand();
-            
+
             if (saveMiddleCard.Id != MultiplayerRoomsViewModel.SelectedRoom2.MiddleCard.Id)
             {
                 _gelegt = true;
@@ -178,16 +218,16 @@ public class MPGamePageViewModel : ViewModelBase
                 int test = 1;
             }
         }
-        
+    }
 
-    }    
     private async void FertigCommandMethod()
     {
         if (_gelegt || _gezogen)
         {
             _logger.Info("Fertig Button wurde geklickt, FertigCommandMethod wurde ausgeführt.");
-        
-            await MultiplayerRoomsViewModel.RoomClient.PlayerEndMove((int)MultiplayerRoomsViewModel.Player.Id, MultiplayerRoomsViewModel.SelectedRoom2);
+
+            await MultiplayerRoomsViewModel.RoomClient.PlayerEndMove((int)MultiplayerRoomsViewModel.Player.Id,
+                MultiplayerRoomsViewModel.SelectedRoom2);
             _logger.Info($"{MultiplayerRoomsViewModel.PlayerName} hat seinen Zug beendet.");
 
             await MultiplayerRoomsViewModel.GetRooms();
@@ -214,7 +254,7 @@ public class MPGamePageViewModel : ViewModelBase
 
     public void DiableAllFunctions()
     {
-        if (_mainViewModel.MultiplayerRoomsViewModel.Player.Id != MultiplayerRoomsViewModel.SelectedRoom2.PlayerTurnId)
+        if (MainViewModel.MultiplayerRoomsViewModel.Player.Id != MultiplayerRoomsViewModel.SelectedRoom2.PlayerTurnId)
         {
             DisableAllFunctions = false;
         }
@@ -222,5 +262,25 @@ public class MPGamePageViewModel : ViewModelBase
         {
             DisableAllFunctions = true;
         }
+    }
+
+    private async void ColorChoosen(object? sender, PropertyChangedEventArgs e)
+    {
+        ChooseColorVisible = false;
+
+        string reinholen = "";
+        if (SelectedCard.Color == "Draw")
+        {
+            reinholen = SelectedCard.Color + "-" + SelectedCard.Value + "-" + SelectedCard.Id + "-" + "Draw" + "-" +
+                        ChooseColorViewModel.ChoosenColor;
+        }
+        else if (SelectedCard.Value == "Wild")
+        {
+            reinholen = SelectedCard.Color + "-" + SelectedCard.Value + "-" + SelectedCard.Id + "-" + "Wild" + "-" +
+                        ChooseColorViewModel.ChoosenColor;
+        }
+
+        await MultiplayerRoomsViewModel.RoomClient.PlaceCard(reinholen, MultiplayerRoomsViewModel.SelectedRoom2);
+        await MultiplayerRoomsViewModel.GetRooms();
     }
 }
