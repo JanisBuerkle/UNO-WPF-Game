@@ -73,7 +73,7 @@ public class GameViewModel : ViewModelBase
     private int NextPlayer { get; set; }
     public ObservableCollection<CardViewModel> CurrentHand { get; set; } = new();
     public int SelectedCardIndex { get; set; }
-    private int RoundCounter { get; set; }
+    private int MoveCounter { get; set; }
 
     private string _roundCounterString;
 
@@ -133,9 +133,9 @@ public class GameViewModel : ViewModelBase
         UnoCommand = new RelayCommand(UnoCommandMethod);
 
         ExitConfirmCommand = new RelayCommand(ExitConfirmCommandMethod);
-        RoundCounter = 1;
+        MoveCounter = 1;
         IsEnd = false;
-        RoundCounterString = $"Runde: {RoundCounter}/\u221e";
+        RoundCounterString = $"Runde: {MoveCounter}/\u221e";
     }
 
     private bool _legen;
@@ -342,10 +342,9 @@ public class GameViewModel : ViewModelBase
                             NextPlayer = CurrentPlayer - 1;
                         }
 
-
                         _logger.Info("Eine neue Runde hat begonnen.");
-                        RoundCounter++;
-                        RoundCounterString = $"Runde: {RoundCounter}/\u221e";
+                        MoveCounter++;
+                        RoundCounterString = $"Runde: {MoveCounter}/\u221e";
 
                         if (NextPlayer < 0 || NextPlayer >= GameLogic.Players.Count)
                         {
@@ -400,8 +399,8 @@ public class GameViewModel : ViewModelBase
                         }
 
                         _logger.Info("Neue Runde hat begonnen.");
-                        RoundCounter++;
-                        RoundCounterString = $"Runde: {RoundCounter}/\u221e";
+                        MoveCounter++;
+                        RoundCounterString = $"Runde: {MoveCounter}/\u221e";
                     }
                     else
                     {
@@ -530,7 +529,7 @@ public class GameViewModel : ViewModelBase
         IsSkip = false;
         _ziehen = false;
         _legen = false;
-        RoundCounter = 0;
+        MoveCounter = 0;
     }
 
     private void CheckForWinner()
@@ -553,7 +552,7 @@ public class GameViewModel : ViewModelBase
         {
             _logger.Info($"{CurrentPlayerName} hat Gewonnen!");
             WinnerViewModel.WinnerName = CurrentPlayerName;
-            WinnerViewModel.RoundCounter = RoundCounter.ToString();
+            WinnerViewModel.MoveCounter = MoveCounter.ToString();
             _mainViewModel.GoToWinner();
             IsEnd = true;
 
