@@ -8,5 +8,6 @@ public class PlayerDTO
     public long RoomId { get; set; }
     public string Name { get; set; }
     public bool IsLeader { get; set; }
+    public bool Uno { get; set; }
     public ObservableCollection<CardDTO> PlayerHand { get; set; }
 }
