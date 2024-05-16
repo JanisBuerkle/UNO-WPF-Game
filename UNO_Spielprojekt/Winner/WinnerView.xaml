@@ -21,22 +21,28 @@
         <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
                    Foreground="White" FontSize="80" FontWeight="Bold" Text="Winner" />
 
-        <!-- Text und Spielername -->
-        <TextBlock Grid.Row="1" Grid.Column="1" FontSize="25">
-            <Run Text="Der Gewinner ist: " Foreground="Gray"></Run>
-            <Run Text="{Binding WinnerName}" Foreground="White"></Run>
-        </TextBlock>
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <!-- Text und Spielername -->
+            <TextBlock FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Run Text="Der Gewinner ist " Foreground="Gray"></Run>
+                <Run Text="{Binding WinnerName}" Foreground="White"></Run>
+            </TextBlock>
 
-        <!-- Text mit Rundenanzahl -->
-        <TextBlock Grid.Row="2" Grid.Column="1" FontSize="25">
-            <Run Text="Ihr habt " Foreground="Gray"></Run>
-            <Run Text="{Binding RoundCounter}" Foreground="White"></Run>
-            <Run Text=" Runden gespielt." Foreground="Gray"></Run>
-        </TextBlock>
+            <!-- Text mit Rundenanzahl -->
+            <TextBlock FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Run Text="Ihr habt " Foreground="Gray"></Run>
+                <Run Text="{Binding MoveCounter}" Foreground="White"></Run>
+                <Run Text=" Züge gespielt." Foreground="Gray"></Run>
+            </TextBlock>
+
+            <Button Content="Zurück zum Raum" Background="DarkRed" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Margin="0,40,0,0" Command="{Binding BackToTheRoomCommand}" IsEnabled="{Binding IsOnline}"/>
+        </StackPanel>
+
 
         <!-- Home Button -->
         <Button Grid.Row="0" Grid.Column="0" Command="{Binding GoToMainMenuCommand}"
                 Style="{StaticResource HomeButtonStyle}" />
-        
+
     </Grid>
 </UserControl>
