@@ -20,6 +20,7 @@ public class RoomDTO
     public int NextPlayer { get; set; }
     public bool IsReverse { get; set; }
     public bool IsSkip { get; set; }
+    public int MoveCounter { get; set; }
     public int StartingPlayer { get; set; }
     public List<PlayerDTO> Players { get; set; } = new List<PlayerDTO>();
     public ObservableCollection<CardDTO> Cards { get; set; } = new ObservableCollection<CardDTO>();
