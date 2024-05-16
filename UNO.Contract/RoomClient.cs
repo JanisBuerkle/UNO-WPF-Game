@@ -37,6 +37,18 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task UnoClicked(RoomDTO roomToUpdate, int playerId)
+    {
+        var httpClient = new HttpClient();
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/unoclicked/{playerId}";
+
+        var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+    }
+
     public async void StartRoom(RoomDTO room)
     {
         var httpClient = new HttpClient();
@@ -60,6 +72,7 @@ public class RoomClient
         var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
     }
+
     public async Task PlayerEndMove(int playerId, RoomDTO roomToUpdate)
     {
         var httpClient = new HttpClient();
@@ -79,6 +92,18 @@ public class RoomClient
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
         var addPlayerUrl = $"http://localhost:5000/api/Rooms/drawCard/{playername}";
+
+        var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
+        response.EnsureSuccessStatusCode();
+    }
+    
+    public async Task ResetRoom(string playername, RoomDTO roomToUpdate)
+    {
+        var httpClient = new HttpClient();
+        var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/resetroom/{playername}";
 
         var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
@@ -108,7 +133,7 @@ public class RoomClient
 
         var response2 = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response2.EnsureSuccessStatusCode();
-        
+
 
         var removePlayerUrl = $"http://localhost:5000/api/Player/{id}";
 
@@ -138,5 +163,12 @@ public class RoomClient
         }
 
         return room;
+    }
+
+    public async Task DeleteRoomAsync(RoomDTO room)
+    {
+        var httpClient = new HttpClient();
+        var response = await httpClient.DeleteAsync($"http://localhost:5000/api/Rooms/{room.Id}");
+        response.EnsureSuccessStatusCode();
     }
 }
