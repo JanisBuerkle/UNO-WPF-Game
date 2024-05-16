@@ -21,6 +21,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     };
 
     private PlayerDTO _player;
+
     public PlayerDTO Player
     {
         get => _player;
@@ -35,6 +36,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     }
 
     private int _selectedItem;
+
     public int SelectedMaximalCount
     {
         get => _selectedItem;
@@ -50,6 +52,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                         RemoveMorePlayers();
                     }
                 }
+
                 OnPropertyChanged();
             }
 
@@ -64,6 +67,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     }
 
     private ObservableCollection<RoomDTO> _roomList = new ObservableCollection<RoomDTO>();
+
     public ObservableCollection<RoomDTO> RoomList
     {
         get => _roomList;
@@ -79,6 +83,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
 
     private bool _disableAll;
+
     public bool DisableAll
     {
         get => _disableAll;
@@ -95,6 +100,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     public string PlayerName { get; set; }
 
     private RoomDTO _selectedRoom;
+
     public RoomDTO SelectedRoom
     {
         get => _selectedRoom;
@@ -110,6 +116,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     }
 
     private RoomDTO _selectedRoom2;
+
     public RoomDTO SelectedRoom2
     {
         get => _selectedRoom2;
@@ -150,7 +157,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                     SelectedRoom2 = room;
                 }
             }
-
+            
+            MainViewModel.MultiplayerGamePageViewModel.MoveCounter = SelectedRoom2.MoveCounter;
+            
             foreach (var player in SelectedRoom2.Players)
             {
                 if (PlayerName == player.Name)

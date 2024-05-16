@@ -1,5 +1,4 @@
-﻿using System.Net.Http;
-using tt.Tools.Logging;
+﻿using tt.Tools.Logging;
 using UNO_Spielprojekt.MultiplayerRooms;
 using UNO_Spielprojekt.Window;
 using Wpf.Ui.Common;
