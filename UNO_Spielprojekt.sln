@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UNO_Spielprojekt", "UNO_Spi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UNO.Contract", "UNO.Contract\UNO.Contract.csproj", "{B8AE7972-E612-4B3B-8859-42C65981A231}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit_Testing", "Unit_Testing\Unit_Testing.csproj", "{74EB8DEB-D6F1-42CA-87B6-87F5E5B1211D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{B8AE7972-E612-4B3B-8859-42C65981A231}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8AE7972-E612-4B3B-8859-42C65981A231}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8AE7972-E612-4B3B-8859-42C65981A231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74EB8DEB-D6F1-42CA-87B6-87F5E5B1211D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74EB8DEB-D6F1-42CA-87B6-87F5E5B1211D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74EB8DEB-D6F1-42CA-87B6-87F5E5B1211D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74EB8DEB-D6F1-42CA-87B6-87F5E5B1211D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
