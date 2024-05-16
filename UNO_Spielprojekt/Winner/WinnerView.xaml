@@ -24,19 +24,20 @@
         <StackPanel Grid.Row="1" Grid.Column="1">
             <!-- Text und Spielername -->
             <TextBlock FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Run Text="Der Gewinner ist " Foreground="Gray"></Run>
-                <Run Text="{Binding WinnerName}" Foreground="White"></Run>
+                <Run Text="Der Gewinner ist " Foreground="Gray" />
+                <Run Text="{Binding WinnerName}" Foreground="White" />
             </TextBlock>
 
             <!-- Text mit Rundenanzahl -->
             <TextBlock FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Run Text="Ihr habt " Foreground="Gray"></Run>
-                <Run Text="{Binding MoveCounter}" Foreground="White"></Run>
-                <Run Text=" Züge gespielt." Foreground="Gray"></Run>
+                <Run Text="Ihr habt " Foreground="Gray" />
+                <Run Text="{Binding MoveCounter}" Foreground="White" />
+                <Run Text=" Runden gespielt." Foreground="Gray" />
             </TextBlock>
 
-            <Button Content="Zurück zum Raum" Background="DarkRed" HorizontalAlignment="Center"
-                    VerticalAlignment="Center" Margin="0,40,0,0" Command="{Binding BackToTheRoomCommand}" IsEnabled="{Binding IsOnline}"/>
+            <Button Content="Raum beitreten..." Background="DarkRed" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Margin="0,40,0,0" Command="{Binding BackToTheRoomCommand}"
+                    IsEnabled="{Binding IsOnline}" />
         </StackPanel>
 
 

@@ -152,8 +152,6 @@ namespace UNO_Server.Controllers
             room.SelectedCard = room.MiddleCard;
             room.MiddleCardPic = room.MiddleCard.ImageUri;
 
-
-
             List<int> playerIds = new List<int>();
             foreach (var player in room.Players)
             {
@@ -162,7 +160,7 @@ namespace UNO_Server.Controllers
 
             int minId = playerIds.Min();
             int maxId = playerIds.Max();
-            
+
             room.StartingPlayer = _random.Next(minId, maxId);
             room.PlayerTurnId = room.StartingPlayer;
             if (room.PlayerTurnId != room.Players.Count)
@@ -223,7 +221,8 @@ namespace UNO_Server.Controllers
                                 player.PlayerHand.Remove(playerCard);
                                 break;
                             }
-                            else if (wildOrDraw == "Wild")
+
+                            if (wildOrDraw == "Wild")
                             {
                                 room.Center.Add(_startModel.WildCards[number]);
                                 room.MiddleCard = room.Center.Last();
@@ -287,14 +286,7 @@ namespace UNO_Server.Controllers
                                 }
                                 else
                                 {
-                                    if (room.IsReverse)
-                                    {
-                                        room.IsReverse = false;
-                                    }
-                                    else
-                                    {
-                                        room.IsReverse = true;
-                                    }
+                                    room.IsReverse = !room.IsReverse;
                                 }
                             }
 
@@ -325,9 +317,14 @@ namespace UNO_Server.Controllers
             var players = _context.Players.Include(player => player.PlayerHand)
                 .First(p => p.RoomId.Equals(roomItem.Id));
 
-            if (room.Players[playerId - 1].PlayerHand.Count == 0)
+            if (room.Players[playerId - 1].PlayerHand.Count == 0 && room.Players[playerId - 1].Uno)
             {
                 await _myHub.OpenWinnerPage(room.Players[playerId - 1].Name + "-" + room.MoveCounter);
+            }
+            else if (room.Players[playerId - 1].PlayerHand.Count == 0 && !room.Players[playerId - 1].Uno)
+            {
+                room.Players[playerId - 1].PlayerHand.Add(room.Cards.First());
+                room.Cards.Remove(room.Cards.First());
             }
             else
             {
@@ -337,6 +334,7 @@ namespace UNO_Server.Controllers
                     {
                         if (room.PlayerTurnId == 1)
                         {
+                            room.MoveCounter++;
                             room.PlayerTurnId = room.Players.Count;
                             if (room.IsSkip)
                             {
@@ -352,9 +350,6 @@ namespace UNO_Server.Controllers
                             {
                                 room.NextPlayer = room.PlayerTurnId - 1;
                             }
-
-                            // MoveCounter++;
-                            // RoundCounterString = $"Runde: {MoveCounter}/\u221e";
                         }
                         else
                         {
@@ -405,9 +400,6 @@ namespace UNO_Server.Controllers
                             {
                                 room.NextPlayer = room.PlayerTurnId + 1;
                             }
-
-                            // MoveCounter++;
-                            // RoundCounterString = $"Runde: {MoveCounter}/\u221e";
                         }
                         else
                         {
@@ -440,8 +432,6 @@ namespace UNO_Server.Controllers
                     }
                 }
             }
-
-            room.MoveCounter++;
 
             _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
@@ -498,8 +488,8 @@ namespace UNO_Server.Controllers
 
             return NoContent();
         }
-        
-        
+
+
         [HttpPut("resetroom/{playerName}")]
         public async Task<IActionResult> ResetRoom(string playerName, RoomDTO roomItem)
         {
