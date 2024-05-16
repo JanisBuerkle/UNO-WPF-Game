@@ -42,7 +42,7 @@
         <!-- Fertig und der Spielername -->
         <StackPanel Grid.Row="3" Grid.Column="2" VerticalAlignment="Bottom">
             <Button Style="{StaticResource MyButtonStyle}" Foreground="White" Click="ButtonBase_OnClick"
-                    Background="CornflowerBlue" Content="{Binding MultiplayerRoomsViewModel.Player.Id}"
+                    Background="CornflowerBlue" Content="{Binding MultiplayerRoomsViewModel.Player.Name}"
                     FontSize="40" FontWeight="Bold" Height="100" Width="200" Margin="10" />
 
             <Button DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}"
@@ -58,24 +58,28 @@
         </Label>
 
         <!-- Ziehstapel und Ablagestapel -->
-        <StackPanel DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}" Grid.RowSpan="2" Grid.Row="1"
-                    Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top"
-                    HorizontalAlignment="Center">
-            <Button Width="150" Height="225" Style="{StaticResource CardStyle}"
-                    IsEnabled="{Binding DisableAllFunctions}" Command="{Binding ZiehenCommand}">
-                <Button.Background>
-                    <ImageBrush ImageSource="pack://application:,,,/Assets/cards/card_back.png" Stretch="Fill" />
-                </Button.Background>
-            </Button>
+        <StackPanel Orientation="Vertical" Grid.RowSpan="2" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center">
+            <StackPanel DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}"  Orientation="Horizontal" VerticalAlignment="Top"
+                        HorizontalAlignment="Center">
+                <Button Width="150" Height="225" Style="{StaticResource CardStyle}"
+                        IsEnabled="{Binding DisableAllFunctions}" Command="{Binding ZiehenCommand}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="pack://application:,,,/Assets/cards/card_back.png" Stretch="Fill" />
+                    </Button.Background>
+                </Button>
 
-            <Button DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}" Width="150" Height="225"
-                    Style="{StaticResource CardStyle}">
-                <Button.Background>
-                    <ImageBrush ImageSource="{Binding MultiplayerRoomsViewModel.SelectedRoom2.MiddleCardPic }"
-                                Stretch="Fill" />
-                </Button.Background>
-            </Button>
+                <Button DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}" Width="150" Height="225"
+                        Style="{StaticResource CardStyle}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="{Binding MultiplayerRoomsViewModel.SelectedRoom2.MiddleCardPic }"
+                                    Stretch="Fill" />
+                    </Button.Background>
+                </Button>
+            </StackPanel>
+            
+            <Label Content="Du bist dran!" Foreground="Green" FontWeight="Bold" HorizontalAlignment="Center" FontSize="20" Visibility="{Binding ItsYourTurn, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </StackPanel>
+
 
         <!-- Spielerhand -->
         <ScrollViewer Grid.Row="3" Grid.Column="1" IsEnabled="{Binding DisableAllFunctions}"
