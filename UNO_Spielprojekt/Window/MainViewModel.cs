@@ -38,7 +38,7 @@ public class MainViewModel : ViewModelBase
     public ScoreboardViewModel ScoreboardViewModel { get; }
     public MainMenuViewModel MainMenuViewModel { get; set; }
     public AddPlayerViewModel AddPlayerViewModel { get; set; }
-    
+
     private RoomClient RoomClient { get; set; }
 
     public MainViewModel()
@@ -50,9 +50,13 @@ public class MainViewModel : ViewModelBase
         ThemeModes = new ThemeModes();
         SettingsViewModel = new SettingsViewModel(this, logger, ThemeModes);
         PlayViewModel = new PlayViewModel();
-        WinnerViewModel = new WinnerViewModel(this, ThemeModes);
         GameLogic = new GameLogic(PlayViewModel, logger, ApiService);
         ScoreboardViewModel = new ScoreboardViewModel(this, logger, ThemeModes);
+
+        RoomClient = new RoomClient();
+        MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger, RoomClient);
+        WinnerViewModel = new WinnerViewModel(this, ThemeModes, MultiplayerRoomsViewModel);
+
         GameViewModel = new GameViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel,
             ThemeModes);
         RulesViewModel = new RulesViewModel(this, logger, ThemeModes);
@@ -61,11 +65,6 @@ public class MainViewModel : ViewModelBase
         AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic, ThemeModes, ApiService);
 
 
-        RoomClient = new RoomClient();
-        
-        
-        
-        MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger, RoomClient);
         MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, MultiplayerRoomsViewModel);
         HubService = new HubService(this, MultiplayerRoomsViewModel);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
@@ -93,7 +92,7 @@ public class MainViewModel : ViewModelBase
     private bool _lobbyVisible;
     private readonly GameLogic GameLogic;
     private readonly PlayViewModel PlayViewModel;
-    
+
     public bool MainMenuVisible
     {
         get => _mainMenuVisible;
@@ -359,7 +358,7 @@ public class MainViewModel : ViewModelBase
         MultiplayerGamePageVisible = false;
     }
 
-    public void GoToWinner()
+    public async void GoToWinner()
     {
         WinnerVisible = true;
         GameVisible = false;
