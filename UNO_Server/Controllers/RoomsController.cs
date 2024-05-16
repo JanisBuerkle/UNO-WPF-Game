@@ -75,7 +75,7 @@ namespace UNO_Server.Controllers
 
             foreach (var player in room.Players)
             {
-                var existingPlayer = _context.Players.Find(player.Id);
+                var existingPlayer = await _context.Players.FindAsync(player.Id);
                 if (existingPlayer != null)
                 {
                     // Update existing player
@@ -127,16 +127,6 @@ namespace UNO_Server.Controllers
 
             room.Cards.Clear();
 
-            // foreach (var card in _startModel.WildCards)
-            // {
-            //     room.Cards.Add(card);
-            // }
-            //
-            // foreach (var card in _startModel.Draw4Cards)
-            // {
-            //     room.Cards.Add(card);
-            // }
-
             foreach (var card in _startModel.cards)
             {
                 room.Cards.Add(card);
@@ -155,18 +145,25 @@ namespace UNO_Server.Controllers
                     selectedCard = room.Cards[randomCard];
                 }
             }
-            else
+
+            room.Cards.RemoveAt(randomCard);
+            room.Center.Add(selectedCard);
+            room.MiddleCard = room.Center.First();
+            room.SelectedCard = room.MiddleCard;
+            room.MiddleCardPic = room.MiddleCard.ImageUri;
+
+
+
+            List<int> playerIds = new List<int>();
+            foreach (var player in room.Players)
             {
-                room.Cards.RemoveAt(randomCard);
-                room.Center.Add(selectedCard);
-                room.MiddleCard = room.Center.First();
-                room.SelectedCard = room.MiddleCard;
-                room.MiddleCardPic = room.MiddleCard.ImageUri;
+                playerIds.Add((int)player.Id);
             }
 
-            int maxPlayersCount = room.Players.Count;
-
-            room.StartingPlayer = _random.Next(1, maxPlayersCount);
+            int minId = playerIds.Min();
+            int maxId = playerIds.Max();
+            
+            room.StartingPlayer = _random.Next(minId, maxId);
             room.PlayerTurnId = room.StartingPlayer;
             if (room.PlayerTurnId != room.Players.Count)
             {
@@ -179,7 +176,7 @@ namespace UNO_Server.Controllers
 
             await _startModel.ShuffleDeck(room);
             await _startModel.DealCards(room);
-
+            room.MoveCounter = 1;
 
             _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
@@ -284,13 +281,20 @@ namespace UNO_Server.Controllers
                             }
                             else if (playerCard.Value == "Reverse")
                             {
-                                if (room.IsReverse)
+                                if (room.Players.Count == 2)
                                 {
-                                    room.IsReverse = false;
+                                    room.IsSkip = true;
                                 }
                                 else
                                 {
-                                    room.IsReverse = true;
+                                    if (room.IsReverse)
+                                    {
+                                        room.IsReverse = false;
+                                    }
+                                    else
+                                    {
+                                        room.IsReverse = true;
+                                    }
                                 }
                             }
 
@@ -321,121 +325,153 @@ namespace UNO_Server.Controllers
             var players = _context.Players.Include(player => player.PlayerHand)
                 .First(p => p.RoomId.Equals(roomItem.Id));
 
-            foreach (var player in room.Players)
+            if (room.Players[playerId - 1].PlayerHand.Count == 0)
             {
-                if (room.IsReverse && room.PlayerTurnId == playerId)
+                await _myHub.OpenWinnerPage(room.Players[playerId - 1].Name + "-" + room.MoveCounter);
+            }
+            else
+            {
+                foreach (var player in room.Players)
                 {
-                    if (room.PlayerTurnId == 1)
+                    if (room.IsReverse && room.PlayerTurnId == playerId)
                     {
-                        room.PlayerTurnId = room.Players.Count;
-                        if (room.IsSkip)
-                        {
-                            room.PlayerTurnId = room.Players.Count - 1;
-                            room.IsSkip = false;
-                        }
-
                         if (room.PlayerTurnId == 1)
                         {
-                            room.NextPlayer = room.Players.Count;
-                        }
-                        else
-                        {
-                            room.NextPlayer = room.PlayerTurnId - 1;
-                        }
+                            room.PlayerTurnId = room.Players.Count;
+                            if (room.IsSkip)
+                            {
+                                room.PlayerTurnId = room.Players.Count - 1;
+                                room.IsSkip = false;
+                            }
 
-                        // RoundCounter++;
-                        // RoundCounterString = $"Runde: {RoundCounter}/\u221e";
-                    }
-                    else
-                    {
-                        room.PlayerTurnId--;
-                        if (room.IsSkip)
-                        {
                             if (room.PlayerTurnId == 1)
                             {
-                                room.PlayerTurnId = room.Players.Count;
+                                room.NextPlayer = room.Players.Count;
                             }
                             else
                             {
-                                room.PlayerTurnId -= 1;
+                                room.NextPlayer = room.PlayerTurnId - 1;
                             }
 
-                            room.IsSkip = false;
-                        }
-
-                        if (room.PlayerTurnId == 1)
-                        {
-                            room.NextPlayer = room.Players.Count;
+                            // MoveCounter++;
+                            // RoundCounterString = $"Runde: {MoveCounter}/\u221e";
                         }
                         else
                         {
-                            room.NextPlayer = room.Players.Count;
+                            room.PlayerTurnId--;
+                            if (room.IsSkip)
+                            {
+                                if (room.PlayerTurnId == 1)
+                                {
+                                    room.PlayerTurnId = room.Players.Count;
+                                }
+                                else
+                                {
+                                    room.PlayerTurnId -= 1;
+                                }
+
+                                room.IsSkip = false;
+                            }
+
+                            if (room.PlayerTurnId == 1)
+                            {
+                                room.NextPlayer = room.Players.Count;
+                            }
+                            else
+                            {
+                                room.NextPlayer = room.Players.Count;
+                            }
                         }
+
+                        break;
                     }
 
-                    break;
-                }
-
-                if (!room.IsReverse && room.PlayerTurnId == playerId)
-                {
-                    if (room.PlayerTurnId == room.Players.Count)
+                    if (!room.IsReverse && room.PlayerTurnId == playerId)
                     {
-                        room.PlayerTurnId = 1;
-                        if (room.IsSkip)
-                        {
-                            room.PlayerTurnId += 1;
-                            room.IsSkip = false;
-                        }
-
                         if (room.PlayerTurnId == room.Players.Count)
                         {
-                            room.NextPlayer = 1;
-                        }
-                        else
-                        {
-                            room.NextPlayer = room.PlayerTurnId + 1;
-                        }
-
-                        // RoundCounter++;
-                        // RoundCounterString = $"Runde: {RoundCounter}/\u221e";
-                    }
-                    else
-                    {
-                        room.PlayerTurnId++;
-                        if (room.IsSkip)
-                        {
-                            if (room.PlayerTurnId == room.Players.Count)
-                            {
-                                room.PlayerTurnId = 1;
-                            }
-                            else
+                            room.PlayerTurnId = 1;
+                            if (room.IsSkip)
                             {
                                 room.PlayerTurnId += 1;
+                                room.IsSkip = false;
                             }
 
-                            room.IsSkip = false;
-                        }
+                            if (room.PlayerTurnId == room.Players.Count)
+                            {
+                                room.NextPlayer = 1;
+                            }
+                            else
+                            {
+                                room.NextPlayer = room.PlayerTurnId + 1;
+                            }
 
-                        if (room.PlayerTurnId == room.Players.Count)
-                        {
-                            room.NextPlayer = 1;
+                            // MoveCounter++;
+                            // RoundCounterString = $"Runde: {MoveCounter}/\u221e";
                         }
                         else
                         {
-                            room.NextPlayer = room.PlayerTurnId + 1;
-                        }
-                    }
+                            room.PlayerTurnId++;
+                            if (room.IsSkip)
+                            {
+                                if (room.PlayerTurnId == room.Players.Count)
+                                {
+                                    room.PlayerTurnId = 1;
+                                }
+                                else
+                                {
+                                    room.PlayerTurnId += 1;
+                                }
 
-                    break;
+                                room.IsSkip = false;
+                            }
+
+                            if (room.PlayerTurnId == room.Players.Count)
+                            {
+                                room.NextPlayer = 1;
+                            }
+                            else
+                            {
+                                room.NextPlayer = room.PlayerTurnId + 1;
+                            }
+                        }
+
+                        break;
+                    }
                 }
             }
 
+            room.MoveCounter++;
 
             _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
 
             await _myHub.SendGetAllRooms("playerToMove");
-            // await _myHub.NextPlayersMove("playerToMove");
+
+            return NoContent();
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        [HttpPut("unoclicked/{playerId}")]
+        public async Task<IActionResult> UnoClicked(int playerId, RoomDTO roomItem)
+        {
+            Log.Information($"Player {playerId} clicked Uno.");
+
+            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.MiddleCard)
+                .Include(room => room.Center).Include(room => room.Players).ThenInclude(player => player.PlayerHand)
+                .First(r => r.Id.Equals(roomItem.Id));
+
+            if (room.Players[playerId].PlayerHand.Count == 1)
+            {
+                room.Players[playerId].Uno = true;
+            }
+
+            _context.RoomItems.Update(room);
+            await _context.SaveChangesAsync();
+
+            await _myHub.ConnectToRoom("roomStarted");
+            await _myHub.SendGetAllRooms("roomStartedSended");
 
             return NoContent();
         }
@@ -453,6 +489,30 @@ namespace UNO_Server.Controllers
             var card = room.Cards.First();
             player.PlayerHand.Add(card);
             room.Cards.Remove(card);
+
+            _context.Players.Update(player);
+            _context.RoomItems.Update(room);
+            await _context.SaveChangesAsync();
+
+            await _myHub.SendGetAllRooms("drawCard");
+
+            return NoContent();
+        }
+        
+        
+        [HttpPut("resetroom/{playerName}")]
+        public async Task<IActionResult> ResetRoom(string playerName, RoomDTO roomItem)
+        {
+            Log.Information("DrawCard triggered.");
+
+            var player = _context.Players.First(p => p.Name.Equals(playerName));
+            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
+
+            room.Cards.Clear();
+            room.Center.Clear();
+            room.MiddleCard = new Card() { Color = "", Value = "", ImageUri = "" };
+            room.MiddleCardPic = "";
+            room.SelectedCard = new Card() { Color = "", Value = "", ImageUri = "" };
 
             _context.Players.Update(player);
             _context.RoomItems.Update(room);
@@ -492,8 +552,8 @@ namespace UNO_Server.Controllers
             {
                 bool isLeader = room.Players.Count == 0;
 
-                player = (await _context.Players.AddAsync(
-                    new Player() { Name = playerName, RoomId = room.Id, IsLeader = isLeader })).Entity;
+                player = (await _context.Players.AddAsync(new Player()
+                    { Name = playerName, RoomId = room.Id, IsLeader = isLeader })).Entity;
             }
 
             if (room.OnlineUsers != room.MaximalUsers)
@@ -501,7 +561,6 @@ namespace UNO_Server.Controllers
                 room.Players.Add(player);
                 room.OnlineUsers++;
             }
-
 
             _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
