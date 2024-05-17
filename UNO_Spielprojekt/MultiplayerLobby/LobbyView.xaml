@@ -70,15 +70,19 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-
-        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,0,0, 100"
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" VerticalAlignment="Bottom"
+                    Margin="0,0,0, 100"
                     Visibility="{Binding Player.IsLeader, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             <ComboBox Foreground="White" Height="50" Width="200"
                       ItemsSource="{Binding ComboBoxItems}"
                       SelectedItem="{Binding SelectedMaximalCount}" />
-            <Button DataContext="{Binding ElementName=Lobby, Path=ViewModel}" Content="Starten" Background="DarkGreen"
-                    HorizontalAlignment="Center" Height="50" Width="200" Command="{Binding StartRoomCommand }" />
+
+            <StackPanel IsEnabled="{Binding SelectedRoom2.StartButtonEnabled}">
+                <Button DataContext="{Binding ElementName=Lobby, Path=ViewModel}" Content="Starten"
+                        Background="DarkGreen"
+                        HorizontalAlignment="Center" Height="50" Width="200" Command="{Binding StartRoomCommand }" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

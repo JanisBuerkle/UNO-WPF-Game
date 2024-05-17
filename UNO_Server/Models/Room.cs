@@ -21,6 +21,7 @@ public class Room
     public bool IsReverse { get; set; }
     public bool IsSkip { get; set; }
     public int MoveCounter { get; set; }
+    public bool StartButtonEnabled { get; set; }
     public int StartingPlayer { get; set; }
     public List<Player> Players { get; set; } = new List<Player>();
     public ObservableCollection<Card> Cards { get; set; } = new ObservableCollection<Card>();
