@@ -157,9 +157,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                     SelectedRoom2 = room;
                 }
             }
-            
+
             MainViewModel.MultiplayerGamePageViewModel.MoveCounter = SelectedRoom2.MoveCounter;
-            
+
             foreach (var player in SelectedRoom2.Players)
             {
                 if (PlayerName == player.Name)
@@ -191,6 +191,11 @@ public class MultiplayerRoomsViewModel : ViewModelBase
             {
                 MainViewModel.MultiplayerGamePageViewModel.DisableAllFunctions = true;
             }
+        }
+
+        if (SelectedRoom2 != null)
+        {
+            MainViewModel.MultiplayerGamePageViewModel.RoundCounterString = $"Runde: {SelectedRoom2.MoveCounter}/\u221e";
         }
     }
 
