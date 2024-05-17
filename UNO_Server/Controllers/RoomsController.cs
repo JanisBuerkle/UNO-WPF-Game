@@ -126,7 +126,6 @@ namespace UNO_Server.Controllers
                 .Include(room => room.Center).Include(room => room.Players).First(r => r.Id.Equals(roomItem.Id));
 
             room.Cards.Clear();
-
             foreach (var card in _startModel.cards)
             {
                 room.Cards.Add(card);
@@ -317,118 +316,131 @@ namespace UNO_Server.Controllers
             var players = _context.Players.Include(player => player.PlayerHand)
                 .First(p => p.RoomId.Equals(roomItem.Id));
 
-            if (room.Players[playerId - 1].PlayerHand.Count == 0 && room.Players[playerId - 1].Uno)
+            List<int> ids = new List<int>();
+            foreach (var player in room.Players)
             {
-                await _myHub.OpenWinnerPage(room.Players[playerId - 1].Name + "-" + room.MoveCounter);
+                ids.Add((int)player.Id);
             }
-            else if (room.Players[playerId - 1].PlayerHand.Count == 0 && !room.Players[playerId - 1].Uno)
+
+            int minId = ids.Min();
+            int maxId = ids.Max();
+
+            foreach (var player in room.Players)
             {
-                room.Players[playerId - 1].PlayerHand.Add(room.Cards.First());
-                room.Cards.Remove(room.Cards.First());
-            }
-            else
-            {
-                foreach (var player in room.Players)
+                if (player.Id == playerId)
                 {
-                    if (room.IsReverse && room.PlayerTurnId == playerId)
+                    if (player.Id == playerId && player.PlayerHand.Count == 0 && player.Uno)
                     {
-                        if (room.PlayerTurnId == 1)
-                        {
-                            room.MoveCounter++;
-                            room.PlayerTurnId = room.Players.Count;
-                            if (room.IsSkip)
-                            {
-                                room.PlayerTurnId = room.Players.Count - 1;
-                                room.IsSkip = false;
-                            }
-
-                            if (room.PlayerTurnId == 1)
-                            {
-                                room.NextPlayer = room.Players.Count;
-                            }
-                            else
-                            {
-                                room.NextPlayer = room.PlayerTurnId - 1;
-                            }
-                        }
-                        else
-                        {
-                            room.PlayerTurnId--;
-                            if (room.IsSkip)
-                            {
-                                if (room.PlayerTurnId == 1)
-                                {
-                                    room.PlayerTurnId = room.Players.Count;
-                                }
-                                else
-                                {
-                                    room.PlayerTurnId -= 1;
-                                }
-
-                                room.IsSkip = false;
-                            }
-
-                            if (room.PlayerTurnId == 1)
-                            {
-                                room.NextPlayer = room.Players.Count;
-                            }
-                            else
-                            {
-                                room.NextPlayer = room.Players.Count;
-                            }
-                        }
-
-                        break;
+                        await _myHub.OpenWinnerPage(room.Players[playerId - 1].Name + "-" + room.MoveCounter);
                     }
-
-                    if (!room.IsReverse && room.PlayerTurnId == playerId)
+                    else if (player.Id == playerId && player.PlayerHand.Count == 0 && !player.Uno)
                     {
-                        if (room.PlayerTurnId == room.Players.Count)
+                        room.Players[playerId - 1].PlayerHand.Add(room.Cards.First());
+                        room.Cards.Remove(room.Cards.First());
+                    }
+                    else
+                    {
+                        if (room.IsReverse && room.PlayerTurnId == playerId)
                         {
-                            room.PlayerTurnId = 1;
-                            if (room.IsSkip)
+                            if (room.PlayerTurnId == minId)
                             {
-                                room.PlayerTurnId += 1;
-                                room.IsSkip = false;
-                            }
+                                room.MoveCounter++;
+                                room.PlayerTurnId = maxId;
+                                if (room.IsSkip)
+                                {
+                                    room.PlayerTurnId = maxId - 1;
+                                    room.IsSkip = false;
+                                }
 
-                            if (room.PlayerTurnId == room.Players.Count)
-                            {
-                                room.NextPlayer = 1;
+                                if (room.PlayerTurnId == minId)
+                                {
+                                    room.NextPlayer = maxId;
+                                }
+                                else
+                                {
+                                    room.NextPlayer = room.PlayerTurnId - 1;
+                                }
                             }
                             else
                             {
-                                room.NextPlayer = room.PlayerTurnId + 1;
-                            }
-                        }
-                        else
-                        {
-                            room.PlayerTurnId++;
-                            if (room.IsSkip)
-                            {
-                                if (room.PlayerTurnId == room.Players.Count)
+                                room.PlayerTurnId--;
+                                if (room.IsSkip)
                                 {
-                                    room.PlayerTurnId = 1;
+                                    if (room.PlayerTurnId == minId)
+                                    {
+                                        room.PlayerTurnId = maxId;
+                                    }
+                                    else
+                                    {
+                                        room.PlayerTurnId -= 1;
+                                    }
+
+                                    room.IsSkip = false;
+                                }
+
+                                if (room.PlayerTurnId == minId)
+                                {
+                                    room.NextPlayer = maxId;
                                 }
                                 else
+                                {
+                                    room.NextPlayer = maxId;
+                                }
+                            }
+
+                            break;
+                        }
+
+                        if (!room.IsReverse && room.PlayerTurnId == playerId)
+                        {
+                            if (room.PlayerTurnId == maxId)
+                            {
+                                room.MoveCounter++;
+                                room.PlayerTurnId = minId;
+                                if (room.IsSkip)
                                 {
                                     room.PlayerTurnId += 1;
+                                    room.IsSkip = false;
                                 }
 
-                                room.IsSkip = false;
-                            }
-
-                            if (room.PlayerTurnId == room.Players.Count)
-                            {
-                                room.NextPlayer = 1;
+                                if (room.PlayerTurnId == maxId)
+                                {
+                                    room.NextPlayer = minId;
+                                }
+                                else
+                                {
+                                    room.NextPlayer = room.PlayerTurnId + 1;
+                                }
                             }
                             else
                             {
-                                room.NextPlayer = room.PlayerTurnId + 1;
-                            }
-                        }
+                                room.PlayerTurnId++;
+                                if (room.IsSkip)
+                                {
+                                    if (room.PlayerTurnId == maxId)
+                                    {
+                                        room.PlayerTurnId = minId;
+                                    }
+                                    else
+                                    {
+                                        room.PlayerTurnId += 1;
+                                    }
 
-                        break;
+                                    room.IsSkip = false;
+                                }
+
+                                if (room.PlayerTurnId == maxId)
+                                {
+                                    room.NextPlayer = minId;
+                                }
+                                else
+                                {
+                                    room.NextPlayer = room.PlayerTurnId + 1;
+                                }
+                            }
+
+                            break;
+                        }
                     }
                 }
             }
@@ -452,9 +464,9 @@ namespace UNO_Server.Controllers
                 .Include(room => room.Center).Include(room => room.Players).ThenInclude(player => player.PlayerHand)
                 .First(r => r.Id.Equals(roomItem.Id));
 
-            if (room.Players[playerId].PlayerHand.Count == 1)
+            if (room.Players[playerId - 1].PlayerHand.Count == 1)
             {
-                room.Players[playerId].Uno = true;
+                room.Players[playerId - 1].Uno = true;
             }
 
             _context.RoomItems.Update(room);
@@ -546,6 +558,11 @@ namespace UNO_Server.Controllers
                     { Name = playerName, RoomId = room.Id, IsLeader = isLeader })).Entity;
             }
 
+            if (room.Players.Count >= 2)
+            {
+                room.StartButtonEnabled = true;
+            }
+
             if (room.OnlineUsers != room.MaximalUsers)
             {
                 room.Players.Add(player);
@@ -564,8 +581,13 @@ namespace UNO_Server.Controllers
         public async Task<IActionResult> RemovePlayerFromRoom(string id, RoomDTO roomItem)
         {
             Log.Information("Player removed.");
-            var room = _context.RoomItems.Include(r => r.Cards).First(r => r.Id.Equals(roomItem.Id));
+            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.Players).First(r => r.Id.Equals(roomItem.Id));
 
+            if (room.Players.Count <= 2)
+            {
+                room.StartButtonEnabled = false;
+            }
+            
             room.OnlineUsers--;
 
             _context.RoomItems.Update(room);
