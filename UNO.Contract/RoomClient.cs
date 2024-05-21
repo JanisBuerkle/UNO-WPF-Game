@@ -133,8 +133,8 @@ public class RoomClient
 
         var response2 = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response2.EnsureSuccessStatusCode();
-
-
+        
+        
         var removePlayerUrl = $"http://localhost:5000/api/Player/{id}";
 
         var response = await httpClient.DeleteAsync(removePlayerUrl);
