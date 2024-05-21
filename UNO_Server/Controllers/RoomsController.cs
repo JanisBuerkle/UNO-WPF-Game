@@ -14,6 +14,7 @@ namespace UNO_Server.Controllers
         private readonly MyHub _myHub;
         private readonly RoomContext _context;
         private readonly StartModel _startModel;
+        private readonly PlaceCardModel _placeCardModel;
         private readonly DTOConverter _dtoConverter;
 
         public RoomsController(RoomContext context, MyHub myHub)
@@ -21,6 +22,7 @@ namespace UNO_Server.Controllers
             _myHub = myHub;
             _context = context;
             _startModel = new StartModel(context);
+            _placeCardModel = new PlaceCardModel(context);
             _dtoConverter = new DTOConverter();
         }
 
@@ -382,10 +384,10 @@ namespace UNO_Server.Controllers
                                 {
                                     room.NextPlayer = maxId;
                                 }
-                                else
-                                {
-                                    room.NextPlayer = maxId;
-                                }
+                                // else
+                                // {
+                                //     room.NextPlayer = maxId;
+                                // }
                             }
 
                             break;
