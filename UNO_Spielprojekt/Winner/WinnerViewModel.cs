@@ -2,7 +2,6 @@
 using UNO_Spielprojekt.MultiplayerRooms;
 using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Window;
-using UNO.Contract;
 
 namespace UNO_Spielprojekt.Winner;
 

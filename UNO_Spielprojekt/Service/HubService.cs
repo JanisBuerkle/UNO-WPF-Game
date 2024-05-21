@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.SignalR.Client;
 using UNO_Spielprojekt.MultiplayerRooms;
 using UNO_Spielprojekt.Window;
-using UNO.Contract;
 
 namespace UNO_Spielprojekt.Service;
 

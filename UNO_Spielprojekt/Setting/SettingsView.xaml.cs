@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -88,6 +87,5 @@ public partial class SettingsView : UserControl
                 ViewModel.ThemeModeBright();
             }
         }
-        
     }
 }

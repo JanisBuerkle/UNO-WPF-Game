@@ -1,6 +1,4 @@
-﻿using System.Net.Mime;
-using System.Threading;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 

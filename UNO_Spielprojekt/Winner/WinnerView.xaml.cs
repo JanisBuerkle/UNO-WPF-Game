@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using UNO_Spielprojekt.GamePage;
 
 namespace UNO_Spielprojekt.Winner;
 

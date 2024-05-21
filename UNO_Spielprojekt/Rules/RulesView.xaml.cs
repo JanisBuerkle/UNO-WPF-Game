@@ -1,8 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using UNO_Spielprojekt.Rules;
 
-namespace UNO_Spielprojekt;
+namespace UNO_Spielprojekt.Rules;
 
 public partial class RulesView : UserControl
 {

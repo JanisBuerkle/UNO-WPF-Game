@@ -9,7 +9,6 @@ using System.Net.Http;
 using System.Windows;
 using UNO.Contract;
 using System.Linq;
-using UNO_Spielprojekt.MultiplayerGamePage;
 
 namespace UNO_Spielprojekt.MultiplayerRooms;
 
@@ -136,8 +135,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public async Task GetRooms()
     {
-        _logger.Info(
-            "GetRooms wurde ausgeführt, alle Räume wurden gegettet und entsprechende Propertys wurden gesetzt.");
+        _logger.Info("GetRooms wurde ausgeführt, alle Räume wurden gegettet und entsprechende Propertys wurden gesetzt.");
         Task<string> gettedRoomsTask = RoomClient.GetAllRooms();
         var gettedRooms = await gettedRoomsTask;
 
@@ -158,18 +156,20 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                 }
             }
 
-            MainViewModel.MultiplayerGamePageViewModel.MoveCounter = SelectedRoom2.MoveCounter;
-
             foreach (var player in SelectedRoom2.Players)
             {
                 if (PlayerName == player.Name)
                 {
                     Player = player;
 
-                    Application.Current.Dispatcher.InvokeAsync(() =>
-                        MainViewModel.MultiplayerGamePageViewModel.SetCurrentHand());
+                    Application.Current.Dispatcher.InvokeAsync(() => MainViewModel.MultiplayerGamePageViewModel.SetCurrentHand());
                 }
             }
+
+            MainViewModel.MultiplayerGamePageViewModel.MoveCounter = SelectedRoom2.MoveCounter;
+            MainViewModel.MultiplayerGamePageViewModel.RoundCounterString = $"Runde: {SelectedRoom2.MoveCounter}/\u221e";
+
+            MainViewModel.MultiplayerGamePageViewModel.DisableAllFunctions = Player.Id == SelectedRoom2.PlayerTurnId;
         }
 
         foreach (var room in Rooms)
@@ -180,39 +180,21 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                 room.PlayButtonContent = "Voll..";
             }
         }
-
-        if (Player != null)
-        {
-            if (Player.Id != SelectedRoom2.PlayerTurnId)
-            {
-                MainViewModel.MultiplayerGamePageViewModel.DisableAllFunctions = false;
-            }
-            else
-            {
-                MainViewModel.MultiplayerGamePageViewModel.DisableAllFunctions = true;
-            }
-        }
-
-        if (SelectedRoom2 != null)
-        {
-            MainViewModel.MultiplayerGamePageViewModel.RoundCounterString = $"Runde: {SelectedRoom2.MoveCounter}/\u221e";
-        }
     }
 
     public async Task UpdateOnlinePlayer(bool removeOrAdd)
     {
-        await GetRooms();
-        RoomDTO roomToUpdate = SelectedRoom2;
-
         HttpClient = new HttpClient();
+
+        await GetRooms();
 
         if (removeOrAdd) //add
         {
-            await RoomClient.AddPlayer(roomToUpdate, PlayerName);
+            await RoomClient.AddPlayer(SelectedRoom2, PlayerName);
         }
         else //remove
         {
-            await RoomClient.RemovePlayer(roomToUpdate, (int)Player.Id);
+            await RoomClient.RemovePlayer(SelectedRoom2, (int)Player.Id);
         }
 
         await GetRooms();
@@ -233,7 +215,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     private readonly ILogger _logger;
     public MainViewModel MainViewModel { get; set; }
-    public MPGamePageViewModel MPGamePageViewModel { get; set; }
     public RoomClient RoomClient { get; set; }
     public RelayCommand GoToMainMenuCommand { get; }
     public RelayCommand GoToLobbyCommand { get; }
@@ -246,8 +227,7 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         RoomClient = roomClient;
 
         _selectedItem = 5;
-        _logger.Info(
-            "_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
+        _logger.Info("_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
 
         GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
         GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);
@@ -255,10 +235,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     }
 
 
-    private void GoToMainMenuCommandMethod()
+    private async void GoToMainMenuCommandMethod()
     {
-        UpdateOnlinePlayer(false);
-
+        await UpdateOnlinePlayer(false);
         _logger.Info("MainMenu wurde geöffnet, GoToMainMenuCommandMethod wurde ausgeführt.");
         MainViewModel.GoToMainMenu();
     }

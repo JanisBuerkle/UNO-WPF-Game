@@ -43,7 +43,6 @@ public class Rooms : ViewModelBase
         }
     }
 
-
     private int _maximalUsers;
 
     [JsonProperty("MaximalUsers")]

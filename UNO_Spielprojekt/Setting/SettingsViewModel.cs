@@ -13,7 +13,6 @@ public class SettingsViewModel : ViewModelBase
     public List<WindowMode> MyWindowModes { get; }
     public List<ThemeMode> MyThemeModes { get; }
     public RelayCommand GoToMainMenuCommand { get; }
-
     public ThemeModes ThemeModes { get; set; }
 
     public SettingsViewModel(MainViewModel mainViewModel, ILogger logger, ThemeModes themeModes)

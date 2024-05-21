@@ -1,9 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using UNO_Spielprojekt.MultiplayerRooms;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using System.Windows.Input;
 
 namespace UNO_Spielprojekt.Window;
 

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using UNO_Spielprojekt.MultiplayerRooms;
 
 namespace UNO_Spielprojekt.MultiplayerLobby;
 public partial class LobbyView

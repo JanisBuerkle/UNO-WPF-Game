@@ -1,6 +1,4 @@
-﻿using UNO.Contract;
-
-namespace UNO_Server.Models;
+﻿namespace UNO_Server.Models;
 
 public class StartModel
 {

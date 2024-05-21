@@ -1,11 +1,5 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using UNO_Spielprojekt.MultiplayerRooms;
+﻿using System.Net.Http;
 using UNO_Spielprojekt.Window;
-using UNO.Contract;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace UNO_Spielprojekt.Service
 {
@@ -21,13 +15,9 @@ namespace UNO_Spielprojekt.Service
             _mainViewModel = mainViewModel;
         }
 
-
-        
-
         public void Dispose()
         {
             _httpClient.Dispose();
         }
-        
     }
 }
