@@ -38,10 +38,10 @@
                 <TextBlock HorizontalAlignment="Center" Foreground="White" FontSize="8" FontWeight="Bold"
                            Text="maximal 16 Zeichen" />
 
-                <CheckBox x:Name="CheckBox" Click="CheckBoxClicked" IsChecked="{Binding IsChecked}"
+                <CheckBox Click="CheckBoxClicked" IsChecked="{Binding IsChecked}"
                           Content="Passwort geschützter Raum" />
 
-                <ui:TextBox x:Name="PasswortBox" TextChanged="PasswortBoxChanged" IsEnabled="{Binding IsChecked}"
+                <ui:TextBox x:Name="PasswordBox" TextChanged="PasswortBoxChanged" IsEnabled="{Binding IsChecked}"
                             PlaceholderText="Raumpasswort eingeben..." />
 
                 <Button HorizontalAlignment="Center" Content="Weiter" Margin="0,20,0,0"

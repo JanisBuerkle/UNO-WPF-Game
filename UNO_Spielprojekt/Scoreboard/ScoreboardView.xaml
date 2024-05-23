@@ -6,7 +6,6 @@
              mc:Ignorable="d" Name="Control">
 
     <Grid DataContext="{Binding ElementName=Control, Path=ViewModel}">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -55,6 +54,5 @@
         <!-- Home Button -->
         <Button Grid.Row="0" Grid.Column="0" Command="{Binding GoToMainMenuCommand}"
                 Style="{StaticResource HomeButtonStyle}" />
-        
     </Grid>
 </UserControl>

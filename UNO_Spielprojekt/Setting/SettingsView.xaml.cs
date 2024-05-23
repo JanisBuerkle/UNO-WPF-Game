@@ -1,9 +1,9 @@
-﻿using System.Globalization;
+﻿using UNO_Spielprojekt.Window;
+using System.Windows.Controls;
+using System.Globalization;
+using System.Windows.Media;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.Setting;
 

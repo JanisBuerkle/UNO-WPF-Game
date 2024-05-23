@@ -53,7 +53,7 @@ namespace UNO_Server.Controllers
         // PUT: api/Player/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMultiplayerPlayer(long id, PlayerDTO playerPlayer)
+        public async Task<IActionResult> PutMultiplayerPlayer(long id, PlayerDto playerPlayer)
         {
             if (id != playerPlayer.Id)
             {
@@ -85,7 +85,7 @@ namespace UNO_Server.Controllers
         // POST: api/Player
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PlayerDTO>> PostMultiplayerPlayer(PlayerDTO playerPlayer)
+        public async Task<ActionResult<PlayerDto>> PostMultiplayerPlayer(PlayerDto playerPlayer)
         {
             var player = _context.Players.First(p => p.Id.Equals(playerPlayer.Id));
             if (_context.Players == null)

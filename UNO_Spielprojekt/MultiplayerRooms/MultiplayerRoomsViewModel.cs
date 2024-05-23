@@ -19,9 +19,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         "2", "3", "4", "5"
     };
 
-    private PlayerDTO _player;
+    private PlayerDto _player;
 
-    public PlayerDTO Player
+    public PlayerDto Player
     {
         get => _player;
         set
@@ -65,9 +65,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         await RoomClient.RemovePlayer(SelectedRoom2, (int)SelectedRoom2.Players.Last().Id);
     }
 
-    private ObservableCollection<RoomDTO> _roomList = new ObservableCollection<RoomDTO>();
+    private ObservableCollection<RoomDto> _roomList = new ObservableCollection<RoomDto>();
 
-    public ObservableCollection<RoomDTO> RoomList
+    public ObservableCollection<RoomDto> RoomList
     {
         get => _roomList;
         private set
@@ -98,9 +98,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public string PlayerName { get; set; }
 
-    private RoomDTO _selectedRoom;
+    private RoomDto _selectedRoom;
 
-    public RoomDTO SelectedRoom
+    public RoomDto SelectedRoom
     {
         get => _selectedRoom;
         set
@@ -114,9 +114,9 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
     }
 
-    private RoomDTO _selectedRoom2;
+    private RoomDto _selectedRoom2;
 
-    public RoomDTO SelectedRoom2
+    public RoomDto SelectedRoom2
     {
         get => _selectedRoom2;
         set
@@ -129,21 +129,22 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
     }
 
-    private List<RoomDTO>? Rooms { get; set; }
-    public List<PlayerDTO>? Players { get; set; }
+    private List<RoomDto>? Rooms { get; set; }
+    public List<PlayerDto>? Players { get; set; }
     public HttpClient HttpClient;
 
     public async Task GetRooms()
     {
-        _logger.Info("GetRooms wurde ausgeführt, alle Räume wurden gegettet und entsprechende Propertys wurden gesetzt.");
+        _logger.Info(
+            "GetRooms wurde ausgeführt, alle Räume wurden gegettet und entsprechende Propertys wurden gesetzt.");
         Task<string> gettedRoomsTask = RoomClient.GetAllRooms();
         var gettedRooms = await gettedRoomsTask;
 
-        Rooms = JsonConvert.DeserializeObject<List<RoomDTO>>(gettedRooms);
+        Rooms = JsonConvert.DeserializeObject<List<RoomDto>>(gettedRooms);
 
         Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            if (Rooms != null) RoomList = new ObservableCollection<RoomDTO>(Rooms);
+            if (Rooms != null) RoomList = new ObservableCollection<RoomDto>(Rooms);
         });
 
         if (SelectedRoom2 != null)
@@ -162,14 +163,20 @@ public class MultiplayerRoomsViewModel : ViewModelBase
                 {
                     Player = player;
 
-                    Application.Current.Dispatcher.InvokeAsync(() => MainViewModel.MultiplayerGamePageViewModel.SetCurrentHand());
+                    Application.Current.Dispatcher.InvokeAsync(() =>
+                        MainViewModel.MultiplayerGamePageViewModel.SetCurrentHand());
                 }
             }
 
             MainViewModel.MultiplayerGamePageViewModel.MoveCounter = SelectedRoom2.MoveCounter;
-            MainViewModel.MultiplayerGamePageViewModel.RoundCounterString = $"Runde: {SelectedRoom2.MoveCounter}/\u221e";
+            MainViewModel.MultiplayerGamePageViewModel.RoundCounterString =
+                $"Runde: {SelectedRoom2.MoveCounter}/\u221e";
 
-            MainViewModel.MultiplayerGamePageViewModel.DisableAllFunctions = Player.Id == SelectedRoom2.PlayerTurnId;
+            if (Player != null)
+            {
+                MainViewModel.MultiplayerGamePageViewModel.DisableAllFunctions =
+                    Player.Id == SelectedRoom2.PlayerTurnId;
+            }
         }
 
         foreach (var room in Rooms)
@@ -184,17 +191,17 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public async Task UpdateOnlinePlayer(bool removeOrAdd)
     {
-        HttpClient = new HttpClient();
-
         await GetRooms();
+        RoomDto roomToUpdate = SelectedRoom2;
 
+        HttpClient = new HttpClient();
         if (removeOrAdd) //add
         {
-            await RoomClient.AddPlayer(SelectedRoom2, PlayerName);
+            await RoomClient.AddPlayer(roomToUpdate, PlayerName);
         }
         else //remove
         {
-            await RoomClient.RemovePlayer(SelectedRoom2, (int)Player.Id);
+            await RoomClient.RemovePlayer(roomToUpdate, (int)Player.Id);
         }
 
         await GetRooms();
@@ -227,7 +234,8 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         RoomClient = roomClient;
 
         _selectedItem = 5;
-        _logger.Info("_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
+        _logger.Info(
+            "_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
 
         GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
         GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);

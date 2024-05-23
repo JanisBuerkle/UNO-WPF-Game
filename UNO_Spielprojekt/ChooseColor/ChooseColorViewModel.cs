@@ -1,16 +1,11 @@
-﻿using System;
-using CommunityToolkit.Mvvm.Input;
-using UNO_Spielprojekt.Window;
+﻿using CommunityToolkit.Mvvm.Input;
+using UNO_Spielprojekt.GamePage;
 
-namespace UNO_Spielprojekt.GamePage;
+namespace UNO_Spielprojekt.ChooseColor;
 
 public class ChooseColorViewModel : ViewModelBase
 {
     private int _choosenColor;
-    public RelayCommand ChooseRedCommand { get; }
-    public RelayCommand ChooseBlueCommand { get; }
-    public RelayCommand ChooseYellowCommand { get; }
-    public RelayCommand ChooseGreenCommand { get; }
 
     public int ChoosenColor
     {
@@ -21,6 +16,11 @@ public class ChooseColorViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    public RelayCommand ChooseRedCommand { get; }
+    public RelayCommand ChooseBlueCommand { get; }
+    public RelayCommand ChooseYellowCommand { get; }
+    public RelayCommand ChooseGreenCommand { get; }
 
     public ChooseColorViewModel()
     {

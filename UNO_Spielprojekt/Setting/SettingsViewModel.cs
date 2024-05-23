@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Windows.Media;
-using CommunityToolkit.Mvvm.Input;
-using tt.Tools.Logging;
+﻿using CommunityToolkit.Mvvm.Input;
+using System.Collections.Generic;
 using UNO_Spielprojekt.Window;
+using tt.Tools.Logging;
 
 namespace UNO_Spielprojekt.Setting;
 
@@ -50,10 +49,10 @@ public class SettingsViewModel : ViewModelBase
 
     public void ThemeModeDark()
     {
-        ThemeModes.Background = "#1f1f1f"; 
+        ThemeModes.Background = "#1f1f1f";
         ThemeModes.Foreground = "#ffffff";
     }
-    
+
     public void ThemeModeBright()
     {
         ThemeModes.Background = "#ffffff";

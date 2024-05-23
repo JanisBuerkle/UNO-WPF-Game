@@ -78,7 +78,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="SettingsButtonStyle" TargetType="Button">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Height" Value="80" />
@@ -139,7 +139,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="HomeButtonStyle" TargetType="Button">
         <Setter Property="Width" Value="80" />
         <Setter Property="Height" Value="80" />

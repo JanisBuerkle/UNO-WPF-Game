@@ -1,11 +1,11 @@
 ﻿using UNO_Spielprojekt.MultiplayerRooms;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using UNO_Spielprojekt.ChooseColor;
 using CommunityToolkit.Mvvm.Input;
 using UNO_Spielprojekt.Window;
+using System.ComponentModel;
 using System.Windows.Media;
 using tt.Tools.Logging;
-using UNO_Spielprojekt.GamePage;
 using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
@@ -39,9 +39,9 @@ public class MPGamePageViewModel : ViewModelBase
         }
     }
 
-    private ObservableCollection<CardDTO> _currentHand = new ObservableCollection<CardDTO>();
+    private ObservableCollection<CardDto> _currentHand = new ObservableCollection<CardDto>();
 
-    public ObservableCollection<CardDTO> CurrentHand
+    public ObservableCollection<CardDto> CurrentHand
     {
         get => _currentHand;
         set
@@ -69,10 +69,10 @@ public class MPGamePageViewModel : ViewModelBase
             }
         }
     }
-
     private bool _itsYourTurn;
 
     public bool ItsYourTurn
+
     {
         get => _itsYourTurn;
         set
@@ -127,7 +127,7 @@ public class MPGamePageViewModel : ViewModelBase
         }
     }
 
-    private CardDTO SelectedCard { get; set; }
+    private CardDto SelectedCard { get; set; }
     private MainViewModel MainViewModel { get; set; }
     private readonly ILogger _logger;
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
@@ -136,16 +136,17 @@ public class MPGamePageViewModel : ViewModelBase
 
     public RelayCommand ZiehenCommand { get; }
     public RelayCommand FertigCommand { get; }
-    public RelayCommand UnoCommand { get; }
-    // public RelayCommand ExitConfirmCommand { get; }
 
+    public RelayCommand UnoCommand { get; }
+
+    // public RelayCommand ExitConfirmCommand { get; }
     public MPGamePageViewModel(MainViewModel mainViewModel, ILogger logger,
         MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
         MultiplayerRoomsViewModel = multiplayerRoomsViewModel;
         MainViewModel = mainViewModel;
         _logger = logger;
-        
+
         RoundCounterString = $"Runde: {MoveCounter}/\u221e";
         _logger.Info(
             "Der Hintergrund des Buttons TheBackground, MoveCounter und RoundCounterString wurden auf ihre Standartwerte gesetzt.");
@@ -252,31 +253,18 @@ public class MPGamePageViewModel : ViewModelBase
 
     public void DiableAllFunctions()
     {
-        if (MainViewModel.MultiplayerRoomsViewModel.Player.Id != MultiplayerRoomsViewModel.SelectedRoom2.PlayerTurnId)
-        {
-            DisableAllFunctions = false;
-        }
-        else
-        {
-            DisableAllFunctions = true;
-        }
+        DisableAllFunctions = MainViewModel.MultiplayerRoomsViewModel.Player.Id ==
+                              MultiplayerRoomsViewModel.SelectedRoom2.PlayerTurnId;
     }
 
     private async void ColorChoosen(object? sender, PropertyChangedEventArgs e)
     {
         ChooseColorVisible = false;
         string reinholen = "";
-        if (SelectedCard.Color == "Draw")
+        if (SelectedCard.Color == "Draw" || SelectedCard.Value == "Wild")
         {
-            reinholen = SelectedCard.Color + "-" + SelectedCard.Value + "-" + SelectedCard.Id + "-" + "Draw" + "-" +
-                        ChooseColorViewModel.ChoosenColor;
-            _gelegt = true;
-            FertigButtonIsEnabled = true;
-        }
-        else if (SelectedCard.Value == "Wild")
-        {
-            reinholen = SelectedCard.Color + "-" + SelectedCard.Value + "-" + SelectedCard.Id + "-" + "Wild" + "-" +
-                        ChooseColorViewModel.ChoosenColor;
+            reinholen = SelectedCard.Color + "-" + SelectedCard.Value + "-" + SelectedCard.Id + "-" +
+                        SelectedCard.Color + "-" + ChooseColorViewModel.ChoosenColor;
             _gelegt = true;
             FertigButtonIsEnabled = true;
         }

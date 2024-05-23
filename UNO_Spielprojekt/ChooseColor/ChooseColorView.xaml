@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UNO_Spielprojekt.GamePage.ChooseColorView"
+﻿<UserControl x:Class="UNO_Spielprojekt.ChooseColor.ChooseColorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -55,7 +55,6 @@
                     </Button.Background>
                 </Button>
             </StackPanel>
-
         </Grid>
     </Border>
 </UserControl>

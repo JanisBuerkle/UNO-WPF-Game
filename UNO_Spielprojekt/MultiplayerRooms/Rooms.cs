@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using Newtonsoft.Json;
 using UNO_Spielprojekt.GamePage;
+using Newtonsoft.Json;
 using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerRooms;
@@ -62,9 +62,9 @@ public class Rooms : ViewModelBase
     [JsonProperty("PasswordSecured")] public bool PasswordSecured { get; set; }
     [JsonProperty("Password")] public string Password { get; set; }
 
-    [JsonProperty("MiddleCard")] public CardDTO MiddleCard { get; set; }
+    [JsonProperty("MiddleCard")] public CardDto MiddleCard { get; set; }
     [JsonProperty("MiddleCardPic")] public string MiddleCardPic { get; set; }
-    [JsonProperty("SelectedCard")] public CardDTO SelectedCard { get; set; }
+    [JsonProperty("SelectedCard")] public CardDto SelectedCard { get; set; }
 
     private ObservableCollection<MultiplayerPlayer> _players = new ObservableCollection<MultiplayerPlayer>();
 

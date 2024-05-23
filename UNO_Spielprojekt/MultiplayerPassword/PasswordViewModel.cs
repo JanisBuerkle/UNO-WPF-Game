@@ -1,7 +1,7 @@
-﻿using tt.Tools.Logging;
-using UNO_Spielprojekt.Window;
+﻿using UNO_Spielprojekt.MultiplayerRooms;
 using CommunityToolkit.Mvvm.Input;
-using UNO_Spielprojekt.MultiplayerRooms;
+using UNO_Spielprojekt.Window;
+using tt.Tools.Logging;
 
 namespace UNO_Spielprojekt.MultiplayerPassword;
 
@@ -11,24 +11,10 @@ public class PasswordViewModel : ViewModelBase
     private MainViewModel MainViewModel { get; set; }
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
     public RelayCommand ClosePasswordCommand { get; }
-    
-    private bool _isEnabled;
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set
-        {
-            if (_isEnabled != value)
-            {
-                _isEnabled = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
     public string PasswordInput { get; set; }
 
-    public PasswordViewModel(MainViewModel mainViewModel, ILogger logger, MultiplayerRoomsViewModel multiplayerRoomsViewModel)
+    public PasswordViewModel(MainViewModel mainViewModel, ILogger logger,
+        MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
         _logger = logger;
         MainViewModel = mainViewModel;
@@ -40,7 +26,7 @@ public class PasswordViewModel : ViewModelBase
     {
         MainViewModel.PasswordVisible = false;
     }
-    
+
     public void PasswordCorrect()
     {
         MainViewModel.PasswordVisible = false;

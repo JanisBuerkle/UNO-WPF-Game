@@ -2,16 +2,11 @@
 
 namespace UNO_Spielprojekt.Setting;
 
-public class WindowModes : ViewModelBase
+public class WindowModes
 {
-    public List<WindowMode> MyModes { get; }
-
-    public WindowModes()
+    public List<WindowMode> MyModes { get; } = new()
     {
-        MyModes = new List<WindowMode>
-        {
-            WindowMode.FullScreen,
-            WindowMode.Windowed
-        };
-    }
+        WindowMode.FullScreen,
+        WindowMode.Windowed
+    };
 }

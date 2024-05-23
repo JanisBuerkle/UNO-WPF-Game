@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace UNO_Spielprojekt.GamePage;
+namespace UNO_Spielprojekt.ChooseColor;
 
 public partial class ChooseColorView
 {

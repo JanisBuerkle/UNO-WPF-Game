@@ -1,9 +1,10 @@
-﻿using System.Windows;
+﻿using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Window;
+using System.Windows;
 
-namespace UNO_Spielprojekt.GamePage;
+namespace UNO_Spielprojekt.ExitConfirm;
 
-public partial class ExitConfirmWindow : System.Windows.Window
+public partial class ExitConfirmWindow
 {
     public static readonly DependencyProperty GameViewModelProperty = DependencyProperty.Register(
         nameof(GameViewModel), typeof(GameViewModel), typeof(ExitConfirmWindow),

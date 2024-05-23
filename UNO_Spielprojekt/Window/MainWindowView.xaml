@@ -19,13 +19,12 @@
         WindowStartupLocation="CenterScreen" Icon="../Assets/Logos/logo.png"
         AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        WindowStyle="None"
-        Name="Control">
+        WindowStyle="None">
 
     <Window.Resources>
         <window:MainViewModel x:Key="MainViewModel" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        
+
     </Window.Resources>
     <Border DataContext="{StaticResource MainViewModel}" Background="{Binding ThemeModes.Background}"
             BorderThickness="0" CornerRadius="20">

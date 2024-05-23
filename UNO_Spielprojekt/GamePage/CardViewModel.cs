@@ -3,8 +3,6 @@
 public class CardViewModel : ViewModelBase
 {
     private string _value;
-    private string _color;
-    private string _imageUri;
 
     public string Value
     {
@@ -17,6 +15,8 @@ public class CardViewModel : ViewModelBase
         }
     }
 
+    private string _color;
+
     public string Color
     {
         get => _color;
@@ -27,6 +27,8 @@ public class CardViewModel : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    private string _imageUri;
 
     public string ImageUri
     {

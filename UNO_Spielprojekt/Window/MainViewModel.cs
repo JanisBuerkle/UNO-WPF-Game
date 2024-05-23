@@ -1,18 +1,18 @@
-﻿using UNO_Spielprojekt.AddPlayer;
-using UNO_Spielprojekt.GamePage;
-using UNO_Spielprojekt.Logging;
-using UNO_Spielprojekt.MainMenu;
-using UNO_Spielprojekt.MultiplayerCreateRoom;
+﻿using UNO_Spielprojekt.MultiplayerCreateRoom;
 using UNO_Spielprojekt.MultiplayerGamePage;
 using UNO_Spielprojekt.MultiplayerGiveName;
-using UNO_Spielprojekt.MultiplayerLobby;
 using UNO_Spielprojekt.MultiplayerPassword;
 using UNO_Spielprojekt.MultiplayerRooms;
-using UNO_Spielprojekt.Rules;
+using UNO_Spielprojekt.MultiplayerLobby;
 using UNO_Spielprojekt.Scoreboard;
+using UNO_Spielprojekt.AddPlayer;
+using UNO_Spielprojekt.GamePage;
+using UNO_Spielprojekt.MainMenu;
+using UNO_Spielprojekt.Logging;
 using UNO_Spielprojekt.Service;
 using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Winner;
+using UNO_Spielprojekt.Rules;
 using UNO.Contract;
 
 namespace UNO_Spielprojekt.Window;
@@ -24,11 +24,8 @@ public class MainViewModel : ViewModelBase
     public PasswordViewModel PasswordViewModel { get; set; }
     public GiveNameViewModel GiveNameViewModel { get; set; }
     public GameData GameData { get; set; }
-    private ApiService ApiService { get; set; }
-
     private HubService HubService { get; set; }
     public WinnerViewModel WinnerViewModel { get; }
-
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; }
     public MPGamePageViewModel MultiplayerGamePageViewModel { get; }
     public LobbyViewModel LobbyViewModel { get; }
@@ -38,7 +35,6 @@ public class MainViewModel : ViewModelBase
     public ScoreboardViewModel ScoreboardViewModel { get; }
     public MainMenuViewModel MainMenuViewModel { get; set; }
     public AddPlayerViewModel AddPlayerViewModel { get; set; }
-
     private RoomClient RoomClient { get; set; }
 
     public MainViewModel()
@@ -46,30 +42,25 @@ public class MainViewModel : ViewModelBase
         var loggerFactory = new SerilogLoggerFactory();
         var logger = loggerFactory.CreateLogger("Uno-Spielprojekt");
 
-        ApiService = new ApiService(this);
         ThemeModes = new ThemeModes();
         SettingsViewModel = new SettingsViewModel(this, logger, ThemeModes);
         PlayViewModel = new PlayViewModel();
-        GameLogic = new GameLogic(PlayViewModel, logger, ApiService);
+        GameLogic = new GameLogic(PlayViewModel, logger);
         ScoreboardViewModel = new ScoreboardViewModel(this, logger, ThemeModes);
-
         RoomClient = new RoomClient();
         MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger, RoomClient);
         WinnerViewModel = new WinnerViewModel(this, ThemeModes, MultiplayerRoomsViewModel);
-
         GameViewModel = new GameViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel,
             ThemeModes);
         RulesViewModel = new RulesViewModel(this, logger, ThemeModes);
         GameData = new GameData(ScoreboardViewModel, GameViewModel);
         MainMenuViewModel = new MainMenuViewModel(this, logger, GameData);
-        AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic, ThemeModes, ApiService);
-
-
+        AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic);
         MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, MultiplayerRoomsViewModel);
         HubService = new HubService(this, MultiplayerRoomsViewModel);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
-        CreateRoomViewModel = new CreateRoomViewModel(this, logger, MultiplayerRoomsViewModel, ApiService);
+        CreateRoomViewModel = new CreateRoomViewModel(this, logger, MultiplayerRoomsViewModel);
         PasswordViewModel = new PasswordViewModel(this, logger, MultiplayerRoomsViewModel);
 
         MainMenuVisible = true;
@@ -83,7 +74,6 @@ public class MainViewModel : ViewModelBase
     private bool _mainMenuVisible;
     private bool _addPlayerVisible;
     private bool _scoreboardVisible;
-
     private bool _multiplayerRoomsVisible;
     private bool _multiplayerGamePageVisible;
     private bool _createRoomVisible;

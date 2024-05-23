@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using tt.Tools.Logging;
-using UNO_Spielprojekt.MultiplayerRooms;
+﻿using UNO_Spielprojekt.MultiplayerRooms;
+using CommunityToolkit.Mvvm.Input;
 using UNO_Spielprojekt.Window;
+using tt.Tools.Logging;
 
 namespace UNO_Spielprojekt.MultiplayerGiveName;
 
@@ -12,7 +12,6 @@ public class GiveNameViewModel : ViewModelBase
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
     public RelayCommand CloseGiveNameCommand { get; }
     public RelayCommand GoToLobbyCommand { get; }
-
 
     private bool _isEnabled;
 

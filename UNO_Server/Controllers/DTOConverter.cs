@@ -4,9 +4,9 @@ using UNO.Contract;
 
 namespace UNO_Server.Controllers;
 
-public class DTOConverter
+public class DtoConverter
 {
-    public Room DtoConverterMethod(RoomDTO roomDto)
+    public Room DtoConverterMethod(RoomDto roomDto)
     {
         var room = new Room();
         room.Id = roomDto.Id;

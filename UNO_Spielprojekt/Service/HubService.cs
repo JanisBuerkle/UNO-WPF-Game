@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using UNO_Spielprojekt.MultiplayerRooms;
 using UNO_Spielprojekt.Window;
+using System;
 
 namespace UNO_Spielprojekt.Service;
 
@@ -34,7 +34,7 @@ public class HubService
         _hubConnection.On<string>("OpenWinnerPage", nachricht =>
         {
             _multiplayerRoomsViewModel.RoomClient.RemovePlayer(_multiplayerRoomsViewModel.SelectedRoom2, (int)_multiplayerRoomsViewModel.Player.Id);
-            _multiplayerRoomsViewModel.RoomClient.ResetRoom(_multiplayerRoomsViewModel.Player.Name, _multiplayerRoomsViewModel.SelectedRoom2);
+            _multiplayerRoomsViewModel.RoomClient.ResetRoom("name", _multiplayerRoomsViewModel.SelectedRoom2);
             
             _mainViewModel.WinnerViewModel.IsOnline = true;
             _mainViewModel.GoToWinner();

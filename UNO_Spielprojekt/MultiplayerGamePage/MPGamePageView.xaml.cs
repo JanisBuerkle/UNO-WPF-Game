@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows;
 using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
@@ -24,7 +24,7 @@ public partial class MpGamePageView
 
     private void CardButton_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button button && button.DataContext is CardDTO card)
+        if (sender is Button button && button.DataContext is CardDto card)
         {
             int selectedIndex = ViewModel.MultiplayerRoomsViewModel.Player.PlayerHand.IndexOf(card);
             ViewModel.SelectedCardIndex = selectedIndex;

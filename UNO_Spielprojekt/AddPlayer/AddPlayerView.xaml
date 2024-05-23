@@ -7,7 +7,6 @@
              Name="AddPlayerPage">
 
     <Grid DataContext="{Binding ElementName=AddPlayerPage, Path=ViewModel}">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

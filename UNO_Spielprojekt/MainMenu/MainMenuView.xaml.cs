@@ -1,8 +1,8 @@
-﻿using System.Globalization;
+﻿using UNO_Spielprojekt.Localization;
+using System.Windows.Controls;
+using System.Globalization;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using UNO_Spielprojekt.Localization;
 
 namespace UNO_Spielprojekt.MainMenu;
 

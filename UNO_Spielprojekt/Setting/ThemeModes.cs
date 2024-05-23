@@ -5,6 +5,7 @@ namespace UNO_Spielprojekt.Setting;
 public class ThemeModes : ViewModelBase
 {
     private string _background;
+
     public string Background
     {
         get => _background;
@@ -14,8 +15,9 @@ public class ThemeModes : ViewModelBase
             OnPropertyChanged();
         }
     }
-    
+
     private string _foreground;
+
     public string Foreground
     {
         get => _foreground;
@@ -25,7 +27,7 @@ public class ThemeModes : ViewModelBase
             OnPropertyChanged();
         }
     }
-    
+
     public List<ThemeMode> MyThemeModes { get; }
 
     public ThemeModes()

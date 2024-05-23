@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UNO_Server.Hubs;
+using Microsoft.AspNetCore.Mvc;
 using UNO_Server.Models;
+using UNO_Server.Hubs;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

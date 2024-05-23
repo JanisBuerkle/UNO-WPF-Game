@@ -1,7 +1,7 @@
-﻿using System.Linq;
+﻿using System.Windows.Controls;
 using System.Windows;
-using System.Windows.Controls;
 using UNO.Contract;
+using System.Linq;
 
 namespace UNO_Spielprojekt.MultiplayerCreateRoom;
 
@@ -33,7 +33,7 @@ public partial class CreateRoomView
             ViewModel.IsEnabled = true;
         }
 
-        if (ViewModel.IsChecked && PasswortBox.Text.Contains(" ") || ViewModel.IsChecked && PasswortBox.Text == "")
+        if (ViewModel.IsChecked && PasswordBox.Text.Contains(" ") || ViewModel.IsChecked && PasswordBox.Text == "")
         {
             ViewModel.IsEnabled = false;
         }
@@ -45,7 +45,7 @@ public partial class CreateRoomView
 
     private void CheckBoxClicked(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.IsChecked && PasswortBox.Text.Contains(" ") || ViewModel.IsChecked && PasswortBox.Text == "")
+        if (ViewModel.IsChecked && PasswordBox.Text.Contains(" ") || ViewModel.IsChecked && PasswordBox.Text == "")
         {
             ViewModel.IsEnabled = false;
         }
@@ -57,7 +57,7 @@ public partial class CreateRoomView
 
     private void PasswortBoxChanged(object sender, TextChangedEventArgs e)
     {
-        if (ViewModel.IsChecked && PasswortBox.Text.Contains(" ") || ViewModel.IsChecked && PasswortBox.Text == "")
+        if (ViewModel.IsChecked && PasswordBox.Text.Contains(" ") || ViewModel.IsChecked && PasswordBox.Text == "")
         {
             ViewModel.IsEnabled = false;
         }
@@ -69,19 +69,19 @@ public partial class CreateRoomView
 
     private async void CreateRoom(object sender, RoutedEventArgs e)
     {
-        var room = new RoomDTO()
+        var room = new RoomDto()
         {
             RoomName = Raumname.Text,
             PasswordSecured = ViewModel.IsChecked,
-            Password = PasswortBox.Text,
+            Password = PasswordBox.Text,
             MaximalUsers = 5
         };
         //
-        ViewModel.MultiplayerRoomsViewModel.RoomList.Add(new RoomDTO()
+        ViewModel.MultiplayerRoomsViewModel.RoomList.Add(new RoomDto()
         {
             RoomName = Raumname.Text,
             PasswordSecured = ViewModel.IsChecked,
-            Password = PasswortBox.Text,
+            Password = PasswordBox.Text,
             MaximalUsers = 5
         });
         ViewModel.MultiplayerRoomsViewModel.SelectedRoom2 = ViewModel.MultiplayerRoomsViewModel.RoomList.Last();

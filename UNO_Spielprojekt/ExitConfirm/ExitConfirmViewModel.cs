@@ -1,6 +1,6 @@
 using UNO_Spielprojekt.Window;
 
-namespace UNO_Spielprojekt.GamePage;
+namespace UNO_Spielprojekt.ExitConfirm;
 
 public class ExitConfirmViewModel : ViewModelBase
 {

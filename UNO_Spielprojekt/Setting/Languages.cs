@@ -6,7 +6,7 @@ public class Languages
 {
     public List<Language> MyLangs { get; set; } = GetLangs();
 
-    public static List<Language> GetLangs()
+    private static List<Language> GetLangs()
     {
         var list = new List<Language>
         {

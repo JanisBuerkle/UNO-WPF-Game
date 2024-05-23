@@ -1,5 +1,5 @@
-﻿using System;
-using ILogger = tt.Tools.Logging.ILogger;
+﻿using ILogger = tt.Tools.Logging.ILogger;
+using System;
 
 namespace UNO_Spielprojekt.Logging;
 
@@ -9,7 +9,7 @@ public class SerilogLogger : ILogger
 
     public SerilogLogger(Serilog.Core.Logger logger)
     {
-        this._logger = logger;
+        _logger = logger;
     }
 
     public void Debug(string message)

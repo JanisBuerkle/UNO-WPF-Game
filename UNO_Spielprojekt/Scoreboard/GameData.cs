@@ -1,12 +1,13 @@
-﻿using System.IO;
-using System.Net;
-using UNO_Spielprojekt.GamePage;
+﻿using UNO_Spielprojekt.GamePage;
+using System.IO;
 
 namespace UNO_Spielprojekt.Scoreboard;
+
 public class GameData : ViewModelBase
 {
     private readonly GameViewModel _gameViewModel;
     private readonly ScoreboardViewModel _scoreboardViewModel;
+
     public GameData(ScoreboardViewModel scoreboardViewModel, GameViewModel gameViewModel)
     {
         _gameViewModel = gameViewModel;

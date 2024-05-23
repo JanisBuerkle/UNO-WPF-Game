@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
 using UNO_Spielprojekt.MultiplayerRooms;
-using UNO_Spielprojekt.Service;
 using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.MultiplayerCreateRoom;
@@ -9,13 +8,13 @@ namespace UNO_Spielprojekt.MultiplayerCreateRoom;
 public class CreateRoomViewModel : ViewModelBase
 {
     private readonly ILogger _logger;
-    public ApiService _apiService;
     private MainViewModel MainViewModel { get; set; }
     public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
     public RelayCommand CloseCreateRoomCommand { get; }
     public RelayCommand GoToGiveNameCommand { get; }
 
     private bool _isChecked;
+
     public bool IsChecked
     {
         get { return _isChecked; }
@@ -27,6 +26,7 @@ public class CreateRoomViewModel : ViewModelBase
     }
 
     private bool _isEnabled;
+
     public bool IsEnabled
     {
         get => _isEnabled;
@@ -40,10 +40,10 @@ public class CreateRoomViewModel : ViewModelBase
         }
     }
 
-    public CreateRoomViewModel(MainViewModel mainViewModel, ILogger logger, MultiplayerRoomsViewModel multiplayerRoomsViewModel, ApiService apiService)
+    public CreateRoomViewModel(MainViewModel mainViewModel, ILogger logger,
+        MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
         _logger = logger;
-        _apiService = apiService;
         MainViewModel = mainViewModel;
         MultiplayerRoomsViewModel = multiplayerRoomsViewModel;
         GoToGiveNameCommand = new RelayCommand(GoToGiveNameCommandMethod);

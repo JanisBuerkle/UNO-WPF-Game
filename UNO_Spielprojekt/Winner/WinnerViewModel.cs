@@ -1,5 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using UNO_Spielprojekt.MultiplayerRooms;
+﻿using UNO_Spielprojekt.MultiplayerRooms;
+using CommunityToolkit.Mvvm.Input;
 using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Window;
 
@@ -57,7 +57,8 @@ public class WinnerViewModel : ViewModelBase
     public RelayCommand GoToMainMenuCommand { get; }
     public RelayCommand BackToTheRoomCommand { get; }
 
-    public WinnerViewModel(MainViewModel mainViewModel, ThemeModes themeModes, MultiplayerRoomsViewModel multiplayerRoomsViewModel)
+    public WinnerViewModel(MainViewModel mainViewModel, ThemeModes themeModes,
+        MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
         _mainViewModel = mainViewModel;
         _multiplayerRoomsViewModel = multiplayerRoomsViewModel;
@@ -68,9 +69,10 @@ public class WinnerViewModel : ViewModelBase
     private async void BackToTheRoomCommandMethod()
     {
         IsOnline = false;
-        
-        await _multiplayerRoomsViewModel.RoomClient.AddPlayer(_multiplayerRoomsViewModel.SelectedRoom2, _multiplayerRoomsViewModel.Player.Name);
-        
+
+        await _multiplayerRoomsViewModel.RoomClient.AddPlayer(_multiplayerRoomsViewModel.SelectedRoom2,
+            _multiplayerRoomsViewModel.Player.Name);
+
         _mainViewModel.GoToLobby();
     }
 }

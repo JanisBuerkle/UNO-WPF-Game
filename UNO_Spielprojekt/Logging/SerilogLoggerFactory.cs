@@ -1,10 +1,10 @@
-﻿using System;
+﻿using ILoggerFactory = tt.Tools.Logging.ILoggerFactory;
+using ILogger = tt.Tools.Logging.ILogger;
+using Serilog.Core.Enrichers;
+using Serilog.Core;
 using System.IO;
 using Serilog;
-using Serilog.Core;
-using Serilog.Core.Enrichers;
-using ILogger = tt.Tools.Logging.ILogger;
-using ILoggerFactory = tt.Tools.Logging.ILoggerFactory;
+using System;
 
 namespace UNO_Spielprojekt.Logging;
 
@@ -39,7 +39,9 @@ public class SerilogLoggerFactory : ILoggerFactory
         var logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .Enrich.With(new PropertyEnricher("SourceContext", name))
-            .WriteTo.File(Path.Combine(AppContext.BaseDirectory, "log.txt"), retainedFileCountLimit:2, fileSizeLimitBytes:1 * 1024 * 1024, outputTemplate: LoggerTemplate, shared: true, rollOnFileSizeLimit: true)
+            .WriteTo.File(Path.Combine(AppContext.BaseDirectory, "log.txt"), retainedFileCountLimit: 2,
+                fileSizeLimitBytes: 1 * 1024 * 1024, outputTemplate: LoggerTemplate, shared: true,
+                rollOnFileSizeLimit: true)
             .WriteTo.Console(outputTemplate: LoggerTemplate)
             .CreateLogger();
         return logger;

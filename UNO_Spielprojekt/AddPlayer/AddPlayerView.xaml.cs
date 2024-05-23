@@ -1,12 +1,10 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using System.Windows;
 
 namespace UNO_Spielprojekt.AddPlayer;
 
 public partial class AddPlayerView
 {
-    private readonly PlayerData _playerData;
-
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
         nameof(ViewModel), typeof(AddPlayerViewModel), typeof(AddPlayerView),
         new PropertyMetadata(default(AddPlayerViewModel)));
@@ -16,6 +14,8 @@ public partial class AddPlayerView
         get => (AddPlayerViewModel)GetValue(ViewModelProperty);
         set => SetValue(ViewModelProperty, value);
     }
+
+    private readonly PlayerData _playerData;
 
     public AddPlayerView()
     {
@@ -45,12 +45,16 @@ public partial class AddPlayerView
     private void UpdateWeiterButtonVisibility()
     {
         if (ViewModel.PlayerNames.Count <= 1)
+        {
             ContinueButton.Visibility = Visibility.Hidden;
+        }
         else
+        {
             foreach (var t in ViewModel.PlayerNames)
             {
                 var allFieldsFilled = !string.IsNullOrWhiteSpace(t.Name);
                 ContinueButton.Visibility = allFieldsFilled ? Visibility.Visible : Visibility.Hidden;
             }
+        }
     }
 }

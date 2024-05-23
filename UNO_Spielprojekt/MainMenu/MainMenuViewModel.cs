@@ -1,8 +1,8 @@
-﻿using System.Windows;
+﻿using UNO_Spielprojekt.Scoreboard;
 using CommunityToolkit.Mvvm.Input;
 using UNO_Spielprojekt.Window;
 using tt.Tools.Logging;
-using UNO_Spielprojekt.Scoreboard;
+using System.Windows;
 
 namespace UNO_Spielprojekt.MainMenu;
 

@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
 using UNO_Spielprojekt.Scoreboard;
 using System.Collections.ObjectModel;
+using UNO_Spielprojekt.ChooseColor;
+using UNO_Spielprojekt.ExitConfirm;
 
 namespace UNO_Spielprojekt.GamePage;
 
@@ -146,10 +148,7 @@ public class GameViewModel : ViewModelBase
 
     private void ZiehenCommandMethod()
     {
-        if (_ziehen || _legen)
-        {
-        }
-        else
+        if (!_ziehen && !_legen)
         {
             TheBackground = Brushes.DarkSeaGreen;
             var card = PlayViewModel.Cards.First();
@@ -190,11 +189,6 @@ public class GameViewModel : ViewModelBase
 
                 for (var i = 0; i < 4; i++)
                 {
-                    if (NextPlayer < 0 || NextPlayer >= GameLogic.Players.Count)
-                    {
-                        Console.Write("FEHLER!");
-                    }
-
                     GameLogic.Players[NextPlayer].Hand.Add(PlayViewModel.Cards[0]);
                     PlayViewModel.Cards.RemoveAt(0);
                 }
@@ -238,10 +232,7 @@ public class GameViewModel : ViewModelBase
                      SelectedCard.Value == GameLogic.Center[GameLogic.Center.Count - 1].Value)
             {
                 TheBackground = Brushes.DarkSeaGreen;
-                if (IsReverse)
-                    IsReverse = false;
-                else
-                    IsReverse = true;
+                IsReverse = !IsReverse;
                 if (GameLogic.Players.Count == 2)
                 {
                     if (CurrentPlayer == 0)

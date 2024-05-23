@@ -1,11 +1,8 @@
-﻿using System;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 using tt.Tools.Logging;
-using UNO_Spielprojekt.AddPlayer;
-using UNO_Spielprojekt.Service;
+using System.Linq;
+using System;
 
 namespace UNO_Spielprojekt.GamePage;
 
@@ -13,17 +10,14 @@ public class GameLogic
 {
     public readonly List<Players> Players = new List<Players>();
     private PlayViewModel PlayViewModel { get; set; }
-    public int CountOfPlayers { get; set; }
     private readonly ILogger _logger;
-    private readonly ApiService _apiService;
 
     public readonly ObservableCollection<CardViewModel> Center = new();
     private readonly Random _random = new();
 
-    public GameLogic(PlayViewModel playViewModel, ILogger logger, ApiService apiService)
+    public GameLogic(PlayViewModel playViewModel, ILogger logger)
     {
-        _apiService = apiService;
-        this._logger = logger;
+        _logger = logger;
         PlayViewModel = playViewModel;
     }
 
@@ -293,30 +287,17 @@ public class GameLogic
 
     public void DealCards(int handSize)
     {
-        for (int player = 0; player < Players.Count; player++)
+        foreach (var player in Players)
         {
-            _logger.Info($"{Players[player].PlayerName} wurden {handSize} Karten ausgeteilt.");
+            _logger.Info($"{player.PlayerName} wurden {handSize} Karten ausgeteilt.");
             for (int i = 0; i < handSize; i++)
             {
                 CardViewModel card = PlayViewModel.Cards.First();
                 PlayViewModel.Cards.RemoveAt(0);
-                Players[player].Hand.Add(card);
+                player.Hand.Add(card);
             }
-            // PostPlayers(Players[player].PlayerName, player);
         }
     }
-
-    // private async void PostPlayers(string name, int numb)
-    // {
-    //     var player = new Player
-    //     {
-    //         Id = 0,
-    //         PlayerName = name,
-    //         Hand = Players[numb].Hand,
-    //         Uno = false
-    //     };
-    //     // await _apiService.PostPlayerAsync(player, "Players");
-    // }
 
     public void PlaceFirstCardInCenter()
     {

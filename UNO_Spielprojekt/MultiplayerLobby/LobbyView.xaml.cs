@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 
 namespace UNO_Spielprojekt.MultiplayerLobby;
+
 public partial class LobbyView
 {
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(

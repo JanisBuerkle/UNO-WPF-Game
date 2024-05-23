@@ -1,5 +1,5 @@
-﻿using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Text;
 
 namespace UNO.Contract;
 
@@ -22,10 +22,10 @@ public class RoomClient
         respone.EnsureSuccessStatusCode();
 
         var gettedLobbies = await respone.Content.ReadAsStringAsync();
-        var players = JsonConvert.DeserializeObject<List<PlayerDTO>>(gettedLobbies);
+        var players = JsonConvert.DeserializeObject<List<PlayerDto>>(gettedLobbies);
     }
 
-    public async Task AddPlayer(RoomDTO roomToUpdate, string playerName)
+    public async Task AddPlayer(RoomDto roomToUpdate, string playerName)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
@@ -37,7 +37,7 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task UnoClicked(RoomDTO roomToUpdate, int playerId)
+    public async Task UnoClicked(RoomDto roomToUpdate, int playerId)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
@@ -49,7 +49,7 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async void StartRoom(RoomDTO room)
+    public async void StartRoom(RoomDto room)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(room);
@@ -61,7 +61,7 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task PlaceCard(string card, RoomDTO roomToUpdate)
+    public async Task PlaceCard(string card, RoomDto roomToUpdate)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
@@ -73,7 +73,7 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task PlayerEndMove(int playerId, RoomDTO roomToUpdate)
+    public async Task PlayerEndMove(int playerId, RoomDto roomToUpdate)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
@@ -85,7 +85,7 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task DrawCard(string playername, RoomDTO roomToUpdate)
+    public async Task DrawCard(string playername, RoomDto roomToUpdate)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
@@ -96,8 +96,8 @@ public class RoomClient
         var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
     }
-    
-    public async Task ResetRoom(string playername, RoomDTO roomToUpdate)
+
+    public async Task ResetRoom(string playername, RoomDto roomToUpdate)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
@@ -109,7 +109,7 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task UpdateMaximalPlayers(RoomDTO roomToUpdate, int selectedMaximalCount)
+    public async Task UpdateMaximalPlayers(RoomDto roomToUpdate, int selectedMaximalCount)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
@@ -121,7 +121,7 @@ public class RoomClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task RemovePlayer(RoomDTO roomToUpdate, int id)
+    public async Task RemovePlayer(RoomDto roomToUpdate, int id)
     {
         await GetPlayers();
 
@@ -133,42 +133,27 @@ public class RoomClient
 
         var response2 = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response2.EnsureSuccessStatusCode();
-        
-        
+
+
         var removePlayerUrl = $"http://localhost:5000/api/Player/{id}";
 
         var response = await httpClient.DeleteAsync(removePlayerUrl);
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<RoomDTO> PostRoomAsync(RoomDTO room)
+    public async Task<RoomDto> PostRoomAsync(RoomDto room)
     {
-        try
-        {
-            var httpClient = new HttpClient();
-            var jsonContent = JsonConvert.SerializeObject(room);
-            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+        var httpClient = new HttpClient();
+        var jsonContent = JsonConvert.SerializeObject(room);
+        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync($"http://localhost:5000/api/Rooms", httpContent);
-            if (response.IsSuccessStatusCode)
-            {
-                var responseString = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<RoomDTO>(responseString);
-            }
-        }
-        catch (Exception e)
+        var response = await httpClient.PostAsync($"http://localhost:5000/api/Rooms", httpContent);
+        if (response.IsSuccessStatusCode)
         {
-            Console.Write(e);
-            // ignored
+            var responseString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<RoomDto>(responseString);
         }
 
         return room;
-    }
-
-    public async Task DeleteRoomAsync(RoomDTO room)
-    {
-        var httpClient = new HttpClient();
-        var response = await httpClient.DeleteAsync($"http://localhost:5000/api/Rooms/{room.Id}");
-        response.EnsureSuccessStatusCode();
     }
 }

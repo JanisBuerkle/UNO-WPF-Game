@@ -13,7 +13,7 @@ namespace UNO_Server.Hubs
         {
             await Clients.All.SendAsync("NextPlayersMove", nachricht);
         }
-        
+
         public async Task OpenWinnerPage(string nachricht)
         {
             await Clients.All.SendAsync("OpenWinnerPage", nachricht);
