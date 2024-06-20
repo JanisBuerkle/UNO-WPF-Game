@@ -15,6 +15,7 @@ namespace UNO_Server.Controllers
         private readonly RoomContext _context;
         private readonly StartModel _startModel;
         private readonly EndMoveModel _endMoveModel;
+        private readonly PlaceCardModel _placeCardModel;
         private readonly DtoConverter _dtoConverter;
 
         public RoomsController(RoomContext context, MyHub myHub)
@@ -23,6 +24,7 @@ namespace UNO_Server.Controllers
             _context = context;
             _startModel = new StartModel(context);
             _endMoveModel = new EndMoveModel();
+            _placeCardModel = new PlaceCardModel();
             _dtoConverter = new DtoConverter();
         }
 
@@ -186,109 +188,34 @@ namespace UNO_Server.Controllers
         public async Task<IActionResult> PlaceCard(string card, RoomDto roomItem)
         {
             Log.Information($"{card} gelegt.");
-
-            var room = _context.RoomItems.Include(r => r.Cards).Include(room => room.Center)
-                .Include(room => room.Players).ThenInclude(player => player.PlayerHand).Include(room => room.MiddleCard)
+            var room = _context.RoomItems
+                .Include(r => r.Cards)
+                .Include(room => room.Center)
+                .Include(room => room.Players).ThenInclude(player => player.PlayerHand)
+                .Include(room => room.MiddleCard)
                 .First(r => r.Id.Equals(roomItem.Id));
 
             string[] splitted = card.Split("-");
             string color = splitted[0];
             string value = splitted[1];
             int cardId = Convert.ToInt32(splitted[2]);
+
             if (splitted.Length >= 4)
             {
-                foreach (var player in room.Players)
-                {
-                    foreach (var playerCard in player.PlayerHand)
-                    {
-                        if ((int)playerCard.Id == cardId)
-                        {
-                            string wildOrDraw = splitted[3];
-                            int number = Convert.ToInt32(splitted[4]);
-                            if (wildOrDraw == "Draw")
-                            {
-                                room.Center.Add(_startModel.Draw4Cards[number]);
-                                room.MiddleCard = room.Center.Last();
-                                room.SelectedCard = room.MiddleCard;
-                                room.MiddleCardPic = room.MiddleCard.ImageUri;
-                                player.PlayerHand.Remove(playerCard);
-                                break;
-                            }
-
-                            if (wildOrDraw == "Wild")
-                            {
-                                room.Center.Add(_startModel.WildCards[number]);
-                                room.MiddleCard = room.Center.Last();
-                                room.SelectedCard = room.MiddleCard;
-                                room.MiddleCardPic = room.MiddleCard.ImageUri;
-                                player.PlayerHand.Remove(playerCard);
-                                break;
-                            }
-                        }
-                    }
-                }
+                _placeCardModel.HandleSpecialCards(room, splitted, cardId, _startModel);
             }
-
-            string path = $"pack://application:,,,/Assets/cards/{value}/{color}.png";
-
-            if (color is "Wild" or "Draw")
+            else if (color is "Wild" or "Draw")
             {
-                if (value == "+4")
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        var rndCard = _random.Next(room.Cards.Count);
-                        var selectedCard = room.Cards[rndCard];
-                        room.Players[room.NextPlayer - 1].PlayerHand.Add(selectedCard);
-                    }
-                }
+                _placeCardModel.HandleWildDrawCards(room, value);
             }
             else if (room.MiddleCard.Color == color || room.MiddleCard.Value == value)
             {
-                room.Center.Add(new Card() { Color = color, Value = value, ImageUri = path });
-                room.MiddleCard = room.Center.Last();
-                room.SelectedCard = room.MiddleCard;
-                room.MiddleCardPic = room.MiddleCard.ImageUri;
-                foreach (var player in room.Players)
-                {
-                    foreach (var playerCard in player.PlayerHand)
-                    {
-                        if ((int)playerCard.Id == cardId)
-                        {
-                            player.PlayerHand.Remove(playerCard);
-
-                            switch (playerCard.Value)
-                            {
-                                case "+2":
-                                {
-                                    for (int i = 0; i < 2; i++)
-                                    {
-                                        var rndCard = _random.Next(room.Cards.Count);
-                                        var selectedCard = room.Cards[rndCard];
-                                        room.Players[room.NextPlayer - 1].PlayerHand.Add(selectedCard);
-                                    }
-
-                                    break;
-                                }
-                                case "Skip":
-                                case "Reverse" when room.Players.Count == 2:
-                                    room.IsSkip = true;
-                                    break;
-                                case "Reverse":
-                                    room.IsReverse = !room.IsReverse;
-                                    break;
-                            }
-
-                            break;
-                        }
-                    }
-                }
+                _placeCardModel.HandleStandardCard(room, color, value, cardId);
             }
 
             _context.RoomItems.Update(room);
             await _context.SaveChangesAsync();
             await _myHub.SendGetAllRooms("placeCard");
-
             return NoContent();
         }
 
