@@ -204,7 +204,7 @@ namespace UNO_Server.Controllers
             {
                 _placeCardModel.HandleSpecialCards(room, splitted, cardId, _startModel);
             }
-            else if (color is "Wild" or "Draw")
+            if (color is "Wild" or "Draw")
             {
                 _placeCardModel.HandleWildDrawCards(room, value);
             }
