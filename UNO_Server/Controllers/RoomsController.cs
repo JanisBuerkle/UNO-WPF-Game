@@ -238,11 +238,11 @@ namespace UNO_Server.Controllers
 
             if (player.Uno && player.PlayerHand.Count == 0)
             {
-                await _myHub.OpenWinnerPage(room.Players[room.PlayerTurnId].Name + "-" + room.MoveCounter);
+                await _myHub.OpenWinnerPage(room.Players[room.PlayerTurnId - 1].Name + "-" + room.MoveCounter);
             }
             else if (!player.Uno && player.PlayerHand.Count == 0)
             {
-                room.Players[room.PlayerTurnId].PlayerHand.Add(room.Cards.First());
+                room.Players[room.PlayerTurnId - 1].PlayerHand.Add(room.Cards.First());
                 room.Cards.Remove(room.Cards.First());
             }
             else
