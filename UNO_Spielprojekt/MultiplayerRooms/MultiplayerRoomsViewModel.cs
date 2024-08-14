@@ -1,150 +1,84 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.Input;
-using System.Collections.Generic;
-using UNO_Spielprojekt.Window;
-using System.Threading.Tasks;
-using tt.Tools.Logging;
-using Newtonsoft.Json;
-using System.Net.Http;
-using System.Windows;
-using UNO.Contract;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Windows;
+using CommunityToolkit.Mvvm.Input;
+using Newtonsoft.Json;
+using tt.Tools.Logging;
+using UNO_Spielprojekt.Window;
+using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerRooms;
 
 public class MultiplayerRoomsViewModel : ViewModelBase
 {
-    public ObservableCollection<string> ComboBoxItems { get; } = new ObservableCollection<string>
-    {
-        "2", "3", "4", "5"
-    };
+    private readonly ILogger logger;
 
     private PlayerDto _player;
 
-    public PlayerDto Player
-    {
-        get => _player;
-        set
-        {
-            if (_player != value)
-            {
-                _player = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
     private int _selectedItem;
 
-    public int SelectedMaximalCount
-    {
-        get => _selectedItem;
-        set
-        {
-            if (_selectedItem != value)
-            {
-                _selectedItem = value;
-                if (value < SelectedRoom2.OnlineUsers)
-                {
-                    for (int i = SelectedRoom2.OnlineUsers; i > value; i--)
-                    {
-                        RemoveMorePlayers();
-                    }
-                }
-
-                OnPropertyChanged();
-            }
-
-            RoomClient.UpdateMaximalPlayers(SelectedRoom2, SelectedMaximalCount);
-            GetRooms();
-        }
-    }
-
-    private async void RemoveMorePlayers()
-    {
-        await RoomClient.RemovePlayer(SelectedRoom2, (int)SelectedRoom2.Players.Last().Id);
-    }
-
-    private ObservableCollection<RoomDto> _roomList = new ObservableCollection<RoomDto>();
-
-    public ObservableCollection<RoomDto> RoomList
-    {
-        get => _roomList;
-        private set
-        {
-            if (_roomList != value)
-            {
-                _roomList = value;
-                OnPropertyChanged();
-            }
-        }
-    }
+    private ObservableCollection<RoomDto> _roomList = new();
 
 
     private bool _disableAll;
 
-    public bool DisableAll
+    private RoomDto _selectedRoom;
+
+    private RoomDto _selectedRoom2;
+    public HttpClient HttpClient;
+
+    public ObservableCollection<string> ComboBoxItems { get; } = new()
     {
-        get => _disableAll;
-        set
-        {
-            if (_disableAll != value)
-            {
-                _disableAll = value;
-                OnPropertyChanged();
-            }
-        }
-    }
+        "2", "3", "4", "5"
+    };
+
+    public RelayCommand GoToMainMenuCommand { get; }
+    public RelayCommand LeaveRoomCommand { get; }
+    public RelayCommand GoToLobbyCommand { get; }
+    public RelayCommand CreateRoomCommand { get; }
+    public string SignalRId { get; set; }
 
     public string PlayerName { get; set; }
 
-    private RoomDto _selectedRoom;
-
-    public RoomDto SelectedRoom
-    {
-        get => _selectedRoom;
-        set
-        {
-            if (_selectedRoom != value)
-            {
-                _selectedRoom = value;
-
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    private RoomDto _selectedRoom2;
-
-    public RoomDto SelectedRoom2
-    {
-        get => _selectedRoom2;
-        set
-        {
-            if (_selectedRoom2 != value)
-            {
-                _selectedRoom2 = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
     private List<RoomDto>? Rooms { get; set; }
     public List<PlayerDto>? Players { get; set; }
-    public HttpClient HttpClient;
+    public MainViewModel MainViewModel { get; set; }
+    public RoomClient RoomClient { get; set; }
+
+    public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger loggerr, RoomClient roomClient)
+    {
+        logger = loggerr;
+        MainViewModel = mainViewModel;
+        RoomClient = roomClient;
+
+        _selectedItem = 5;
+        logger.Info(
+            "_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
+
+        GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
+        LeaveRoomCommand = new RelayCommand(LeaveRoomCommandMethod);
+        GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);
+        CreateRoomCommand = new RelayCommand(CreateRoomCommandMethod);
+    }
 
     public async Task GetRooms()
     {
-        _logger.Info(
+        logger.Info(
             "GetRooms wurde ausgeführt, alle Räume wurden gegettet und entsprechende Propertys wurden gesetzt.");
-        Task<string> gettedRoomsTask = RoomClient.GetAllRooms();
+        var gettedRoomsTask = RoomClient.GetAllRooms();
         var gettedRooms = await gettedRoomsTask;
 
         Rooms = JsonConvert.DeserializeObject<List<RoomDto>>(gettedRooms);
 
         Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            if (Rooms != null) RoomList = new ObservableCollection<RoomDto>(Rooms);
+            if (Rooms != null)
+            {
+                RoomList = new ObservableCollection<RoomDto>(Rooms);
+            }
         });
 
         if (SelectedRoom2 != null)
@@ -192,12 +126,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     public async Task UpdateOnlinePlayer(bool removeOrAdd)
     {
         await GetRooms();
-        RoomDto roomToUpdate = SelectedRoom2;
+        var roomToUpdate = SelectedRoom2;
 
         HttpClient = new HttpClient();
         if (removeOrAdd) //add
         {
-            await RoomClient.AddPlayer(roomToUpdate, PlayerName);
+            await RoomClient.AddPlayer(roomToUpdate, $"{PlayerName}-{SignalRId}");
         }
         else //remove
         {
@@ -220,33 +154,22 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         }
     }
 
-    private readonly ILogger _logger;
-    public MainViewModel MainViewModel { get; set; }
-    public RoomClient RoomClient { get; set; }
-    public RelayCommand GoToMainMenuCommand { get; }
-    public RelayCommand GoToLobbyCommand { get; }
-    public RelayCommand CreateRoomCommand { get; }
-
-    public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger logger, RoomClient roomClient)
+    private async void RemoveMorePlayers()
     {
-        _logger = logger;
-        MainViewModel = mainViewModel;
-        RoomClient = roomClient;
-
-        _selectedItem = 5;
-        _logger.Info(
-            "_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
-
-        GoToMainMenuCommand = new RelayCommand(GoToMainMenuCommandMethod);
-        GoToLobbyCommand = new RelayCommand(GoToLobbyCommandMethod);
-        CreateRoomCommand = new RelayCommand(CreateRoomCommandMethod);
+        await RoomClient.RemovePlayer(SelectedRoom2, (int)SelectedRoom2.Players.Last().Id);
     }
 
 
-    private async void GoToMainMenuCommandMethod()
+    private void GoToMainMenuCommandMethod()
+    {
+        logger.Info("MainMenu wurde geöffnet, GoToMainMenuCommandMethod wurde ausgeführt.");
+        MainViewModel.GoToMainMenu();
+    }
+
+    private async void LeaveRoomCommandMethod()
     {
         await UpdateOnlinePlayer(false);
-        _logger.Info("MainMenu wurde geöffnet, GoToMainMenuCommandMethod wurde ausgeführt.");
+        logger.Info("MainMenu wurde geöffnet, GoToMainMenuCommandMethod wurde ausgeführt.");
         MainViewModel.GoToMainMenu();
     }
 
@@ -266,5 +189,95 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     private void CreateRoomCommandMethod()
     {
         MainViewModel.CreateRoomVisible = true;
+    }
+
+    public PlayerDto Player
+    {
+        get => _player;
+        set
+        {
+            if (_player != value)
+            {
+                _player = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public int SelectedMaximalCount
+    {
+        get => _selectedItem;
+        set
+        {
+            if (_selectedItem != value)
+            {
+                _selectedItem = value;
+                if (value < SelectedRoom2.OnlineUsers)
+                {
+                    for (var i = SelectedRoom2.OnlineUsers; i > value; i--)
+                    {
+                        RemoveMorePlayers();
+                    }
+                }
+
+                OnPropertyChanged();
+            }
+
+            RoomClient.UpdateMaximalPlayers(SelectedRoom2, SelectedMaximalCount);
+            GetRooms();
+        }
+    }
+
+    public ObservableCollection<RoomDto> RoomList
+    {
+        get => _roomList;
+        private set
+        {
+            if (_roomList != value)
+            {
+                _roomList = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public bool DisableAll
+    {
+        get => _disableAll;
+        set
+        {
+            if (_disableAll != value)
+            {
+                _disableAll = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public RoomDto SelectedRoom
+    {
+        get => _selectedRoom;
+        set
+        {
+            if (_selectedRoom != value)
+            {
+                _selectedRoom = value;
+
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public RoomDto SelectedRoom2
+    {
+        get => _selectedRoom2;
+        set
+        {
+            if (_selectedRoom2 != value)
+            {
+                _selectedRoom2 = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }
