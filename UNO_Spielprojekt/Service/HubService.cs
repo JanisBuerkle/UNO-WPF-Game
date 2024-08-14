@@ -1,58 +1,51 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using System;
+using Microsoft.AspNetCore.SignalR.Client;
 using UNO_Spielprojekt.MultiplayerRooms;
 using UNO_Spielprojekt.Window;
-using System;
 
 namespace UNO_Spielprojekt.Service;
 
 public class HubService
 {
-    private readonly HubConnection _hubConnection;
-    private readonly MainViewModel _mainViewModel;
-    private readonly MultiplayerRoomsViewModel _multiplayerRoomsViewModel;
+    private readonly HubConnection hubConnection;
+    private readonly MainViewModel mainViewModel;
+    private readonly MultiplayerRoomsViewModel multiplayerRoomsViewModel;
 
     public HubService(MainViewModel mainViewModel, MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
-        _multiplayerRoomsViewModel = multiplayerRoomsViewModel;
-        _mainViewModel = mainViewModel;
-        _hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:5000/myHub").Build();
+        this.multiplayerRoomsViewModel = multiplayerRoomsViewModel;
+        this.mainViewModel = mainViewModel;
+        hubConnection = new HubConnectionBuilder().WithUrl("http://localhost:5000/myHub").Build();
         InitializeSignalR();
     }
 
     private async void InitializeSignalR()
     {
-        _hubConnection.On<string>("GetAllRooms", nachricht =>
+        hubConnection.On<string>("GetAllRooms", nachricht => { multiplayerRoomsViewModel.GetRooms(); });
+
+        hubConnection.On<string>("ConnectToRoom", nachricht => { mainViewModel.GoToMultiplayerGame(); });
+
+        hubConnection.On<string>("OpenWinnerPage", nachricht =>
         {
-            _multiplayerRoomsViewModel.GetRooms();
+            multiplayerRoomsViewModel.RoomClient.RemovePlayer(multiplayerRoomsViewModel.SelectedRoom2, (int)multiplayerRoomsViewModel.Player.Id);
+            multiplayerRoomsViewModel.RoomClient.ResetRoom("name", multiplayerRoomsViewModel.SelectedRoom2);
+
+            mainViewModel.WinnerViewModel.IsOnline = true;
+            mainViewModel.GoToWinner();
+            var splitted = nachricht.Split("-");
+
+            mainViewModel.WinnerViewModel.WinnerName = splitted[0];
+            mainViewModel.WinnerViewModel.MoveCounter = splitted[1];
         });
 
-        _hubConnection.On<string>("ConnectToRoom", nachricht =>
-        {
-            _mainViewModel.GoToMultiplayerGame();
-        });        
-        
-        _hubConnection.On<string>("OpenWinnerPage", nachricht =>
-        {
-            _multiplayerRoomsViewModel.RoomClient.RemovePlayer(_multiplayerRoomsViewModel.SelectedRoom2, (int)_multiplayerRoomsViewModel.Player.Id);
-            _multiplayerRoomsViewModel.RoomClient.ResetRoom("name", _multiplayerRoomsViewModel.SelectedRoom2);
-            
-            _mainViewModel.WinnerViewModel.IsOnline = true;
-            _mainViewModel.GoToWinner();
-            string[] splitted = nachricht.Split("-");
-            
-            _mainViewModel.WinnerViewModel.WinnerName = splitted[0];
-            _mainViewModel.WinnerViewModel.MoveCounter = splitted[1];
-        });
+        hubConnection.On<string>("NextPlayersMove", nachricht => { mainViewModel.MultiplayerGamePageViewModel.DiableAllFunctions(); });
 
-        _hubConnection.On<string>("NextPlayersMove", nachricht =>
-        {
-            _mainViewModel.MultiplayerGamePageViewModel.DiableAllFunctions();
-        });
-        
         try
         {
-            await _hubConnection.StartAsync();
+            await hubConnection.StartAsync();
             Console.WriteLine(@"Verbindung hergestellt.");
+            var signalRUserId = hubConnection.ConnectionId;
+            mainViewModel.MultiplayerRoomsViewModel.SignalRId = signalRUserId;
         }
         catch (Exception ex)
         {
