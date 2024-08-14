@@ -1,6 +1,6 @@
-﻿using UNO_Spielprojekt.GamePage;
+﻿using System.Windows;
+using UNO_Spielprojekt.GamePage;
 using UNO_Spielprojekt.Window;
-using System.Windows;
 
 namespace UNO_Spielprojekt.ExitConfirm;
 
@@ -10,29 +10,17 @@ public partial class ExitConfirmWindow
         nameof(GameViewModel), typeof(GameViewModel), typeof(ExitConfirmWindow),
         new PropertyMetadata(default(GameViewModel)));
 
-    public GameViewModel GameViewModel
-    {
-        get => (GameViewModel)GetValue(GameViewModelProperty);
-        set => SetValue(GameViewModelProperty, value);
-    }
-
 
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
         nameof(ViewModel), typeof(ExitConfirmViewModel), typeof(ExitConfirmWindow),
         new PropertyMetadata(default(ExitConfirmViewModel)));
 
-    public ExitConfirmViewModel ViewModel
-    {
-        get => (ExitConfirmViewModel)GetValue(ViewModelProperty);
-        set => SetValue(ViewModelProperty, value);
-    }
-
-    private readonly MainViewModel MainViewModel;
+    private readonly MainViewModel mainViewModel;
 
     public ExitConfirmWindow(MainViewModel mainViewModel)
     {
-        MainViewModel = mainViewModel;
-        ViewModel = new ExitConfirmViewModel(MainViewModel);
+        this.mainViewModel = mainViewModel;
+        ViewModel = new ExitConfirmViewModel(this.mainViewModel);
         InitializeComponent();
     }
 
@@ -45,5 +33,17 @@ public partial class ExitConfirmWindow
     {
         Close();
         ViewModel.ConfirmButtonCommandMethod();
+    }
+
+    public GameViewModel GameViewModel
+    {
+        get => (GameViewModel)GetValue(GameViewModelProperty);
+        set => SetValue(GameViewModelProperty, value);
+    }
+
+    public ExitConfirmViewModel ViewModel
+    {
+        get => (ExitConfirmViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 }

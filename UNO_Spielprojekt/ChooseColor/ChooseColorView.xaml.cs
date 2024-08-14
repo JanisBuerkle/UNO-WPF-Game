@@ -8,15 +8,15 @@ public partial class ChooseColorView
         nameof(ViewModel), typeof(ChooseColorViewModel), typeof(ChooseColorView),
         new PropertyMetadata(default(ChooseColorViewModel)));
 
-    public ChooseColorViewModel ViewModel
-    {
-        get => (ChooseColorViewModel)GetValue(ViewModelProperty);
-        set => SetValue(ViewModelProperty, value);
-    }
-
     public ChooseColorView()
     {
         ViewModel = new ChooseColorViewModel();
         InitializeComponent();
+    }
+
+    public ChooseColorViewModel ViewModel
+    {
+        get => (ChooseColorViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 }

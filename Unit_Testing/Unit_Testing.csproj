@@ -22,8 +22,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\UNO.Contract\UNO.Contract.csproj" />
-      <ProjectReference Include="..\UNO_Server\UNO_Server.csproj" />
+        <ProjectReference Include="..\UNO.Contract\UNO.Contract.csproj"/>
+        <ProjectReference Include="..\UNO_Server\UNO_Server.csproj"/>
     </ItemGroup>
 
 </Project>

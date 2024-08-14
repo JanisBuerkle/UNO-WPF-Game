@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Text;
+﻿using System.Text;
+using Newtonsoft.Json;
 
 namespace UNO.Contract;
 
@@ -15,23 +15,13 @@ public class RoomClient
         return gettedRooms;
     }
 
-    private async Task GetPlayers()
-    {
-        var httpClient = new HttpClient();
-        var respone = await httpClient.GetAsync("http://localhost:5000/api/Player");
-        respone.EnsureSuccessStatusCode();
-
-        var gettedLobbies = await respone.Content.ReadAsStringAsync();
-        var players = JsonConvert.DeserializeObject<List<PlayerDto>>(gettedLobbies);
-    }
-
-    public async Task AddPlayer(RoomDto roomToUpdate, string playerName)
+    public async Task AddPlayer(RoomDto roomToUpdate, string playerInformations)
     {
         var httpClient = new HttpClient();
         var jsonContent = JsonConvert.SerializeObject(roomToUpdate);
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        var addPlayerUrl = $"http://localhost:5000/api/Rooms/addPlayer/{playerName}";
+        var addPlayerUrl = $"http://localhost:5000/api/Rooms/addPlayer/{playerInformations}";
 
         var response = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response.EnsureSuccessStatusCode();
@@ -133,8 +123,7 @@ public class RoomClient
 
         var response2 = await httpClient.PutAsync(addPlayerUrl, httpContent);
         response2.EnsureSuccessStatusCode();
-
-
+        
         var removePlayerUrl = $"http://localhost:5000/api/Player/{id}";
 
         var response = await httpClient.DeleteAsync(removePlayerUrl);
@@ -147,7 +136,7 @@ public class RoomClient
         var jsonContent = JsonConvert.SerializeObject(room);
         var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-        var response = await httpClient.PostAsync($"http://localhost:5000/api/Rooms", httpContent);
+        var response = await httpClient.PostAsync("http://localhost:5000/api/Rooms", httpContent);
         if (response.IsSuccessStatusCode)
         {
             var responseString = await response.Content.ReadAsStringAsync();
@@ -155,5 +144,12 @@ public class RoomClient
         }
 
         return room;
+    }
+
+    private async Task GetPlayers()
+    {
+        var httpClient = new HttpClient();
+        var respone = await httpClient.GetAsync("http://localhost:5000/api/Player");
+        respone.EnsureSuccessStatusCode();
     }
 }

@@ -1,23 +1,20 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using System.Collections.Generic;
-using UNO_Spielprojekt.Window;
+﻿using System.Collections.Generic;
+using CommunityToolkit.Mvvm.Input;
 using tt.Tools.Logging;
+using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.Setting;
 
 public class SettingsViewModel : ViewModelBase
 {
-    private readonly ILogger _logger;
+    private readonly ILogger logger;
     public List<Language> MyLangs { get; }
     public List<WindowMode> MyWindowModes { get; }
-    public List<ThemeMode> MyThemeModes { get; }
     public RelayCommand GoToMainMenuCommand { get; }
-    public ThemeModes ThemeModes { get; set; }
 
-    public SettingsViewModel(MainViewModel mainViewModel, ILogger logger, ThemeModes themeModes)
+    public SettingsViewModel(MainViewModel mainViewModel, ILogger loggerr)
     {
-        ThemeModes = themeModes;
-        this._logger = logger;
+        logger = loggerr;
         GoToMainMenuCommand = new RelayCommand(mainViewModel.GoToMainMenu);
         MyLangs = new List<Language>
         {
@@ -40,22 +37,5 @@ public class SettingsViewModel : ViewModelBase
             WindowMode.Windowed
         };
 
-        MyThemeModes = new List<ThemeMode>
-        {
-            ThemeMode.Dark,
-            ThemeMode.Bright
-        };
-    }
-
-    public void ThemeModeDark()
-    {
-        ThemeModes.Background = "#1f1f1f";
-        ThemeModes.Foreground = "#ffffff";
-    }
-
-    public void ThemeModeBright()
-    {
-        ThemeModes.Background = "#ffffff";
-        ThemeModes.Foreground = "#1f1f1f";
     }
 }

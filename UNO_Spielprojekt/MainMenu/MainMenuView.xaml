@@ -4,11 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:resources="clr-namespace:UNO_Spielprojekt.Resources"
-             xmlns:setting="clr-namespace:UNO_Spielprojekt.Setting"
              mc:Ignorable="d"
              Name="Control">
     <UserControl.Resources>
-        <setting:ThemeModes x:Key="ThemeModes" />
     </UserControl.Resources>
 
     <Grid DataContext="{Binding ElementName=Control, Path=ViewModel}">
@@ -17,19 +15,19 @@
 
         <!-- Play, Scoreboard und Exit Button -->
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}"
+            <Button Foreground="#ffffff"
                     Command="{Binding GoToAddPlayerCommand}"
                     Style="{StaticResource MainMenuButtonStyle}"
                     Content="{x:Static resources:Resource.PlayLocal}" />
-            <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}"
+            <Button Foreground="#ffffff"
                     Command="{Binding GoToMultiplayerRoomsCommand}"
                     Style="{StaticResource MainMenuButtonStyle}"
                     Content="{x:Static resources:Resource.Multiplayer}" />
-            <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}"
+            <Button Foreground="#ffffff"
                     Command="{Binding GoToScoreboardCommand}"
                     Style="{StaticResource MainMenuButtonStyle}"
                     Content="{x:Static resources:Resource.Scoreboard}" />
-            <Button Foreground="{Binding Source={StaticResource ThemeModes}, Path=Foreground}"
+            <Button Foreground="#ffffff"
                     Command="{Binding ExitApplicationCommand}"
                     Style="{StaticResource MainMenuButtonStyle}"
                     Content="{x:Static resources:Resource.Exit}" />

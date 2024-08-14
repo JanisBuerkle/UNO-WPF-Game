@@ -6,7 +6,6 @@
              StartupUri="MainWindowView.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <setting:ThemeModes x:Key="ThemeModes" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/Styles.xaml" />
                 <ui:ThemesDictionary Theme="Dark" />

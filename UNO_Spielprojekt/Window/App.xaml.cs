@@ -1,17 +1,18 @@
-﻿using System.Windows;
+﻿using System.Globalization;
+using System.Threading;
+using System.Windows;
 
-namespace UNO_Spielprojekt.Window
+namespace UNO_Spielprojekt.Window;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    public App()
     {
-        public App()
-        {
-            SetLanguage();
-        }
+        SetLanguage();
+    }
 
-        private static void SetLanguage()
-        {
-            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
-        }
+    private static void SetLanguage()
+    {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
     }
 }

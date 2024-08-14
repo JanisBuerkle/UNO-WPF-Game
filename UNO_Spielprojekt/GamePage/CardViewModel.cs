@@ -2,41 +2,53 @@
 
 public class CardViewModel : ViewModelBase
 {
-    private string _value;
+    private string value;
+
+    private string color;
+
+    private string imageUri;
 
     public string Value
     {
-        get => _value;
+        get => value;
         set
         {
-            if (value == _value) return;
-            _value = value;
+            if (value == this.value)
+            {
+                return;
+            }
+
+            this.value = value;
             OnPropertyChanged();
         }
     }
-
-    private string _color;
 
     public string Color
     {
-        get => _color;
+        get => color;
         set
         {
-            if (value == _color) return;
-            _color = value;
+            if (value == color)
+            {
+                return;
+            }
+
+            color = value;
             OnPropertyChanged();
         }
     }
 
-    private string _imageUri;
-
     public string ImageUri
     {
-        get => _imageUri;
+        get => imageUri;
         set
         {
-            if (Equals(value, _imageUri)) return;
-            _imageUri = value;
+            if (Equals(value, imageUri))
+            {
+                return;
+            }
+
+            imageUri = value;
             OnPropertyChanged();
         }
     }

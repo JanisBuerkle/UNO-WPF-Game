@@ -4,15 +4,15 @@ namespace UNO_Spielprojekt.ExitConfirm;
 
 public class ExitConfirmViewModel : ViewModelBase
 {
-    private readonly MainViewModel _mainViewModel;
+    private readonly MainViewModel mainViewModel;
 
     public ExitConfirmViewModel(MainViewModel mainViewModel)
     {
-        _mainViewModel = mainViewModel;
+        this.mainViewModel = mainViewModel;
     }
 
     public void ConfirmButtonCommandMethod()
     {
-        _mainViewModel.GoToMainMenu();
+        mainViewModel.GoToMainMenu();
     }
 }

@@ -26,7 +26,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Home Button -->
-        <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0"
+        <Button Command="{Binding LeaveRoomCommand}" Grid.Column="0" Grid.Row="0"
                 Style="{StaticResource HomeButtonStyle}" />
 
         <Label Grid.Row="0" Grid.Column="1" FontSize="35" FontWeight="Bold" Foreground="White"
@@ -61,8 +61,7 @@
 
                             <Label Grid.Column="1" Content="Besitzer" Foreground="Gray" FontSize="15"
                                    HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   Visibility="{Binding IsLeader, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            </Label>
+                                   Visibility="{Binding IsLeader, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </Grid>
                     </Border>
                 </DataTemplate>

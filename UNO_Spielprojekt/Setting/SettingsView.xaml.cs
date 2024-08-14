@@ -1,9 +1,9 @@
-﻿using UNO_Spielprojekt.Window;
-using System.Windows.Controls;
-using System.Globalization;
-using System.Windows.Media;
+﻿using System.Globalization;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.Setting;
 
@@ -12,12 +12,6 @@ public partial class SettingsView : UserControl
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
         nameof(ViewModel), typeof(SettingsViewModel), typeof(SettingsView),
         new PropertyMetadata(default(SettingsViewModel)));
-
-    public SettingsViewModel ViewModel
-    {
-        get => (SettingsViewModel)GetValue(ViewModelProperty);
-        set => SetValue(ViewModelProperty, value);
-    }
 
     public static Language language = new();
     private readonly MainWindowView _mainWindow;
@@ -74,18 +68,9 @@ public partial class SettingsView : UserControl
         }
     }
 
-    private void ThemeModes_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    public SettingsViewModel ViewModel
     {
-        if (ThemeModes.SelectedItem is ThemeMode selectedMode)
-        {
-            if (selectedMode == ThemeMode.Dark)
-            {
-                ViewModel.ThemeModeDark();
-            }
-            else if (selectedMode == ThemeMode.Bright)
-            {
-                ViewModel.ThemeModeBright();
-            }
-        }
+        get => (SettingsViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 }

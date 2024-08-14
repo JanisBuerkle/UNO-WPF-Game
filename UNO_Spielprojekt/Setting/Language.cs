@@ -1,16 +1,16 @@
-﻿using UNO_Spielprojekt.Resources;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Resources;
+using UNO_Spielprojekt.Resources;
 
 namespace UNO_Spielprojekt.Setting;
 
 public class Language
 {
-    private static ResourceManager _resourceManager;
+    private static ResourceManager resourceManager;
 
     static Language()
     {
-        _resourceManager = new ResourceManager("UNO_Spielprojekt.Resources.Resource", typeof(Resource).Assembly);
+        resourceManager = new ResourceManager("UNO_Spielprojekt.Resources.Resource", typeof(Resource).Assembly);
     }
 
     public string? Flag { get; set; }

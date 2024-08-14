@@ -1,27 +1,27 @@
-﻿using UNO_Spielprojekt.Scoreboard;
+﻿using System.Windows;
 using CommunityToolkit.Mvvm.Input;
-using UNO_Spielprojekt.Window;
 using tt.Tools.Logging;
-using System.Windows;
+using UNO_Spielprojekt.Scoreboard;
+using UNO_Spielprojekt.Window;
 
 namespace UNO_Spielprojekt.MainMenu;
 
 public class MainMenuViewModel : ViewModelBase
 {
-    private readonly MainViewModel _mainViewModel;
-    private readonly GameData _gameData;
-    private readonly ILogger _logger;
+    private readonly MainViewModel mainViewModel;
+    private readonly GameData gameData;
+    private readonly ILogger logger;
     public RelayCommand GoToAddPlayerCommand { get; }
     public RelayCommand GoToMultiplayerRoomsCommand { get; }
     public RelayCommand GoToScoreboardCommand { get; }
     public RelayCommand GoToSettings { get; }
     public RelayCommand ExitApplicationCommand { get; }
 
-    public MainMenuViewModel(MainViewModel mainViewModel, ILogger logger, GameData gameData)
+    public MainMenuViewModel(MainViewModel mainViewModel, ILogger loggerr, GameData gameData)
     {
-        _gameData = gameData;
-        _mainViewModel = mainViewModel;
-        _logger = logger;
+        this.gameData = gameData;
+        this.mainViewModel = mainViewModel;
+        logger = loggerr;
         GoToAddPlayerCommand = new RelayCommand(GoToAddPlayerCommandMethod);
         GoToMultiplayerRoomsCommand = new RelayCommand(GoToMultiplayerRoomsCommandMethod);
         GoToScoreboardCommand = new RelayCommand(GoToScoreboardCommandMethod);
@@ -31,33 +31,33 @@ public class MainMenuViewModel : ViewModelBase
 
     private void GoToAddPlayerCommandMethod()
     {
-        _logger.Info("AddPlayer Seite wurde geöffnet.");
-        _mainViewModel.GoToAddPlayer();
+        logger.Info("AddPlayer Seite wurde geöffnet.");
+        mainViewModel.GoToAddPlayer();
     }
 
     private void GoToMultiplayerRoomsCommandMethod()
     {
-        _logger.Info("MultiplayerRooms Seite wurde geöffnet.");
-        _mainViewModel.GoToMultiplayerRooms();
-        _mainViewModel.MultiplayerRoomsViewModel.GetRooms();
+        logger.Info("MultiplayerRooms Seite wurde geöffnet.");
+        mainViewModel.GoToMultiplayerRooms();
+        mainViewModel.MultiplayerRoomsViewModel.GetRooms();
     }
 
     private void GoToScoreboardCommandMethod()
     {
-        _logger.Info("Scoreboard Seite wurde geöffnet.");
-        _gameData.Load();
-        _mainViewModel.GoToScoreboard();
+        logger.Info("Scoreboard Seite wurde geöffnet.");
+        gameData.Load();
+        mainViewModel.GoToScoreboard();
     }
 
     private void GoToSettingsCommandMethod()
     {
-        _logger.Info("Settings Seite wurde geöffnet.");
-        _mainViewModel.GoToSettings();
+        logger.Info("Settings Seite wurde geöffnet.");
+        mainViewModel.GoToSettings();
     }
 
     private void ExitApplication()
     {
-        _logger.Info("Program wird mit dem 'Exit' Button beendet.");
+        logger.Info("Program wird mit dem 'Exit' Button beendet.");
         Application.Current.Shutdown();
     }
 }

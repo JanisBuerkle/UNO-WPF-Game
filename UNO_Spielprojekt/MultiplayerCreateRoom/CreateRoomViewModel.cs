@@ -7,43 +7,17 @@ namespace UNO_Spielprojekt.MultiplayerCreateRoom;
 
 public class CreateRoomViewModel : ViewModelBase
 {
-    private readonly ILogger _logger;
-    private MainViewModel MainViewModel { get; set; }
-    public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
+    private bool isChecked;
+
+    private bool isEnabled;
     public RelayCommand CloseCreateRoomCommand { get; }
     public RelayCommand GoToGiveNameCommand { get; }
+    private MainViewModel MainViewModel { get; }
+    public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; set; }
 
-    private bool _isChecked;
-
-    public bool IsChecked
-    {
-        get { return _isChecked; }
-        set
-        {
-            _isChecked = value;
-            OnPropertyChanged("IsChecked");
-        }
-    }
-
-    private bool _isEnabled;
-
-    public bool IsEnabled
-    {
-        get => _isEnabled;
-        set
-        {
-            if (_isEnabled != value)
-            {
-                _isEnabled = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public CreateRoomViewModel(MainViewModel mainViewModel, ILogger logger,
+    public CreateRoomViewModel(MainViewModel mainViewModel,
         MultiplayerRoomsViewModel multiplayerRoomsViewModel)
     {
-        _logger = logger;
         MainViewModel = mainViewModel;
         MultiplayerRoomsViewModel = multiplayerRoomsViewModel;
         GoToGiveNameCommand = new RelayCommand(GoToGiveNameCommandMethod);
@@ -60,5 +34,28 @@ public class CreateRoomViewModel : ViewModelBase
     {
         MainViewModel.CreateRoomVisible = false;
         MainViewModel.MultiplayerRoomsViewModel.DisableAll = true;
+    }
+
+    public bool IsChecked
+    {
+        get => isChecked;
+        set
+        {
+            isChecked = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsEnabled
+    {
+        get => isEnabled;
+        set
+        {
+            if (isEnabled != value)
+            {
+                isEnabled = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

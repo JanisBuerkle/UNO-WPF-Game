@@ -1,5 +1,5 @@
-﻿using System.Windows.Controls;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace UNO_Spielprojekt.AddPlayer;
 
@@ -9,17 +9,11 @@ public partial class AddPlayerView
         nameof(ViewModel), typeof(AddPlayerViewModel), typeof(AddPlayerView),
         new PropertyMetadata(default(AddPlayerViewModel)));
 
-    public AddPlayerViewModel ViewModel
-    {
-        get => (AddPlayerViewModel)GetValue(ViewModelProperty);
-        set => SetValue(ViewModelProperty, value);
-    }
-
-    private readonly PlayerData _playerData;
+    public PlayerData PlayerData;
 
     public AddPlayerView()
     {
-        _playerData = new PlayerData();
+        PlayerData = new PlayerData();
         InitializeComponent();
     }
 
@@ -30,14 +24,20 @@ public partial class AddPlayerView
 
     private void AddPlayerClicked(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.PlayerNames.Count < 5) ViewModel.PlayerNames.Add(new NewPlayerViewModel());
+        if (ViewModel.PlayerNames.Count < 5)
+        {
+            ViewModel.PlayerNames.Add(new NewPlayerViewModel());
+        }
 
         UpdateWeiterButtonVisibility();
     }
 
     private void RemovePlayerClicked(object sender, RoutedEventArgs e)
     {
-        if (ViewModel.PlayerNames.Count > 0) ViewModel.PlayerNames.RemoveAt(ViewModel.PlayerNames.Count - 1);
+        if (ViewModel.PlayerNames.Count > 0)
+        {
+            ViewModel.PlayerNames.RemoveAt(ViewModel.PlayerNames.Count - 1);
+        }
 
         UpdateWeiterButtonVisibility();
     }
@@ -56,5 +56,11 @@ public partial class AddPlayerView
                 ContinueButton.Visibility = allFieldsFilled ? Visibility.Visible : Visibility.Hidden;
             }
         }
+    }
+
+    public AddPlayerViewModel ViewModel
+    {
+        get => (AddPlayerViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 }

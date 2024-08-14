@@ -26,7 +26,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
     </Window.Resources>
-    <Border DataContext="{StaticResource MainViewModel}" Background="{Binding ThemeModes.Background}"
+    <Border DataContext="{StaticResource MainViewModel}" Background="#1f1f1f"
             BorderThickness="0" CornerRadius="20">
         <Grid>
             <mainMenu:MainMenuView

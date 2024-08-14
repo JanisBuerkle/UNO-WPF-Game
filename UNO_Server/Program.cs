@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using UNO_Server.Models;
-using UNO_Server.Hubs;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
+using UNO_Server.Hubs;
+using UNO_Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +15,10 @@ builder.Services.AddSingleton<MyHub>();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File((Path.Combine(AppContext.BaseDirectory, "Logs", "log.txt")), rollingInterval: RollingInterval.Day)
+    .WriteTo.File(Path.Combine(AppContext.BaseDirectory, "Logs", "log.txt"), rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.SuppressModelStateInvalidFilter = true;
-});
+builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

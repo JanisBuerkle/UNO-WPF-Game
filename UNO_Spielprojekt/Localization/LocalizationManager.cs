@@ -1,20 +1,20 @@
-﻿using UNO_Spielprojekt.Resources;
-using UNO_Spielprojekt.Setting;
+﻿using System;
 using System.Globalization;
 using System.Resources;
-using System;
+using UNO_Spielprojekt.Resources;
+using UNO_Spielprojekt.Setting;
 
 namespace UNO_Spielprojekt.Localization;
 
 public static class LocalizationManager
 {
-    private static ResourceManager _resourceManager;
+    private static ResourceManager resourceManager;
 
     public static void SetLanguage(CultureInfo culture)
     {
-        _resourceManager = new ResourceManager("UNO_Spielprojekt.Resources.Resource", typeof(Resource).Assembly);
+        resourceManager = new ResourceManager("UNO_Spielprojekt.Resources.Resource", typeof(Resource).Assembly);
 
-        var localizedResourceSet = _resourceManager.GetResourceSet(culture, true, true);
+        var localizedResourceSet = resourceManager.GetResourceSet(culture, true, true);
 
         if (localizedResourceSet != null)
         {
@@ -28,8 +28,8 @@ public static class LocalizationManager
 
     public static string? GetLocalizedString(string key)
     {
-        _resourceManager ??= new ResourceManager("UNO_Spielprojekt.Resources.Resource", typeof(Resource).Assembly);
+        resourceManager ??= new ResourceManager("UNO_Spielprojekt.Resources.Resource", typeof(Resource).Assembly);
 
-        return SettingsView.language != null ? _resourceManager.GetString(key, SettingsView.language.LangCulture) : "DefaultLocalizedString";
+        return SettingsView.language != null ? resourceManager.GetString(key, SettingsView.language.LangCulture) : "DefaultLocalizedString";
     }
 }

@@ -2,15 +2,19 @@
 
 public class NewPlayerViewModel : ViewModelBase
 {
-    private string _name;
+    private string name;
 
     public string Name
     {
-        get => _name;
+        get => name;
         set
         {
-            if (value == _name) return;
-            _name = value;
+            if (value == name)
+            {
+                return;
+            }
+
+            name = value;
             OnPropertyChanged();
         }
     }

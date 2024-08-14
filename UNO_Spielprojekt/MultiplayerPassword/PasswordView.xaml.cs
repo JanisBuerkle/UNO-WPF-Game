@@ -1,6 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows;
 
 namespace UNO_Spielprojekt.MultiplayerPassword;
 
@@ -9,12 +9,6 @@ public partial class PasswordView
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
         nameof(ViewModel), typeof(PasswordViewModel), typeof(PasswordView),
         new PropertyMetadata(default(PasswordViewModel)));
-
-    public PasswordViewModel ViewModel
-    {
-        get => (PasswordViewModel)GetValue(ViewModelProperty);
-        set => SetValue(ViewModelProperty, value);
-    }
 
     public PasswordView()
     {
@@ -39,5 +33,11 @@ public partial class PasswordView
     private void TextChanged(object sender, TextChangedEventArgs e)
     {
         WrongPasswort.Text = "";
+    }
+
+    public PasswordViewModel ViewModel
+    {
+        get => (PasswordViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 }

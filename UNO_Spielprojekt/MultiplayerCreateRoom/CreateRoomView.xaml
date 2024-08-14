@@ -25,8 +25,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" Foreground="White"
-                       FontSize="30" FontWeight="Bold" Margin="0,100,0,0" Text="Spiel erstellen:">
-            </TextBlock>
+                       FontSize="30" FontWeight="Bold" Margin="0,100,0,0" Text="Spiel erstellen:" />
 
             <Button Command="{Binding CloseCreateRoomCommand}" Grid.Row="0" Grid.Column="5" VerticalAlignment="Top"
                     BorderBrush="Transparent" Background="Transparent" Foreground="Red" Content="x" />

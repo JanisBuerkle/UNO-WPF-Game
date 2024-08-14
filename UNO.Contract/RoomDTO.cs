@@ -9,10 +9,10 @@ public class RoomDto
     public bool PlayButtonEnabled { get; set; } = true;
     public string PlayButtonContent { get; set; } = "Play";
     public int OnlineUsers { get; set; }
-    public ObservableCollection<CardDto> Center { get; set; } = new ObservableCollection<CardDto>();
-    public CardDto MiddleCard { get; set; } = new CardDto() {Color = "", Value = "", ImageUri = ""};
-    public string MiddleCardPic { get; set; } = "";
-    public CardDto SelectedCard { get; set; } = new CardDto() {Color = "", Value = "", ImageUri = ""};
+    public ObservableCollection<CardDto> Center { get; set; } = new();
+    public CardDto MiddleCard { get; set; } = new() { Color = String.Empty, Value = String.Empty, ImageUri = String.Empty };
+    public string MiddleCardPic { get; set; } = String.Empty;
+    public CardDto SelectedCard { get; set; } = new() { Color = String.Empty, Value = String.Empty, ImageUri = String.Empty };
     public int MaximalUsers { get; set; }
     public bool PasswordSecured { get; set; }
     public string Password { get; set; }
@@ -23,6 +23,6 @@ public class RoomDto
     public int MoveCounter { get; set; }
     public bool StartButtonEnabled { get; set; }
     public int StartingPlayer { get; set; }
-    public List<PlayerDto> Players { get; set; } = new List<PlayerDto>();
-    public ObservableCollection<CardDto> Cards { get; set; } = new ObservableCollection<CardDto>();
+    public List<PlayerDto> Players { get; set; } = new();
+    public ObservableCollection<CardDto> Cards { get; set; } = new();
 }

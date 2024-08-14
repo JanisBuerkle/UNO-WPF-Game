@@ -1,6 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows;
 using UNO.Contract;
 
 namespace UNO_Spielprojekt.MultiplayerGamePage;
@@ -11,12 +11,6 @@ public partial class MpGamePageView
         nameof(ViewModel), typeof(MPGamePageViewModel), typeof(MpGamePageView),
         new PropertyMetadata(default(MPGamePageViewModel)));
 
-    public MPGamePageViewModel ViewModel
-    {
-        get => (MPGamePageViewModel)GetValue(ViewModelProperty);
-        set => SetValue(ViewModelProperty, value);
-    }
-
     public MpGamePageView()
     {
         InitializeComponent();
@@ -26,7 +20,7 @@ public partial class MpGamePageView
     {
         if (sender is Button button && button.DataContext is CardDto card)
         {
-            int selectedIndex = ViewModel.MultiplayerRoomsViewModel.Player.PlayerHand.IndexOf(card);
+            var selectedIndex = ViewModel.MultiplayerRoomsViewModel.Player.PlayerHand.IndexOf(card);
             ViewModel.SelectedCardIndex = selectedIndex;
             ViewModel.LegenCommandMethod();
         }
@@ -35,7 +29,7 @@ public partial class MpGamePageView
     private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {
         var scrollViewer = (ScrollViewer)sender;
-        double scrollFactor = 1.0;
+        var scrollFactor = 1.0;
         scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - e.Delta * scrollFactor);
         e.Handled = true;
     }
@@ -44,5 +38,11 @@ public partial class MpGamePageView
     {
         ItemsControl.Items.Refresh();
         ItemsControl.UpdateLayout();
+    }
+
+    public MPGamePageViewModel ViewModel
+    {
+        get => (MPGamePageViewModel)GetValue(ViewModelProperty);
+        set => SetValue(ViewModelProperty, value);
     }
 }

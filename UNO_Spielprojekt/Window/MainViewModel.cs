@@ -1,230 +1,82 @@
-﻿using UNO_Spielprojekt.MultiplayerCreateRoom;
+﻿using UNO_Spielprojekt.AddPlayer;
+using UNO_Spielprojekt.GamePage;
+using UNO_Spielprojekt.Logging;
+using UNO_Spielprojekt.MainMenu;
+using UNO_Spielprojekt.MultiplayerCreateRoom;
 using UNO_Spielprojekt.MultiplayerGamePage;
 using UNO_Spielprojekt.MultiplayerGiveName;
+using UNO_Spielprojekt.MultiplayerLobby;
 using UNO_Spielprojekt.MultiplayerPassword;
 using UNO_Spielprojekt.MultiplayerRooms;
-using UNO_Spielprojekt.MultiplayerLobby;
+using UNO_Spielprojekt.Rules;
 using UNO_Spielprojekt.Scoreboard;
-using UNO_Spielprojekt.AddPlayer;
-using UNO_Spielprojekt.GamePage;
-using UNO_Spielprojekt.MainMenu;
-using UNO_Spielprojekt.Logging;
 using UNO_Spielprojekt.Service;
 using UNO_Spielprojekt.Setting;
 using UNO_Spielprojekt.Winner;
-using UNO_Spielprojekt.Rules;
 using UNO.Contract;
 
 namespace UNO_Spielprojekt.Window;
 
 public class MainViewModel : ViewModelBase
 {
-    public ThemeModes ThemeModes { get; }
+    private readonly GameLogic gameLogic;
+    private readonly PlayViewModel playViewModel;
+
+    private bool gameVisible;
+    private bool rulesVisible;
+    private bool winnerVisible;
+    private bool settingsVisible;
+    private bool mainMenuVisible;
+    private bool addPlayerVisible;
+    private bool scoreboardVisible;
+    private bool multiplayerRoomsVisible;
+    private bool multiplayerGamePageVisible;
+    private bool createRoomVisible;
+    private bool passwordVisible;
+    private bool giveNameVisible;
+    private bool lobbyVisible;
+    public WinnerViewModel WinnerViewModel { get; }
+    public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; }
+    public MPGamePageViewModel MultiplayerGamePageViewModel { get; }
+    public LobbyViewModel LobbyViewModel { get; }
+    public SettingsViewModel SettingsViewModel { get; }
+    public ScoreboardViewModel ScoreboardViewModel { get; }
+    private RoomClient RoomClient { get; }
     public CreateRoomViewModel CreateRoomViewModel { get; set; }
     public PasswordViewModel PasswordViewModel { get; set; }
     public GiveNameViewModel GiveNameViewModel { get; set; }
     public GameData GameData { get; set; }
     private HubService HubService { get; set; }
-    public WinnerViewModel WinnerViewModel { get; }
-    public MultiplayerRoomsViewModel MultiplayerRoomsViewModel { get; }
-    public MPGamePageViewModel MultiplayerGamePageViewModel { get; }
-    public LobbyViewModel LobbyViewModel { get; }
     public GameViewModel GameViewModel { get; set; }
     public RulesViewModel RulesViewModel { get; set; }
-    public SettingsViewModel SettingsViewModel { get; }
-    public ScoreboardViewModel ScoreboardViewModel { get; }
     public MainMenuViewModel MainMenuViewModel { get; set; }
     public AddPlayerViewModel AddPlayerViewModel { get; set; }
-    private RoomClient RoomClient { get; set; }
 
     public MainViewModel()
     {
         var loggerFactory = new SerilogLoggerFactory();
         var logger = loggerFactory.CreateLogger("Uno-Spielprojekt");
-
-        ThemeModes = new ThemeModes();
-        SettingsViewModel = new SettingsViewModel(this, logger, ThemeModes);
-        PlayViewModel = new PlayViewModel();
-        GameLogic = new GameLogic(PlayViewModel, logger);
-        ScoreboardViewModel = new ScoreboardViewModel(this, logger, ThemeModes);
+        
+        SettingsViewModel = new SettingsViewModel(this, logger);
+        playViewModel = new PlayViewModel();
+        gameLogic = new GameLogic(playViewModel, logger);
+        ScoreboardViewModel = new ScoreboardViewModel(this);
         RoomClient = new RoomClient();
         MultiplayerRoomsViewModel = new MultiplayerRoomsViewModel(this, logger, RoomClient);
-        WinnerViewModel = new WinnerViewModel(this, ThemeModes, MultiplayerRoomsViewModel);
-        GameViewModel = new GameViewModel(this, logger, PlayViewModel, GameLogic, WinnerViewModel, ScoreboardViewModel,
-            ThemeModes);
-        RulesViewModel = new RulesViewModel(this, logger, ThemeModes);
+        WinnerViewModel = new WinnerViewModel(this, MultiplayerRoomsViewModel);
+        GameViewModel = new GameViewModel(this, logger, playViewModel, gameLogic, WinnerViewModel, ScoreboardViewModel);
+        RulesViewModel = new RulesViewModel(this, logger);
         GameData = new GameData(ScoreboardViewModel, GameViewModel);
         MainMenuViewModel = new MainMenuViewModel(this, logger, GameData);
-        AddPlayerViewModel = new AddPlayerViewModel(this, logger, GameLogic);
+        AddPlayerViewModel = new AddPlayerViewModel(this, logger, gameLogic);
         MultiplayerGamePageViewModel = new MPGamePageViewModel(this, logger, MultiplayerRoomsViewModel);
         HubService = new HubService(this, MultiplayerRoomsViewModel);
         LobbyViewModel = new LobbyViewModel(this, logger, MultiplayerRoomsViewModel);
         GiveNameViewModel = new GiveNameViewModel(this, logger, MultiplayerRoomsViewModel);
-        CreateRoomViewModel = new CreateRoomViewModel(this, logger, MultiplayerRoomsViewModel);
+        CreateRoomViewModel = new CreateRoomViewModel(this, MultiplayerRoomsViewModel);
         PasswordViewModel = new PasswordViewModel(this, logger, MultiplayerRoomsViewModel);
 
         MainMenuVisible = true;
-        // MultiplayerGamePageVisible = true;
-    }
-
-    private bool _gameVisible;
-    private bool _rulesVisible;
-    private bool _winnerVisible;
-    private bool _settingsVisible;
-    private bool _mainMenuVisible;
-    private bool _addPlayerVisible;
-    private bool _scoreboardVisible;
-    private bool _multiplayerRoomsVisible;
-    private bool _multiplayerGamePageVisible;
-    private bool _createRoomVisible;
-    private bool _passwordVisible;
-    private bool _giveNameVisible;
-    private bool _lobbyVisible;
-    private readonly GameLogic GameLogic;
-    private readonly PlayViewModel PlayViewModel;
-
-    public bool MainMenuVisible
-    {
-        get => _mainMenuVisible;
-        set
-        {
-            if (value == _mainMenuVisible) return;
-            _mainMenuVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool WinnerVisible
-    {
-        get => _winnerVisible;
-        set
-        {
-            if (value == _winnerVisible) return;
-            _winnerVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool RulesVisible
-    {
-        get => _rulesVisible;
-        set
-        {
-            if (value == _rulesVisible) return;
-            _rulesVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-
-    public bool ScoreboardVisible
-    {
-        get => _scoreboardVisible;
-        set
-        {
-            if (value == _scoreboardVisible) return;
-            _scoreboardVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool MultiplayerRoomsVisible
-    {
-        get => _multiplayerRoomsVisible;
-        set
-        {
-            if (value == _multiplayerRoomsVisible) return;
-            _multiplayerRoomsVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool MultiplayerGamePageVisible
-    {
-        get => _multiplayerGamePageVisible;
-        set
-        {
-            if (value == _multiplayerGamePageVisible) return;
-            _multiplayerGamePageVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool GameVisible
-    {
-        get => _gameVisible;
-        set
-        {
-            if (value == _gameVisible) return;
-            _gameVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool SettingsVisible
-    {
-        get => _settingsVisible;
-        set
-        {
-            if (value == _settingsVisible) return;
-            _settingsVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool AddPlayerVisible
-    {
-        get => _addPlayerVisible;
-        set
-        {
-            if (value == _addPlayerVisible) return;
-            _addPlayerVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool CreateRoomVisible
-    {
-        get => _createRoomVisible;
-        set
-        {
-            if (value == _createRoomVisible) return;
-            _createRoomVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool PasswordVisible
-    {
-        get => _passwordVisible;
-        set
-        {
-            if (value == _passwordVisible) return;
-            _passwordVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool GiveNameVisible
-    {
-        get => _giveNameVisible;
-        set
-        {
-            if (value == _giveNameVisible) return;
-            _giveNameVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool LobbyVisible
-    {
-        get => _lobbyVisible;
-        set
-        {
-            if (value == _lobbyVisible) return;
-            _lobbyVisible = value;
-            OnPropertyChanged();
-        }
     }
 
     public void GoToMainMenu()
@@ -348,7 +200,7 @@ public class MainViewModel : ViewModelBase
         MultiplayerGamePageVisible = false;
     }
 
-    public async void GoToWinner()
+    public void GoToWinner()
     {
         WinnerVisible = true;
         GameVisible = false;
@@ -398,5 +250,201 @@ public class MainViewModel : ViewModelBase
         CreateRoomVisible = false;
         MultiplayerRoomsVisible = false;
         MultiplayerGamePageVisible = false;
+    }
+
+    public bool MainMenuVisible
+    {
+        get => mainMenuVisible;
+        set
+        {
+            if (value == mainMenuVisible)
+            {
+                return;
+            }
+
+            mainMenuVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool WinnerVisible
+    {
+        get => winnerVisible;
+        set
+        {
+            if (value == winnerVisible)
+            {
+                return;
+            }
+
+            winnerVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool RulesVisible
+    {
+        get => rulesVisible;
+        set
+        {
+            if (value == rulesVisible)
+            {
+                return;
+            }
+
+            rulesVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+
+    public bool ScoreboardVisible
+    {
+        get => scoreboardVisible;
+        set
+        {
+            if (value == scoreboardVisible)
+            {
+                return;
+            }
+
+            scoreboardVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool MultiplayerRoomsVisible
+    {
+        get => multiplayerRoomsVisible;
+        set
+        {
+            if (value == multiplayerRoomsVisible)
+            {
+                return;
+            }
+
+            multiplayerRoomsVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool MultiplayerGamePageVisible
+    {
+        get => multiplayerGamePageVisible;
+        set
+        {
+            if (value == multiplayerGamePageVisible)
+            {
+                return;
+            }
+
+            multiplayerGamePageVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool GameVisible
+    {
+        get => gameVisible;
+        set
+        {
+            if (value == gameVisible)
+            {
+                return;
+            }
+
+            gameVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool SettingsVisible
+    {
+        get => settingsVisible;
+        set
+        {
+            if (value == settingsVisible)
+            {
+                return;
+            }
+
+            settingsVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool AddPlayerVisible
+    {
+        get => addPlayerVisible;
+        set
+        {
+            if (value == addPlayerVisible)
+            {
+                return;
+            }
+
+            addPlayerVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool CreateRoomVisible
+    {
+        get => createRoomVisible;
+        set
+        {
+            if (value == createRoomVisible)
+            {
+                return;
+            }
+
+            createRoomVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool PasswordVisible
+    {
+        get => passwordVisible;
+        set
+        {
+            if (value == passwordVisible)
+            {
+                return;
+            }
+
+            passwordVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool GiveNameVisible
+    {
+        get => giveNameVisible;
+        set
+        {
+            if (value == giveNameVisible)
+            {
+                return;
+            }
+
+            giveNameVisible = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool LobbyVisible
+    {
+        get => lobbyVisible;
+        set
+        {
+            if (value == lobbyVisible)
+            {
+                return;
+            }
+
+            lobbyVisible = value;
+            OnPropertyChanged();
+        }
     }
 }

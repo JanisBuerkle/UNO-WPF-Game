@@ -11,7 +11,11 @@ public class PlayViewModel : ViewModelBase
         get => _cards;
         set
         {
-            if (Equals(value, _cards)) return;
+            if (Equals(value, _cards))
+            {
+                return;
+            }
+
             _cards = value;
             OnPropertyChanged();
         }

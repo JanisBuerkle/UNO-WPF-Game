@@ -55,8 +55,7 @@
         <!-- Rundenanzeige -->
         <Label DataContext="{Binding ElementName=MpGamePage, Path=ViewModel}" Margin="0,20,0,0" Grid.Column="1"
                HorizontalAlignment="Center" Grid.Row="0" FontSize="20"
-               Content="{Binding RoundCounterString}" Foreground="Wheat">
-        </Label>
+               Content="{Binding RoundCounterString}" Foreground="Wheat" />
 
         <!-- Ziehstapel und Ablagestapel -->
         <StackPanel Orientation="Vertical" Grid.RowSpan="2" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top"

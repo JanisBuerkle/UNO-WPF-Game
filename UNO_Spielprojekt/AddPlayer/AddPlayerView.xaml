@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              Name="AddPlayerPage">
-
     <Grid DataContext="{Binding ElementName=AddPlayerPage, Path=ViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -30,7 +29,7 @@
                     <ImageBrush ImageSource="pack://application:,,,/Assets/Symbols/plus.png" Stretch="Fill" />
                 </Button.Background>
             </Button>
-            
+
             <Button Click="RemovePlayerClicked" Style="{StaticResource PlusButtonStyle}">
                 <Button.Background>
                     <ImageBrush ImageSource="pack://application:,,,/Assets/Symbols/minus.png" Stretch="Fill" />
@@ -56,6 +55,7 @@
                 Style="{StaticResource MyButtonStyle}" />
 
         <!-- Home Button -->
-        <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0" Name="Home" Style="{StaticResource HomeButtonStyle}" />
+        <Button Command="{Binding GoToMainMenuCommand}" Grid.Column="0" Grid.Row="0" Name="Home"
+                Style="{StaticResource HomeButtonStyle}" />
     </Grid>
 </UserControl>

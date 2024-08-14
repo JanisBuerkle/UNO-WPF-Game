@@ -2,7 +2,7 @@
 
 public class PlaceCardModel
 {
-    private readonly Random _random = new Random();
+    private readonly Random random = new();
 
     public void HandleSpecialCards(Room room, string[] splitted, int cardId, StartModel startModel)
     {
@@ -11,8 +11,8 @@ public class PlaceCardModel
             var playerCard = player.PlayerHand.FirstOrDefault(c => c.Id == cardId);
             if (playerCard != null)
             {
-                string wildOrDraw = splitted[3];
-                int number = Convert.ToInt32(splitted[4]);
+                var wildOrDraw = splitted[3];
+                var number = Convert.ToInt32(splitted[4]);
                 Card cardToPlace;
                 switch (wildOrDraw)
                 {
@@ -41,23 +41,23 @@ public class PlaceCardModel
         }
     }
 
-    public void HandleWildDrawCards(Room room, string value)
+    public void HandleWildDrawCards(Room room, string value, Player nextPlayer)
     {
         if (value == "+4")
         {
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
-                var rndCard = _random.Next(room.Cards.Count);
+                var rndCard = random.Next(room.Cards.Count);
                 var selectedCard = room.Cards[rndCard];
-                room.Players[room.NextPlayer - 1].PlayerHand.Add(selectedCard);
+                nextPlayer.PlayerHand.Add(selectedCard);
             }
         }
     }
 
-    public void HandleStandardCard(Room room, string color, string value, int cardId)
+    public void HandleStandardCard(Room room, string color, string value, int cardId, Player nextPlayer)
     {
-        string path = $"pack://application:,,,/Assets/cards/{value}/{color}.png";
-        var newCard = new Card() { Color = color, Value = value, ImageUri = path };
+        var path = $"pack://application:,,,/Assets/cards/{value}/{color}.png";
+        var newCard = new Card { Color = color, Value = value, ImageUri = path };
         room.Center.Add(newCard);
         room.MiddleCard = newCard;
         room.SelectedCard = newCard;
@@ -69,24 +69,23 @@ public class PlaceCardModel
             if (playerCard != null)
             {
                 player.PlayerHand.Remove(playerCard);
-                ApplyCardEffect(room, playerCard);
+                ApplyCardEffect(room, playerCard, nextPlayer);
                 break;
             }
         }
     }
 
-    private void ApplyCardEffect(Room room, Card playerCard)
+    private void ApplyCardEffect(Room room, Card playerCard, Player nextPlayer)
     {
         switch (playerCard.Value)
         {
             case "+2":
-                for (int i = 0; i < 2; i++)
+                for (var i = 0; i < 2; i++)
                 {
-                    var rndCard = _random.Next(room.Cards.Count);
+                    var rndCard = random.Next(room.Cards.Count);
                     var selectedCard = room.Cards[rndCard];
-                    room.Players[room.NextPlayer - 1].PlayerHand.Add(selectedCard);
+                    nextPlayer.PlayerHand.Add(selectedCard);
                 }
-
                 break;
             case "Skip":
             case "Reverse" when room.Players.Count == 2:
