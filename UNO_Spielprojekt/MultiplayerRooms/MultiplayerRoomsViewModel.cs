@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
@@ -16,19 +15,18 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 {
     private readonly ILogger logger;
 
-    private PlayerDto _player;
+    private PlayerDto player;
 
-    private int _selectedItem;
+    private int selectedItem;
 
-    private ObservableCollection<RoomDto> _roomList = new();
+    private ObservableCollection<RoomDto> roomList = new();
 
 
-    private bool _disableAll;
+    private bool disableAll;
 
-    private RoomDto _selectedRoom;
+    private RoomDto selectedRoom;
 
-    private RoomDto _selectedRoom2;
-    public HttpClient HttpClient;
+    private RoomDto selectedRoom2;
 
     public ObservableCollection<string> ComboBoxItems { get; } = new()
     {
@@ -46,15 +44,15 @@ public class MultiplayerRoomsViewModel : ViewModelBase
     private List<RoomDto>? Rooms { get; set; }
     public List<PlayerDto>? Players { get; set; }
     public MainViewModel MainViewModel { get; set; }
-    public RoomClient RoomClient { get; set; }
+    public IRoomClient RoomClient { get; set; }
 
-    public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger loggerr, RoomClient roomClient)
+    public MultiplayerRoomsViewModel(MainViewModel mainViewModel, ILogger loggerr, IRoomClient roomClient)
     {
         logger = loggerr;
         MainViewModel = mainViewModel;
         RoomClient = roomClient;
 
-        _selectedItem = 5;
+        selectedItem = 5;
         logger.Info(
             "_selectedItem wurde auf den Standartwert 5 gesetzt, MultiplayerRoomsViewModel Constructor wurde ausgeführt.");
 
@@ -128,7 +126,6 @@ public class MultiplayerRoomsViewModel : ViewModelBase
         await GetRooms();
         var roomToUpdate = SelectedRoom2;
 
-        HttpClient = new HttpClient();
         if (removeOrAdd) //add
         {
             await RoomClient.AddPlayer(roomToUpdate, $"{PlayerName}-{SignalRId}");
@@ -193,12 +190,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public PlayerDto Player
     {
-        get => _player;
+        get => player;
         set
         {
-            if (_player != value)
+            if (player != value)
             {
-                _player = value;
+                player = value;
                 OnPropertyChanged();
             }
         }
@@ -206,12 +203,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public int SelectedMaximalCount
     {
-        get => _selectedItem;
+        get => selectedItem;
         set
         {
-            if (_selectedItem != value)
+            if (selectedItem != value)
             {
-                _selectedItem = value;
+                selectedItem = value;
                 if (value < SelectedRoom2.OnlineUsers)
                 {
                     for (var i = SelectedRoom2.OnlineUsers; i > value; i--)
@@ -230,12 +227,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public ObservableCollection<RoomDto> RoomList
     {
-        get => _roomList;
+        get => roomList;
         private set
         {
-            if (_roomList != value)
+            if (roomList != value)
             {
-                _roomList = value;
+                roomList = value;
                 OnPropertyChanged();
             }
         }
@@ -243,12 +240,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public bool DisableAll
     {
-        get => _disableAll;
+        get => disableAll;
         set
         {
-            if (_disableAll != value)
+            if (disableAll != value)
             {
-                _disableAll = value;
+                disableAll = value;
                 OnPropertyChanged();
             }
         }
@@ -256,12 +253,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public RoomDto SelectedRoom
     {
-        get => _selectedRoom;
+        get => selectedRoom;
         set
         {
-            if (_selectedRoom != value)
+            if (selectedRoom != value)
             {
-                _selectedRoom = value;
+                selectedRoom = value;
 
                 OnPropertyChanged();
             }
@@ -270,12 +267,12 @@ public class MultiplayerRoomsViewModel : ViewModelBase
 
     public RoomDto SelectedRoom2
     {
-        get => _selectedRoom2;
+        get => selectedRoom2;
         set
         {
-            if (_selectedRoom2 != value)
+            if (selectedRoom2 != value)
             {
-                _selectedRoom2 = value;
+                selectedRoom2 = value;
                 OnPropertyChanged();
             }
         }

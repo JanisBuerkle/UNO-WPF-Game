@@ -13,23 +13,23 @@ namespace UNO_Spielprojekt.MultiplayerGamePage;
 public class MPGamePageViewModel : ViewModelBase
 {
     private readonly ILogger logger;
-    private Brush _theBackground;
+    private Brush theBackground;
 
-    private string _roundCounterString;
+    private string roundCounterString;
 
-    private ObservableCollection<CardDto> _currentHand = new();
+    private ObservableCollection<CardDto> currentHand = new();
 
-    private bool _disableAllFunctions;
-    private bool _itsYourTurn;
+    private bool disableAllFunctions;
+    private bool itsYourTurn;
 
-    private bool _chooseColorVisible;
+    private bool chooseColorVisible;
 
-    private ChooseColorViewModel _chooseColorViewModel;
+    private ChooseColorViewModel chooseColorViewModel;
 
-    private bool _fertigButtonIsEnabled;
+    private bool fertigButtonIsEnabled;
 
-    private bool _gelegt;
-    private bool _gezogen;
+    private bool gelegt;
+    private bool gezogen;
 
     public RelayCommand ZiehenCommand { get; }
     public RelayCommand FertigCommand { get; }
@@ -62,7 +62,7 @@ public class MPGamePageViewModel : ViewModelBase
 
     public async void LegenCommandMethod()
     {
-        if (!_gelegt)
+        if (!gelegt)
         {
             logger.Info("Eine Karte wurde angeklickt, LegenCommandMethod wurde ausgeführt.");
             var saveMiddleCard = MultiplayerRoomsViewModel.SelectedRoom2.MiddleCard;
@@ -89,7 +89,7 @@ public class MPGamePageViewModel : ViewModelBase
 
             if (saveMiddleCard.Id != MultiplayerRoomsViewModel.SelectedRoom2.MiddleCard.Id)
             {
-                _gelegt = true;
+                gelegt = true;
                 FertigButtonIsEnabled = true;
             }
         }
@@ -122,7 +122,7 @@ public class MPGamePageViewModel : ViewModelBase
 
     private async void ZiehenCommandMethod()
     {
-        if (!_gezogen && !_gelegt)
+        if (!gezogen && !gelegt)
         {
             logger.Info("Eine Karte wurde gezogen, ZiehenCommandMethod wurde ausgeführt.");
             var savePlayerCardCount = MultiplayerRoomsViewModel.Player.PlayerHand.Count;
@@ -135,7 +135,7 @@ public class MPGamePageViewModel : ViewModelBase
 
             if (savePlayerCardCount < MultiplayerRoomsViewModel.Player.PlayerHand.Count)
             {
-                _gezogen = true;
+                gezogen = true;
                 FertigButtonIsEnabled = true;
             }
         }
@@ -143,7 +143,7 @@ public class MPGamePageViewModel : ViewModelBase
 
     private async void FertigCommandMethod()
     {
-        if (_gelegt || _gezogen)
+        if (gelegt || gezogen)
         {
             logger.Info("Fertig Button wurde geklickt, FertigCommandMethod wurde ausgeführt.");
             await MultiplayerRoomsViewModel.RoomClient.PlayerEndMove((int)MultiplayerRoomsViewModel.Player.Id,
@@ -151,8 +151,8 @@ public class MPGamePageViewModel : ViewModelBase
             logger.Info($"{MultiplayerRoomsViewModel.PlayerName} hat seinen Zug beendet.");
 
             await MultiplayerRoomsViewModel.GetRooms();
-            _gelegt = false;
-            _gezogen = false;
+            gelegt = false;
+            gezogen = false;
             FertigButtonIsEnabled = false;
         }
     }
@@ -165,7 +165,7 @@ public class MPGamePageViewModel : ViewModelBase
         {
             reinholen = SelectedCard.Color + "-" + SelectedCard.Value + "-" + SelectedCard.Id + "-" +
                         SelectedCard.Color + "-" + ChooseColorViewModel.ChoosenColor;
-            _gelegt = true;
+            gelegt = true;
             FertigButtonIsEnabled = true;
         }
 
@@ -175,22 +175,22 @@ public class MPGamePageViewModel : ViewModelBase
 
     public Brush TheBackground
     {
-        get => _theBackground;
+        get => theBackground;
         set
         {
-            _theBackground = value;
+            theBackground = value;
             OnPropertyChanged();
         }
     }
 
     public string RoundCounterString
     {
-        get => _roundCounterString;
+        get => roundCounterString;
         set
         {
-            if (_roundCounterString != value)
+            if (roundCounterString != value)
             {
-                _roundCounterString = value;
+                roundCounterString = value;
                 OnPropertyChanged();
             }
         }
@@ -198,12 +198,12 @@ public class MPGamePageViewModel : ViewModelBase
 
     public ObservableCollection<CardDto> CurrentHand
     {
-        get => _currentHand;
+        get => currentHand;
         set
         {
-            if (_currentHand != value)
+            if (currentHand != value)
             {
-                _currentHand = value;
+                currentHand = value;
                 OnPropertyChanged();
             }
         }
@@ -211,12 +211,12 @@ public class MPGamePageViewModel : ViewModelBase
 
     public bool DisableAllFunctions
     {
-        get => _disableAllFunctions;
+        get => disableAllFunctions;
         set
         {
-            if (_disableAllFunctions != value)
+            if (disableAllFunctions != value)
             {
-                _disableAllFunctions = value;
+                disableAllFunctions = value;
                 ItsYourTurn = value;
                 OnPropertyChanged();
             }
@@ -226,12 +226,12 @@ public class MPGamePageViewModel : ViewModelBase
     public bool ItsYourTurn
 
     {
-        get => _itsYourTurn;
+        get => itsYourTurn;
         set
         {
-            if (_itsYourTurn != value)
+            if (itsYourTurn != value)
             {
-                _itsYourTurn = value;
+                itsYourTurn = value;
                 OnPropertyChanged();
             }
         }
@@ -239,42 +239,42 @@ public class MPGamePageViewModel : ViewModelBase
 
     public bool ChooseColorVisible
     {
-        get => _chooseColorVisible;
+        get => chooseColorVisible;
         set
         {
-            if (value == _chooseColorVisible)
+            if (value == chooseColorVisible)
             {
                 return;
             }
 
-            _chooseColorVisible = value;
+            chooseColorVisible = value;
             OnPropertyChanged();
         }
     }
 
     public ChooseColorViewModel ChooseColorViewModel
     {
-        get => _chooseColorViewModel;
+        get => chooseColorViewModel;
         set
         {
-            if (Equals(value, _chooseColorViewModel))
+            if (Equals(value, chooseColorViewModel))
             {
                 return;
             }
 
-            _chooseColorViewModel = value;
+            chooseColorViewModel = value;
             OnPropertyChanged();
         }
     }
 
     public bool FertigButtonIsEnabled
     {
-        get => _fertigButtonIsEnabled;
+        get => fertigButtonIsEnabled;
         set
         {
-            if (_fertigButtonIsEnabled != value)
+            if (fertigButtonIsEnabled != value)
             {
-                _fertigButtonIsEnabled = value;
+                fertigButtonIsEnabled = value;
                 TheBackground = !value ? Brushes.Transparent : Brushes.Green;
                 OnPropertyChanged();
             }

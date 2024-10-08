@@ -19,14 +19,12 @@
         WindowStartupLocation="CenterScreen" Icon="../Assets/Logos/logo.png"
         AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        WindowStyle="None">
-
+        WindowStyle="None"
+        Name="MainWindow">
     <Window.Resources>
-        <window:MainViewModel x:Key="MainViewModel" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
     </Window.Resources>
-    <Border DataContext="{StaticResource MainViewModel}" Background="#1f1f1f"
+    <Border DataContext="{Binding ElementName=MainWindow, Path=MainViewModel}" Background="#1f1f1f"
             BorderThickness="0" CornerRadius="20">
         <Grid>
             <mainMenu:MainMenuView
