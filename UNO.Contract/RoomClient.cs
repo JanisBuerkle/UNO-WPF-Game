@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace UNO.Contract;
 
-public class RoomClient
+public class RoomClient : IRoomClient
 {
     public async Task<string> GetAllRooms()
     {

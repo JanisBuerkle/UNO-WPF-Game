@@ -33,7 +33,7 @@ public class AddPlayerViewModel
         mainViewModel.GoToMainMenu();
     }
 
-    private void WeiterButtonCommandMethod()
+    public void WeiterButtonCommandMethod()
     {
         foreach (var player in PlayerNames)
         {
@@ -45,4 +45,4 @@ public class AddPlayerViewModel
         logger.Info("Rules Seite wurde geöffnet.");
         mainViewModel.GoToRules();
     }
-}
+} 
