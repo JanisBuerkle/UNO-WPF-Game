@@ -6,6 +6,17 @@ namespace UNO_Server.Hubs;
 
 public class MyHub : Hub
 {
+    // private readonly Guid id;
+    //
+    // public MyHub()
+    // {
+    //     id = Guid.NewGuid();
+    // }
+    //
+    // public override Task OnConnectedAsync()
+    // {
+    //     return base.OnConnectedAsync();
+    // }
     public async Task SendGetAllRooms(string nachricht)
     {
         await Clients.All.SendAsync("GetAllRooms", nachricht);

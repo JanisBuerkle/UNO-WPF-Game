@@ -393,6 +393,7 @@ public class GameViewModel : ViewModelBase
 
     private void ExitConfirmCommandMethod()
     {
+        // Wrong layer. Needs to be in View Layer
         var exitConfirmWindow = new ExitConfirmWindow(mainViewModel)
         {
             Owner = MainWindowView.Instance
@@ -506,11 +507,9 @@ public class GameViewModel : ViewModelBase
     private void SavePlayerToXml(List<ScoreboardPlayer> players)
     {
         var serializer = new XmlSerializer(typeof(List<ScoreboardPlayer>));
-        using (TextWriter writer = new StreamWriter("GameData.xml"))
-        {
-            serializer.Serialize(writer, players);
-            writer.Close();
-        }
+        using TextWriter writer = new StreamWriter("GameData.xml");
+        serializer.Serialize(writer, players);
+        writer.Close();
     }
 
     private void InitializeGameProperties()
@@ -522,7 +521,7 @@ public class GameViewModel : ViewModelBase
         IsEnd = false;
     }
 
-    private void InitializePlayersHands()
+    public void InitializePlayersHands()
     {
         foreach (var cards in GameLogic.Cards)
         {

@@ -7,7 +7,7 @@ namespace UNO_Spielprojekt.MultiplayerRooms;
 
 public class Rooms : ViewModelBase
 {
-    private string _playButtonContent = "Play";
+    private string playButtonContent = "Play";
 
     private int _onlineUsers;
 
@@ -56,12 +56,12 @@ public class Rooms : ViewModelBase
     [JsonProperty("PlayButtonContent")]
     public string PlayButtonContent
     {
-        get => _playButtonContent;
+        get => playButtonContent;
         set
         {
-            if (_playButtonContent != value)
+            if (playButtonContent != value)
             {
-                _playButtonContent = value;
+                playButtonContent = value;
                 OnPropertyChanged();
             }
         }
