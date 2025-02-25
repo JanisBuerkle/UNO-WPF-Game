@@ -1,26 +1,69 @@
-# UNO-Gameproject
-Welcome to the UNO Game Project! 
 
-This repository contains the source code for a digital version of the classic card game UNO, featuring online and local multiplayer modes.
 
-## Features
-Multiplayer Modes: Play locally with friends or online with others.
 
-Game Logic: Fully implements UNO's rules, including special cards like Skip, Reverse, and Draw Four.
+# 🃏 UNO WPF Gameproject with Multiplayer 🎲
 
-User Interface: Intuitive and user-friendly design for seamless gameplay.
+Welcome to the **UNO WPF App**! This application brings the classic UNO card game to your Windows PC, featuring both online and local multiplayer modes. Developed using WPF and following the MVVM architecture, it offers an exciting and interactive gaming experience.
 
-## Getting Started
+## 🌟 Key Features
+
+- **Multiplayer Modes**:
+  - **Local Mode**: Play with friends on a single device.
+  - **Online Mode**: Create or join rooms to play with friends over the internet.
+
+- **Game Rules**:
+  - Up to 5 players can join a game, starting with 7 cards each.
+  - Match cards by color or number, or play action cards to change the game flow.
+  - First player to play all their cards wins!
+
+- **Card Details**:
+  - 108 cards total: blue, green, red, and yellow.
+  - Special cards: Draw Two, Reverse, Skip, Wild, and Wild Draw Four.
+
+## 🛠️ MVVM Architecture
+
+- **Model**: Manages core game logic and data, including players and cards.
+- **View**: Presents the game interface using XAML.
+- **ViewModel**: Bridges the Model and View, handling interactions and updates.
+
+## 🖥️ Main Menu Options
+
+- **Local**: Add players, set names, and start a local game.
+- **Multiplayer**: Create or join rooms, set passwords, and manage player settings.
+- **Scoreboard**: View player rankings based on game wins.
+- **Settings**: Toggle between fullscreen and windowed modes.
+- **Exit**: Close the application.
+
+## 📡 Multiplayer Architecture
+
+- **Database**: Stores room and player data.
+- **SignalR Hub**: Manages real-time player connections and game updates.
+
+## 🎴 Card Details
+
+- **Sample Cards**:
+  - **Skip Blue**
+  - **7 Red**
+
+## 🚀 Getting Started
+
 To get started with the UNO Game Project, follow these steps:
 
-### Clone the Repository:
-```git clone https://mafbsvgit1.teamtechnik.com/AUS/UNO.git```
+1. **Clone the Repository**:
+   ```bash
+   https://github.com/JanisBuerkle/UNO-Console-Game.git
+   ```
+   
 
-### Run the Game:
-Follow instructions to start the game.
+2. **Run the Game**:
+   Follow the instructions provided in the repository to start the game.
 
-## Documentation
-For detailed information about the game rules, architecture, and more, please refer to the project [documentation](https://confluence.teamtechnik.com/display/TW/UNO).
+## 📬 Contact
 
-## Contact
-For questions or feedback, please reach out to Bürkle, Janis [bks@teamtechnik.com].
+For questions or feedback, please reach out to **Bürkle, Janis** at [janis.buerkle@gmail.com].
+
+---
+
+Enjoy the strategic and fast-paced world of UNO with the UNO WPF App! Whether playing locally or online, challenge your friends and aim for victory! 🚀
+
+---
